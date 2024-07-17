@@ -1,0 +1,149 @@
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    color: white;
+    background-color: #414141;
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+table {
+    border: none;
+    border-spacing: 0;
+}
+td {
+    cursor: default;
+}
+
+.pageFrame {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.appFrame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+}
+
+main {
+    width: 1100px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.titlePanel, .navigationPanel {
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.titlePanel {
+    align-items: top;
+}
+.appTitle {
+    font-size: 26px;
+    font-weight: bold;
+    color: deepskyblue;
+}
+.pageTitle {
+    font-size: 20px;
+}
+
+.siteMenuOption {
+    margin-right: 3px;
+    padding-right: 9px;
+    border-right: 1px solid white;
+}
+#siteLogout {
+    margin-right: 0;
+    border-right: none;
+}
+#siteViewManager {
+    display: none;
+}
+
+
+/*
+* Text Input Controls
+*/
+
+.inputRow {
+    display: flex;
+    margin-bottom: 24px;
+}
+
+.inputCell {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 0 8px;
+}
+
+.inputLabel {
+    display: inline-block;
+    margin-bottom: 4px;
+    font-size: 14px;
+}
+
+.inputTextBox {
+    outline: none;
+    padding: 16px;
+    border-radius: 8px;
+    display: block;
+    border: 1px solid gray;
+    background-color: transparent;
+    color: inherit;
+    box-sizing: border-box;
+}
+.inputTextBox:focus {
+    border-color: white;
+}
+.inputButton {
+    border-radius: 8px;
+    margin: 0 8px;
+    padding: 8px 16px;
+}
+
+
+/*
+* Login
+*/
+.loginPanel {
+    display: none;
+    justify-content: center;
+    z-index: 3;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background-color: #414141;
+}
+
+#loginUsername, #loginPassword {
+    width: 300px;
+}

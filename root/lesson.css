@@ -1,0 +1,101 @@
+#viewWeek {
+    margin-left: 10px;
+}
+
+.inputLabel {
+    font-size: 16px;
+}
+
+#lessonPanel {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+
+.lessonTitleSection {
+    display: flex;
+    justify-content: space-between;
+    font-size: 15px;
+}
+
+.lessonName {
+    width: 200px;
+    font-size: inherit;
+    color: inherit;
+    background-color: inherit;
+    border: 0;
+    box-sizing: border-box;    
+    outline: none;
+    padding: 0;
+}
+
+.lessonDateControls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;;
+}
+.lessonDate {
+    margin-right: 12px;
+}
+.lessonDateButton {
+    height: 28px;
+}
+
+
+.lessonSection {
+    margin-top: 32px;
+}
+
+.lessonHeader {
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 3px;
+}
+
+.lessonBenchmarkContainer {
+    flex: 1;
+    background-color: #333;
+    padding: 8px;
+    min-height: 34px;
+    border-radius: 8px;
+}
+
+.lessonBenchmarkRow {
+    display: flex;
+    flex-direction: row;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.lessonBenchmarkCode {
+    width: 150px;
+    cursor: pointer;
+}
+.lessonBenchmarkCode:hover {
+    text-decoration: underline;
+}
+.lessonBenchmarkDescription {
+    flex: 1;
+}
+
+.lessonDetailSection {
+    display: flex;
+    flex-direction: column;
+}
+.lessonDetailText {
+    outline: none;
+    border: 1px solid #333;
+    border-radius: 8px;
+    resize: none;
+    padding: 16px;
+    font-size: 14px;
+    height: 96px;
+    background-color: #333;
+    color: white;
+}
+.lessonDetailText:focus {
+    border-color: white;
+    background-color: #272727;
+}
