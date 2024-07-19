@@ -1,0 +1,16 @@
+main {
+    align-items: center;
+}
+
+#registrationPanel {
+    width: 600px;
+}
+
+.passwordInfo {
+    margin-top:48px;
+}
+
+#username {
+    border-color: #222;
+    background-color: #222;
+}

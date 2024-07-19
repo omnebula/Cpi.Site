@@ -36,7 +36,75 @@
                             <input class="inputTextBox" id="organizationName" type="text"/>
                         </div>
                     </div>
+
+                    <!-- Accounts -->
+                    <div class="listSection">
+                        <div class="listTitleRow">
+                            <div class="listTitle">Accounts</div>
+                            <div><input id="addAccount" type="button" value="Add"/></div>
+                        </div>
+                        <div class="listContainer">
+                            <div class="listHeaderRow">
+                                <div class="listHeader accountEmailColumn">Email</div>
+                                <div class="listHeader accountAccessColumn">Access</div>
+                                <div class="listHeader accountStatusColumn">Status</div>
+                                <div class="listHeader listCommands">Commands</div>
+                            </div>
+                            <div id="accountRowContainer">
+                                <div id="accountRow" class="listRow">
+                                    <div class="listColumn accountEmailColumn"></div>
+                                    <div class="listColumn accountAccessColumn"></div>
+                                    <div class="listColumn accountStatusColumn"></div>
+                                    <div class="listCommands">
+                                        <input id="sendInvite" type="button" value="invite">
+                                        <input id="editAccount" type="button" value="edit">
+                                        <input id="deleteAccount" type="button" value="delete">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                <div id="accountEditorPanel" class="popupPanel accountEditorPanel">
+                    <div class="popupFrame accountEditorFrame">
+                        <div class="popupCaption">
+                            <div class="popupCaptionTitle">Account</div>
+                            <div>
+                                <input id="popupAccept" class="popupCaptionButton" type="button" value="Acvept"/>
+                                <input id="popupCancel" class="popupCaptionButton" type="button" value="Cancel"/>
+                            </div>
+                        </div>
+            
+                        <div class="inputRow">
+                            <div class="inputCell">
+                                <label class="inputLabel" for="email">Email</label>
+                                <input class="inputTextBox accountParam" id="email" type="text" autocomplete="off"/>
+                            </div>
+                        </div>
+                        <div class="inputRow">
+                            <div class="inputCell">
+                                <label class="inputLabel" for="accessType">Access</label>
+                                <select class="inputSelect accountParam" id="accessType">
+                                    <option class="inputOption" value="guest">Guest</option>
+                                    <option class="inputOption" value="account">Account</option>
+                                    <option class="inputOption" value="organization">Organization</option>
+                                </select>
+                            </div>
+            
+                            <div class="inputCell">
+                                <label class="inputLabel" for="statusType">Status</label>
+                                <select class="inputSelect accountParam" id="statusType">
+                                    <option class="inputOption" value="created">Created</option>
+                                    <option class="inputOption" value="invited">Invited</option>
+                                    <option class="inputOption" value="active">Active</option>
+                                    <option class="inputOption" value="disabled">Disabled</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
             </main>
 		</div>
 	</div>

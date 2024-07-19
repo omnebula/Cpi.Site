@@ -1,3 +1,77 @@
 #organizationPanel {
     margin-top: 24px;
 }
+
+.inputSelect {
+    padding: 16px;
+    border: 1px solid lightgray;
+    border-radius: 8px;
+    outline: none;
+    background-color: transparent;
+    color: white;
+}
+.inputOption {
+    background-color: gray;
+    color: white;
+}
+
+
+.listSection {
+    margin-top: 48px;
+}
+
+.listHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.listTitleRow {
+    display: flex;
+    justify-content: space-between;
+}
+.listTitle {
+    font-size: 20px;
+}
+
+.listHeaderRow, .listRow {
+    display: flex;
+    flex-direction: row;
+    margin: 4px 0;
+}
+
+.listHeader, .listColumn {
+    padding: 4px 12px;
+}
+
+.listHeader {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.listCommands {
+    flex: 1;
+    text-align: right;
+    display: inline;
+}
+
+
+.accountEditorPanel {
+}
+.accountEditorFrame {
+    width: 700px;
+}
+
+.accountEmailColumn {
+    width: 250px;
+}
+.accountAccessColumn {
+    width: 150px;
+}
+.accountStatusColumn {
+    width: 100px;
+}
+
+
+
+

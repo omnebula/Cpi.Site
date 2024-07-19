@@ -114,7 +114,48 @@ class CpiPage
     }
 
     /*
-    * Login/Logout
+    * Popups
+    */
+    showEditPopup(params) {
+        const popup = $(params.popupId).css("display", "flex");
+
+        if (params.popupTitle) {
+            popup.find(".popupCaptionTitle").text(params.popupTitle);
+        }
+
+        popup.find("#popupAccept")
+            .on("click", () => {
+                if (params.accept) {
+                    if (!params.accept(popup)) {
+                        return;
+                    }
+                }
+                popup.hide();
+            });
+        
+        popup.find("#popupCancel")
+            .on("click", () => {
+                if (params.cancel) {
+                    params.cancel(popup);
+                }
+                popup.hide();
+            });
+
+        if (params.show) {
+            params.show(popup);
+        }
+   
+    }
+
+    alert(message) {
+        window.alert(message);
+    }
+    confirm(message) {
+        return window.confirm(message);
+    }
+
+    /*
+    * Private
     */
     
     #logout() {
