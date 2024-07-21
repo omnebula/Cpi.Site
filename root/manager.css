@@ -26,11 +26,11 @@
     justify-content: space-between;
 }
 
-.listTitleRow {
+.sectionTitleRow {
     display: flex;
     justify-content: space-between;
 }
-.listTitle {
+.sectionTitle {
     font-size: 20px;
 }
 
@@ -53,6 +53,20 @@
     flex: 1;
     text-align: right;
     display: inline;
+}
+
+
+.calendarSection {
+    margin-top: 48px;
+}
+
+.calendarNameCell {
+    flex: 1;
+}
+
+.calendarDateCell {
+    width: 200px;
+    flex: 0;
 }
 
 

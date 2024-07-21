@@ -8,68 +8,60 @@ class SchedulePage extends CpiPage {
 
         // Compute the start and end dates.
         const searchParams = new URLSearchParams(window.location.search);
-
-        var startDate;
-        if (searchParams.has("date")) {
-            startDate = this.parseLocalDate(searchParams.get("date"));
+        const weekNumber = parseInt(searchParams.get("week")) || Cpi.GetCurrentWeekNumber();
+        const weekDates = Cpi.CalculateWeekDates(weekNumber);
+        if (!weekDates) {
+            // TODO: show invalid data error.
+            return;
         }
-        else {
-            startDate = this.getTodayDate();
-        }
-
-        // If this is Sunday, select the following Monday (skip forward one day).
-        const dayOfWeek = startDate.getDay()
-        if (dayOfWeek === 0) {
-            startDate.setDate(startDate.getDate() + 1);
-        }
-        // If this is Saturday, select the following Monday (skip forward 2 days).
-        else if (dayOfWeek === 6) {
-            startDate.setDate(startDate.getDate() + 2);
-        }
-        // Any day after Monday, select the preceding Monday.
-        else if (dayOfWeek > 1) {
-            startDate.setDate(startDate.getDate() - (dayOfWeek - 1));
-        }
-
-        const endDate = new Date();
-        endDate.setDate(startDate.getDate() + 4);
 
         // Initilaze navigation controls.
-        $("#viewPreviousWeek").on("click", () => {
-            this.#viewWeek(this.dateAdd(startDate, -7));
-        });
-        $("#viewCurrentWeek").on("click", () => {
-            this.#viewWeek();
-        });
-        $("#viewNextWeek").on("click", () => {
-            this.#viewWeek(this.dateAdd(startDate, 7));
-        });
+        if (weekNumber > 1) {
+            $("#viewPreviousWeek").on("click", () => { this.#viewWeek(weekNumber - 1); });
+        }
+        else {
+            $("#viewPreviousWeek").prop("disabled", true);
+        }
+
+        if (weekNumber !== Cpi.GetCurrentWeekNumber()) {
+            $("#viewCurrentWeek").on("click", () => { this.#viewWeek(); });
+        }
+        else {
+            $("#viewCurrentWeek").prop("disabled", true);
+        }
+
+        if (weekNumber < Cpi.GetLastWeekNumber()) {
+            $("#viewNextWeek").on("click", () => { this.#viewWeek(weekNumber + 1); });
+        }
+        else {
+            $("#viewNextWeek").prop("disabled", true);
+        }
 
         // Initialize lesson template.
         this.#lessonTemplate = $(".weeklyColumnLesson").detach();
         this.#lessonTemplate.css("visibility", "visible");
 
         // Initialize column headers.
-        var containerDate = startDate;
+        var containerDate = weekDates.start;
         const columns = $(".weeklyColumn");
         for (const current of columns) {
             const column = $(current);
             const container = column.find(".weeklyColumnLessonContainer");
             const lessonDate = containerDate;
 
-            column.find(".weeklyColumnDate").text(this.formatShortDateString(lessonDate));
+            column.find(".weeklyColumnDate").text(Cpi.FormatShortDateString(lessonDate));
 
             column.find(".weeklyColumnAddButton").on("click", () => { this.#onAddLesson(container, lessonDate); });
 
-            containerDate = this.dateAdd(containerDate, 1);
+            containerDate = Cpi.DateAdd(containerDate, 1);
         }
 
         // Retrieve lessons from server.
         this.sendApiRequest({
             method: "GET",
-            url: `/@/lessons?start=${this.formatDateString(startDate)}&end=${this.formatDateString(endDate)}}`,
+            url: `/@/lessons?start=${Cpi.FormatDateString(weekDates.start)}&end=${Cpi.FormatDateString(weekDates.end)}}`,
             success: (data, status, xhr) => {
-                this.#populateSchedule(startDate, endDate, data);
+                this.#populateSchedule(weekDates.start, weekDates.end, data);
             }
         });
     }
@@ -78,8 +70,8 @@ class SchedulePage extends CpiPage {
         const containers = $(".weeklyColumnLessonContainer");
 
         for (const current of data) {
-            const lessonDate = this.parseLocalDate(current.lessonDate);
-            const containerId = this.dateDiff(lessonDate, startDate);
+            const lessonDate = Cpi.ParseLocalDate(current.lessonDate);
+            const containerId = Cpi.DateDiff(lessonDate, startDate);
 
             const lesson = this.#lessonTemplate.clone(true);
 
@@ -128,7 +120,7 @@ class SchedulePage extends CpiPage {
 
         const params = {
             lessonName: lessonName,
-            lessonDate: this.formatDateString(date)
+            lessonDate: Cpi.FormatDateString(date)
         };
 
         this.sendApiRequest({
@@ -172,12 +164,12 @@ class SchedulePage extends CpiPage {
         });
     }
 
-    #viewWeek(startDate) {
-        if (!startDate) {
-            startDate = this.getTodayDate();
+    #viewWeek(weekNumber) {
+        if (!weekNumber) {
+            weekNumber = Cpi.GetCurrentWeekNumber();
         }
 
-        window.location.href = `/schedule?date=${this.formatDateString(startDate)}`;
+        window.location.href = `/schedule?week=${weekNumber}`;
     }
 
     #deleteLesson(lesson) {

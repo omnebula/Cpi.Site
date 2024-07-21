@@ -1,4 +1,117 @@
 
+class Cpi {
+    /*
+    * Utilities
+    */
+    static GetTodayDate() {
+        const today = new Date();
+        today.setHours(0);        
+        return today;
+    }
+
+    static FormatDateString(date) {
+        return date.toISOString().substring(0, 10);
+    }
+    static FormatShortDateString(date) {
+        return `${date.getMonth() + 1}/${date.getDate()}`;
+    }
+
+    static ParseLocalDate(dateString)
+    {
+        if (dateString) {
+            const utcDate = new Date(dateString);
+            return new Date(utcDate.getTime() + (utcDate.getTimezoneOffset() * 60000));
+        }
+        else {
+            return undefined;
+        }
+    }
+        
+    static DateDiff(lhs, rhs) {
+        const timeDelta = lhs.getTime() - rhs.getTime();
+        return Math.round(timeDelta / (1000 * 3600 * 24));
+    }
+
+    static DateAdd(date, days) {
+        const newDate = new Date(date);
+        newDate.setDate(newDate.getDate() + days);
+        return newDate;
+    }
+
+    static SnapDateToMonday(source) {
+        const date = new Date(source);
+
+        // If this is Sunday, select the following Monday (skip forward one day).
+        const dayOfWeek = date.getDay()
+        if (dayOfWeek === 0) {
+            date.setDate(date.getDate() + 1);
+        }
+        // If this is Saturday, select the following Monday (skip forward 2 days).
+        else if (dayOfWeek === 6) {
+            date.setDate(date.getDate() + 2);
+        }
+        // Any day after Monday, select the preceding Monday.
+        else if (dayOfWeek > 1) {
+            date.setDate(date.getDate() - (dayOfWeek - 1));
+        }
+
+        return date;
+    }
+
+    static GetCurrentWeekNumber() {
+        return Cpi.CalculateWeekNumber(Cpi.SnapDateToMonday(Cpi.GetTodayDate()));
+    }
+
+    static GetLastWeekNumber() {
+        const calendarEndDate = localStorage.getItem("calendarEndDate");
+        return calendarEndDate ? Cpi.CalculateWeekNumber(Cpi.ParseLocalDate(calendarEndDate)) : undefined;
+    }
+
+    static CalculateWeekNumber(date) {
+        const startDate = Cpi.ParseLocalDate(localStorage.getItem("calendarStartDate"));
+        if (!startDate) {
+            return undefined;
+        }
+
+        const endDate = Cpi.ParseLocalDate(localStorage.getItem("calendarEndDate"));
+        if (!endDate) {
+            return undefined;
+        }
+
+        if (date < startDate) {
+            date = startDate;
+        }
+        
+        if (date > endDate) {
+            date = Cpi.DateAdd(endDate, -4); // Snap to the preceding monday.
+        }
+
+        date = Cpi.SnapDateToMonday(date);
+
+        const delta = Cpi.DateDiff(date, startDate);
+        return (delta / 7) + 1;
+    }
+
+    static CalculateWeekDates(weekNumber) {
+        if (!weekNumber) {
+            return undefined;
+        }
+
+        const calendarStartDate = Cpi.ParseLocalDate(localStorage.getItem("calendarStartDate"));
+        if (!calendarStartDate) {
+            return undefined;
+        }
+
+        const weekStartDate = Cpi.DateAdd(calendarStartDate, (weekNumber - 1) * 7);
+
+        return {
+            start: weekStartDate,
+            end: Cpi.DateAdd(weekStartDate, 4)
+        };
+    }
+}
+
+
 class CpiApi {
     sendRequest(params)
     {
@@ -39,6 +152,9 @@ class CpiApi {
                 data: JSON.stringify(params),
                 success: (data, status, xhr) => {
                     localStorage.setItem("accessType", data.accessType);
+                    localStorage.setItem("calendarStartDate", data.calendarStartDate);
+                    localStorage.setItem("calendarEndDate", data.calendarEndDate);
+
                     if (onSuccess) {
                         onSuccess(data, status, xhr);
                     }
@@ -52,7 +168,6 @@ class CpiApi {
         loginPanel.css("display", "flex");
     }
 }
-
 
 
 class CpiPage
@@ -79,38 +194,6 @@ class CpiPage
     {
         const api = new CpiApi();
         api.sendRequest(params);
-    }
-
-    /*
-    * Utilities
-    */
-    getTodayDate() {
-        const today = new Date();
-        today.setHours(0);        
-        return today;
-    }
-
-    formatDateString(date) {
-        return date.toISOString().substring(0, 10);
-    }
-    formatShortDateString(date) {
-        return `${date.getMonth() + 1}/${date.getDate()}`;
-    }
-    
-    parseLocalDate(dateString)
-    {
-        const utcDate = new Date(dateString);
-        return new Date(utcDate.getTime() + (utcDate.getTimezoneOffset() * 60000));
-    }
-        
-    dateDiff(lhs, rhs) {
-        const timeDelta = lhs.getTime() - rhs.getTime();
-        return Math.round(timeDelta / (1000 * 3600 * 24));
-    }
-    dateAdd(date, days) {
-        const newDate = new Date(date);
-        newDate.setDate(newDate.getDate() + days);
-        return newDate;
     }
 
     /*

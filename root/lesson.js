@@ -38,7 +38,7 @@ class LessonPage extends CpiPage {
             .prop("disabled", false);
         }
         $("#viewWeek").on("click", () => {
-            window.location.href = `/schedule?date=${data.lessonDate}`;
+            window.location.href = `/schedule?week=${Cpi.CalculateWeekNumber(Cpi.ParseLocalDate(data.lessonDate))}`;
         });
 
         // Identity

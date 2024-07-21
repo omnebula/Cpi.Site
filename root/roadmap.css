@@ -1,0 +1,26 @@
+.benchmarkHeaderContainer {
+    display: flex;
+}
+
+.benchmarkRowContainer {
+    display: flex;
+}
+
+.benchmarkRow {
+    display: flex;
+}
+
+.benchmarkStandardCodeColumn {
+    width: 200px;
+}
+
+.benchmarkCoverageColumn {
+}
+
+.benchmarkCoverageDate {
+    display: inline-block;
+}
+
+.benchmarkCoverageSubject {
+    display: inline-block;
+}

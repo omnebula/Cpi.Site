@@ -7,6 +7,16 @@ class ManagerPage extends CpiPage {
         super();
 
         /*
+        * Calendar Management
+        */
+        $("#newCalendar").on("click", () => {
+
+        });
+        $("#editCalendar").on("click", () => {
+
+        });
+
+        /*
         * Account Management
         */
         $("#addAccount").on("click", () => {
@@ -27,6 +37,11 @@ class ManagerPage extends CpiPage {
 
     #init(data) {
         $("#organizationName").val(data.organizationName);
+
+        $("#calendarName").val(data.calendarName);
+        $("#calendarStartDate").val(data.calendarStartDate);
+        $("#calendarEndDate").val(data.calendarEndDate);
+
 
         if (data.accounts) {
             this.#populateAccountList(data.accounts);

@@ -21,6 +21,7 @@
                 <div class="titlePanel">
                     <div class="appTitle">Core Plan IT</div>
                     <div id="siteMenu">
+                        <a class="siteMenuOption" href="/roadmap">roadmap</a>
                         <a class="siteMenuOption" href="/schedule">schedule</a>
                         <a class="siteMenuOption" href="/account">account</a>
                         <a class="siteMenuOption" id="siteLogout">logout</a>
@@ -37,10 +38,37 @@
                         </div>
                     </div>
 
+                    <!-- Calendar -->
+                     <div class="calendarSection">
+                        <div class="sectionTitleRow">
+                            <div class="sectionTitle">Calendar</div>
+                            <div>
+                                <input id="newCalendar" type="button" value="New"/>
+                                <input id="editCalendar" type="button" value="Edit"/>                                
+                            </div>
+                        </div>
+
+                        <div class="inputRow">
+                            <div class="inputCell calendarNameCell">
+                                <label class="inputLabel" for="calendarName">Name</label>
+                                <input class="inputTextBox" id="calendarName" type="text"/>
+                            </div>
+                            <div class="inputCell calendarDateCell">
+                                <label class="inputLabel" for="calendarStartDate">Start Date</label>
+                                <input class="inputTextBox" id="calendarStartDate" type="text"/>
+                            </div>
+                            <div class="inputCell calendarDateCell">
+                                <label class="inputLabel" for="calendarEndDate">End Date</label>
+                                <input class="inputTextBox" id="calendarEndDate" type="text"/>
+                            </div>
+                        </div>
+    
+                     </div>
+
                     <!-- Accounts -->
                     <div class="listSection">
-                        <div class="listTitleRow">
-                            <div class="listTitle">Accounts</div>
+                        <div class="sectionTitleRow">
+                            <div class="sectionTitle">Accounts</div>
                             <div><input id="addAccount" type="button" value="Add"/></div>
                         </div>
                         <div class="listContainer">
