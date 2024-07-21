@@ -1,20 +1,33 @@
 .benchmarkHeaderContainer {
-    display: flex;
 }
 
 .benchmarkRowContainer {
-    display: flex;
 }
 
 .benchmarkRow {
     display: flex;
+    margin: 8px 0;
 }
 
-.benchmarkStandardCodeColumn {
-    width: 200px;
+.benchmarkStandard {
+    display: flex;
+    flex: 1;
 }
 
-.benchmarkCoverageColumn {
+.benchmarkStandardCode {
+    margin-right: 24px;
+}
+
+.benchmarkStandardDescription {
+    padding-right: 16px;
+}
+
+.benchmarkCoverageContainer {
+    width: 300px;
+}
+
+.benchmarkCoverage {
+    width: 300px;
 }
 
 .benchmarkCoverageDate {

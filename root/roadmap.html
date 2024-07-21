@@ -33,21 +33,26 @@
 
                 <div>
                     <div class="benchmarkHeaderContainer">
-                        <div class="benchmarkStandardCodeColumn">Standards Code</div>
-                        <div class="benchmarkCoverageColumn">Coverage</div>
+                        <div class="benchmarkRow">
+                            <div class="benchmarkStandard">Standard</div>
+                            <div class="benchmarkCoverage">Coverage</div>
+                        </div>
                     </div>
                 </div>
-                <div class="benchmarkRowContainer">
-                    <div class="benchmarkRow">
-                        <div id="standardCode" class="benchmarkStandardCodeColumn">MA.3.AR.1.1</div>
-                        <div id="coverage" class="benchmarkCoverageColumn">
-                            <div class="benchmarkCoverageDate">2024-07-15</div>
-                            <div class="benchmarkCoverageSubject">Math, Science</div>
-                        </div>                            
+                <div id="benchmarkRowContainer" class="benchmarkRowContainer">
+                    <div id="benchmarkRow" class="benchmarkRow">
+                        <div class="benchmarkStandard">
+                            <div id="standardCode" class="benchmarkStandardCode"></div>
+                            <div id="standardDescription" class="benchmarkStandardDescription"></div>
+                        </div>
+                        <div id="benchmarkCoverageContainer" class="benchmarkCoverageContainer">
+                            <div id="benchmarkCoverage" class="benchmarkCoverage">
+                                <div id="coverageDate" class="benchmarkCoverageDate"></div>
+                                <div id="coverageSubject" class="benchmarkCoverageSubject"></div>
+                            </div>                            
+                        </div>
                     </div>
-    
                 </div>
-
             </main>
 		</div>
 	</div>
