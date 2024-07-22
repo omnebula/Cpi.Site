@@ -1,6 +1,7 @@
 
 
 class SchedulePage extends CpiPage {
+    #weekDates;
     #lessonTemplate;
 
     constructor() {
@@ -9,8 +10,9 @@ class SchedulePage extends CpiPage {
         // Compute the start and end dates.
         const searchParams = new URLSearchParams(window.location.search);
         const weekNumber = parseInt(searchParams.get("week")) || Cpi.GetCurrentWeekNumber();
-        const weekDates = Cpi.CalculateWeekDates(weekNumber);
-        if (!weekDates) {
+
+        this.#weekDates = Cpi.CalculateWeekDates(weekNumber);
+        if (!this.#weekDates) {
             // TODO: show invalid data error.
             return;
         }
@@ -42,7 +44,7 @@ class SchedulePage extends CpiPage {
         this.#lessonTemplate.css("visibility", "visible");
 
         // Initialize column headers.
-        var containerDate = weekDates.start;
+        var containerDate = this.#weekDates.start;
         const columns = $(".weeklyColumn");
         for (const current of columns) {
             const column = $(current);
@@ -51,27 +53,28 @@ class SchedulePage extends CpiPage {
 
             column.find(".weeklyColumnDate").text(Cpi.FormatShortDateString(lessonDate));
 
-            column.find(".weeklyColumnAddButton").on("click", () => { this.#onAddLesson(container, lessonDate); });
-
+            column.find("#addLesson").on("click", () => { this.#onAddLesson(container, lessonDate); });
+            column.find("#repeatColumn").on("click", () => { this.#onRepeatColumn(lessonDate); });
+            
             containerDate = Cpi.DateAdd(containerDate, 1);
         }
 
         // Retrieve lessons from server.
         this.sendApiRequest({
             method: "GET",
-            url: `/@/lessons?start=${Cpi.FormatDateString(weekDates.start)}&end=${Cpi.FormatDateString(weekDates.end)}}`,
+            url: `/@/lessons?start=${Cpi.FormatDateString(this.#weekDates.start)}&end=${Cpi.FormatDateString(this.#weekDates.end)}`,
             success: (data, status, xhr) => {
-                this.#populateSchedule(weekDates.start, weekDates.end, data);
+                this.#populateSchedule(data);
             }
         });
     }
 
-    #populateSchedule(startDate, endDate, data) {
+    #populateSchedule(data) {
         const containers = $(".weeklyColumnLessonContainer");
 
         for (const current of data) {
             const lessonDate = Cpi.ParseLocalDate(current.lessonDate);
-            const containerId = Cpi.DateDiff(lessonDate, startDate);
+            const containerId = Cpi.DateDiff(lessonDate, this.#weekDates.start);
 
             const lesson = this.#lessonTemplate.clone(true);
 
@@ -222,6 +225,26 @@ class SchedulePage extends CpiPage {
                 other.attr("lessonSequence", targetSequence);
             }
         });
+    }
+
+    #onRepeatColumn(lessonDate) {
+        const params = {
+            lessonDate: Cpi.FormatDateString(lessonDate)
+        };
+
+        this.sendApiRequest({
+            method: "POST",
+            url: "/@/lesson/repeat",
+            data: JSON.stringify(params),
+            success: (data) => {
+                // Clear out the target (next) column.
+                const containerId = Cpi.DateDiff(lessonDate, this.#weekDates.start) + 1;
+                $($(".weeklyColumnLessonContainer")[containerId]).children().remove();
+
+                // Repopulate the column.
+                this.#populateSchedule(data);
+            }
+        })
     }
 }
 

@@ -122,7 +122,7 @@ class LessonPage extends CpiPage {
         for (const current of benchmarks) {
             const row = this.#benchmarkRowTemplate.clone(true);
             row.attr("id", current.benchmarkId);
-            row.find(".lessonBenchmarkDescription").html(current.description);
+            row.find(".lessonBenchmarkSynopsis").html(current.synopsis);
             row.find(".lessonBenchmarkDelete").on("click", () => {
                 this.#removeBenchmark(current.benchmarkId);
             });

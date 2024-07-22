@@ -96,14 +96,16 @@ class BenchmarkPicker {
             const row = this.#resultRowTemplate.clone(true);
             const rowCheck = row.find("#benchmarkPickerListCheckValue");
             const rowCode = row.find("#benchmarkPickerListCode");
-            const rowDescription = row.find("#benchmarkPickerListDescription");
+            const rowSynopsis = row.find("#benchmarkPickerListSynopsis");
 
             row.attr("referenceUrl", current.referenceUrl);
 
             rowCheck.attr("id", current.benchmarkId);
     
             rowCode.text(current.standardCode);
-            rowDescription.html(current.description);
+            rowCode.attr("href", current.referenceUrl);
+            
+            rowSynopsis.html(current.synopsis);
 
             row.on("dblclick", () => {
                 rowCheck.prop("checked", true);
@@ -125,12 +127,12 @@ class BenchmarkPicker {
                     const rowCheck = $(current);
                     const row = rowCheck.parent().parent();
                     const rowCode = row.find("#benchmarkPickerListCode");
-                    const rowDescription = row.find("#benchmarkPickerListDescription");
+                    const rowSynopsis = row.find("#benchmarkPickerListSynopsis");
         
                     const benchmark = {
                         benchmarkId: rowCheck.attr("id"),
                         standardCode: rowCode.text(),
-                        description: rowDescription.text(),
+                        synopsis: rowSynopsis.text(),
                         referenceUrl: row.attr("referenceUrl")
                     };
         

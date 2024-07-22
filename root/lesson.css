@@ -71,10 +71,6 @@
 
 .lessonBenchmarkCode {
     width: 150px;
-    cursor: pointer;
-}
-.lessonBenchmarkCode:hover {
-    text-decoration: underline;
 }
 .lessonBenchmarkDescription {
     flex: 1;
