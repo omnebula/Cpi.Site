@@ -3,19 +3,11 @@
 class RegistrationPage extends CpiPage {
 
     constructor() {
-        super();
-
-        const searchParams = new URLSearchParams(window.location.search);
-        const invitationId = searchParams.get("id");
-        if (!invitationId) {
-            window.open("/");
-        }
-
-        this.sendApiRequest({
+        super({
             method: "GET",
             url: `/@/account/invitation/${invitationId}`,
             success: (data) => {
-                this.#populateRegistration(data);
+                this.#init(data);
             },
             error: (xhr, status, message) => {
                 if (xhr.status === 404) {
@@ -26,7 +18,13 @@ class RegistrationPage extends CpiPage {
         });
     }
 
-    #populateRegistration(data) {
+    #init(data) {
+        const searchParams = new URLSearchParams(window.location.search);
+        const invitationId = searchParams.get("id");
+        if (!invitationId) {
+            window.open("/");
+        }
+
         $("#username").val(data.email);
         $("#firstName").val(data.firstName);
         $("#lastName").val(data.lastName);

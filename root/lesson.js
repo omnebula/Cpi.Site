@@ -6,17 +6,11 @@ class LessonPage extends CpiPage {
     #detailChanged;
 
     constructor() {
-        super();
-
         const searchParams = new URLSearchParams(window.location.search);
-        this.#lessonId = searchParams.get("id");
-        if (!this.#lessonId) {
-            return;
-        }
 
-        this.sendApiRequest({
+        super({
             method: "GET",
-            url: `/@/lesson/${this.#lessonId}`,
+            url: `/@/lesson/${searchParams.get("id")}`,
             success: (data, status, xhr) => {
                 this.#init(data);
             }
@@ -24,6 +18,9 @@ class LessonPage extends CpiPage {
     }
 
     #init(data) {
+        const searchParams = new URLSearchParams(window.location.search);
+        this.#lessonId = searchParams.get("id");
+
         // Navigation
         if (data.siblings.previous) {
             $("#viewPreviousDay").on("click", () => {

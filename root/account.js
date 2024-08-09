@@ -3,16 +3,13 @@ class AccountPage extends CpiPage {
     #authCodeChanged;
 
     constructor() {
-        super("schedule");
-
-        this.sendApiRequest({
+        super({
             method: "GET",
             url: "/@/account/",
             success: (data, status, xhr) => {
                 this.#init(data);
             }
-        })
-
+        });
     }
 
     #init(data) {

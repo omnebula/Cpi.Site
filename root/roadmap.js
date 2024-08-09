@@ -6,21 +6,19 @@ class RoadmapPage extends CpiPage
     #coverageRowTemplate;
 
     constructor() {
-        super();
-
-        this.#coverageRowTemplate = $("#benchmarkCoverage").detach();
-        this.#benchmarkRowTemplate = $("#benchmarkRow").detach();
-
-        this.sendApiRequest({
+        super({
             method: "GET",
             url: "/@/lesson/coverage?subject=Mathematics&grade=3",
             success: (data, status, xhr) => {
-                this.#populateResults(data);
+                this.#init(data);
             }
         });
     }
 
-    #populateResults(data) {
+    #init(data) {
+        this.#coverageRowTemplate = $("#benchmarkCoverage").detach();
+        this.#benchmarkRowTemplate = $("#benchmarkRow").detach();
+
         const benchmarkContainer = $("#benchmarkRowContainer");
         benchmarkContainer.children().remove();
 

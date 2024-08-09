@@ -4,8 +4,16 @@ class ManagerPage extends CpiPage {
     #accountRowTemplate;
 
     constructor() {
-        super();
+        super({
+            method: "GET",
+            url: "/@/organization?includeAccounts",
+            success: (data, status, xhr) => {
+                this.#init(data);
+            }
+        });
+    }
 
+    #init(data) {
         /*
         * Calendar Management
         */
@@ -26,16 +34,6 @@ class ManagerPage extends CpiPage {
         this.#accountRowContainer = $("#accountRowContainer");
         this.#accountRowTemplate = $("#accountRow").detach();
 
-        this.sendApiRequest({
-            method: "GET",
-            url: "/@/organization?includeAccounts",
-            success: (data, status, xhr) => {
-                this.#init(data);
-            }
-        })
-    }
-
-    #init(data) {
         $("#organizationName").val(data.organizationName);
 
         $("#calendarName").val(data.calendarName);

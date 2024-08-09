@@ -12,18 +12,7 @@ class BenchmarkPicker {
             this.hide();
         });
 
-        $.getScript("/@/curriculum/search/options")
-            .done((script, status, xhr) => {
-                this.#init();
-            })
-            .fail((xhr, settings, exception) => {
-                if (xhr.status == 401) {
-                    CpiApi.doLogin();
-                }
-                else {
-                    alert(exception);
-                }
-            });
+        this.#init();
     }
 
     show(exclusions, onSuccess) {
@@ -44,7 +33,7 @@ class BenchmarkPicker {
 
     #init() {
         const subjectDropdown = $("#benchmarkPickerSubject");
-        for (const subjectName of curriculum.search.options.subjects) {
+        for (const subjectName of cpidata.organization.curriculum.search.subjects) {
             subjectDropdown.append(`<option>${subjectName}</option>`);
         }
 
