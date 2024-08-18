@@ -109,8 +109,11 @@ class Cpi {
         };
     }
 
+    static IsLoggedIn() {
+        return window.cpidata ? true : false;
+    }
     static ValidateLogin() {
-        if (window.cpidata) {
+        if (Cpi.IsLoggedIn()) {
             return true;
         }
         else {
@@ -120,6 +123,35 @@ class Cpi {
     }
     static ShowLogin() {
         $("#loginPanel").css("display", "flex");
+    }
+
+    static ShowAlert(message) {
+        window.alert(message);
+    }
+
+    static EnableEditMode() {
+        $("#editButton").css("display", "none");
+        $("#acceptButton").css("display", "inline-block");
+        $("#cancelButton").css("display", "inline-block");
+
+        $(".inputTextBox").each((key, element) => {
+            const textBox = $(element);
+            textBox.prop("disabled", false);
+        });
+    }
+
+    static DisableEditMode() {
+        $(".inputTextBox").each((key, element) => {
+            const textBox = $(element);
+            textBox.attr("disabled", true);
+        });
+
+        $("#acceptButton").css("display", "inline-block");
+        $("#cancelButton").css("display", "inline-block");
+
+        $("#editButton").css("display", "inline-block");
+        $("#acceptButton").css("display", "none");
+        $("#cancelButton").css("display", "none");
     }
 }
 
@@ -154,13 +186,9 @@ class CpiPage
     accountData;
 
     constructor(initParam) {
-        $.ajaxSetup({
-            cache: true
-        });
-
-        // Dynamically insert the login panel to the end of the main section.
+        // Dynamically insert the login panel.
         const output = $.parseHTML(this.#loginHtml);
-        $("main").append(output[1]);
+        $("body").append(output[1]);
 
         $("#loginForm").on("submit", (event) => {
             event.preventDefault();
@@ -177,39 +205,33 @@ class CpiPage
                 success: (data, status, xhr) => {
                     localStorage.setItem("accountData", JSON.stringify(data));
                     window.location.reload();
+                },
+                error: (xhr, status, data) => {
+                    Cpi.ShowAlert(data);
                 }
             });
         });
 
-        // Load static content data.
-        $.getScript("/@/content/static-data")
-            .done((script, status, xhr) => {
-                // Initialize Site Menu
-                $("#siteLogout").on("click", () => {
-                    this.#logout();
-                });
-
-                this.accountData = JSON.parse(localStorage.getItem("accountData"));
-
-                if (this.accountData && this.accountData.accessType === "organization") {
-                    $("#siteViewManager").css("display", "inline");
-                }
-
-                if (typeof initParam === "function") {
-                    initParam();
-                }
-                else {
-                    this.sendApiRequest(initParam);
-                }
-            })
-            .fail((xhr, settings, exception) => {
-                if (xhr.status == 401) {
-                    Cpi.ShowLogin();
-                }
-                else {
-                    alert(exception);
-                }
+        // Check if static data was successfully loaded.
+        if (!window.cpidata) {
+            Cpi.ShowLogin();
+        }
+        else {
+            // Initialize Site Menu
+            $("#siteLogout").on("click", () => {
+                this.#onLogout();
             });
+
+            this.accountData = JSON.parse(localStorage.getItem("accountData"));
+
+            if (this.accountData && this.accountData.accessType === "organization") {
+                $("#siteViewManager").css("display", "inline");
+            }
+
+            if (initParam) {
+                this.sendApiRequest(initParam);
+            }
+        }
     }
 
     initPage() {
@@ -279,14 +301,14 @@ class CpiPage
     * Private
     */
     
-    #logout() {
+    #onLogout() {
         localStorage.removeItem("accountData");
 
         this.sendApiRequest({
             method: "POST",
             url: "/@/account/logout",
             success: () => {
-                window.location.href = "/";
+                Cpi.ShowLogin();
             }
         });
     }
@@ -301,22 +323,22 @@ class CpiPage
 
     #loginHtml = String.raw`
                 <div id="loginPanel" class="loginPanel">
-                    <div>
+                    <div class="loginFrame">
                         <form id="loginForm">
                             <div class="inputRow">
                                 <div class="inputCell">
                                     <label class="inputLabel" for="loginUsername">Username</label>
-                                    <input class="inputTextBox" id="loginUsername" name="username" type="text"/>
+                                    <input class="inputTextBox loginUsername" id="loginUsername" name="username" type="text"/>
                                 </div>
                             </div>
                             <div class="inputRow">
                                 <div class="inputCell">
                                     <label class="inputLabel" for="loginPassword">Pasword</label>
-                                    <input class="inputTextBox" id="loginPassword" name="password" type="password"/>
+                                    <input class="inputTextBox loginPassword" id="loginPassword" name="password" type="password"/>
                                 </div>
                             </div>
-                            <div>
-                                <input class="inputButton" type="submit" value="Log In"/>
+                            <div class="inputRow loginSubmitRow">
+                                <input class="inputButton loginSubmit" type="submit" value="Log In"/>
                             </div>
                         </form>
                     </div>

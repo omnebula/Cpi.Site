@@ -22,20 +22,19 @@ class AccountPage extends CpiPage {
         });
         this.#initAuthCode();
 
-        const editButton = $("#editButton");
-        editButton.on("click", () => {
-            if (editButton.val() === "Edit") {
-                this.#enableEditMode();
-            }
-            else {
-                this.#saveAccount();
-            }
+        $("#editButton").on("click", () => {
+            Cpi.EnableEditMode();
         });
 
-        const cancelButton = $("#cancelButton");
-        cancelButton.on("click", () => {
-            this.#disableEditMode();
-        });      
+        $("#acceptButton").on("click", () => {
+            this.#saveAccount();
+        });
+
+        $("#cancelButton").on("click", () => {
+            Cpi.DisableEditMode();
+        });
+
+        Cpi.DisableEditMode();
     }
 
     #initAuthCode() {
@@ -45,23 +44,28 @@ class AccountPage extends CpiPage {
     }
 
     #enableEditMode() {
+        $("#editButton").css("display", "none");
+        $("#acceptButton").css("display", "inline-block");
+        $("#cancelButton").css("display", "inline-block");
+
         $(".inputTextBox").each((key, element) => {
             const textBox = $(element);
-            textBox.attr("readonly", false);
+            textBox.attr("disabled", false);
         });
-
-        $("#editButton").val("Save") ;
-        $("#cancelButton").css("display", "inline");
     }
 
     #disableEditMode() {
         $(".inputTextBox").each((key, element) => {
             const textBox = $(element);
-            textBox.attr("readonly", true);
+            textBox.attr("disabled", true);
         });
 
-        $("#editButton").val("Edit") ;
-        $("#cancelButton").hide();
+        $("#acceptButton").css("display", "inline-block");
+        $("#cancelButton").css("display", "inline-block");
+
+        $("#editButton").css("display", "inline-block");
+        $("#acceptButton").css("display", "none");
+        $("#cancelButton").css("display", "none");
     }
 
     #saveAccount() {
@@ -91,7 +95,7 @@ class AccountPage extends CpiPage {
             data: JSON.stringify(params),
             success: (data, status, xhr) => {
                 this.#initAuthCode();
-                this.#disableEditMode();
+                Cpi.DisableEditMode();
             }
         });
     }

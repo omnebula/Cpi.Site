@@ -3,17 +3,6 @@ label {
     margin-bottom: 2px;
 }
 
-.inputRow {
-    display: flex;
-}
-
-.inputCell {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 0 8px;
-}
-
 .accountTextInput {
     display: block;
     padding: 16px;

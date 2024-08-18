@@ -8,7 +8,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "Launch Chrome",
-            "url": "http://local.coreplanit.com",
+            "url": "http://local.coreplanit.com/organization",
             "webRoot": "${workspaceFolder}/root"
         }
     ]

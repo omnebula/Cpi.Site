@@ -1,0 +1,11 @@
+.st-body {
+    vertical-align: top;
+    position: relative;
+}
+.st-body-scroll {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}

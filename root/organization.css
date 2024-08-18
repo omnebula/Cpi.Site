@@ -1,0 +1,134 @@
+main {
+    display: flex;
+    flex-direction: row;
+}
+
+
+
+.overlaySelector {
+    gap: 4px;
+}
+.overlaySelectorOption, .activeOverlaySelectorOption {
+    width: 150px;
+    padding: 18px 0;
+    font-size: 16px;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+.overlaySelectorOption {
+    color: darkgray;
+    background-color: #414141;
+}
+.overlaySelectorOption:hover {
+    color: white;
+    font-weight: bold;
+}
+.activeOverlaySelectorOption {
+    color: white;
+    background-color: #336699;
+    font-weight: bolder;
+}
+
+.overlayPanel {
+    display: none;
+    flex-direction: row;
+    flex: 1;
+}
+.overlaySection {
+    flex: 1;
+}
+.overlayContent {
+    flex: 1;
+    margin: 0 32px;
+}
+.overlayCommands, .overlayCommandGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 200px;
+}
+
+.overlayCommandGroup {
+    margin-bottom: 28px;
+}
+.overlayCommandInput {
+    width: 100%;
+    padding: 8px 8px;
+}
+.overlayCommandButton {
+    width: 100%;
+}
+.overlayCommandButton:hover {
+    font-weight: bold;
+    background-color: steelblue;    
+}
+.overlayCommandButton:active {
+    font-weight: bold;
+    background-color: lightsteelblue;    
+}
+.overlayCommandButton:disabled {
+    color: darkgray;
+    background-color: gray;    
+}
+.overlayCommandSelect {
+    background-color: inherit;
+    color: lightgray;
+    font-family: inherit;    
+}
+.overlayCommandSelectOption {
+    background-color: inherit;
+    color: lightgray;
+    font-family: inherit;    
+    padding: 8px 0px;
+}
+
+/* Profile Panel */
+.organizationName {
+    width: 100%;
+}
+
+
+
+.listTable {
+    width: 100%;
+}
+.listTableHeader {
+    text-align: left;
+    font-size: 14px;
+    color: green;
+}
+.listCommandsColumn {
+    width: 50px;
+}
+
+/* Settings Overlay */
+#settingsModalCommands {
+    display: none;
+}
+
+/* Calendar Overlay */
+#calendarModalCommands {
+    display: none;
+}
+
+.calendarNameCell {
+    flex: 1;
+}
+.calendarDateCell {
+    width: 170px;
+}
+
+.holidayHeaderSection {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.holidayDateColumn {
+    width: 150px;
+}
+
+/* Students Overlay
+.studentGradeColumn {
+    width: 65px;
+    text-align: center;
+}

@@ -8,24 +8,29 @@
     <link rel="stylesheet" href="./schedule.css" type="text/css" />
     <script type="text/javascript" src="/common/scripts/jquery.min.js" defer></script>
     <script type="text/javascript" src="/common//scripts/global.js" defer></script>
+    <script type="text/javascript" src="/common/data/static.js" defer></script>
     <script type="text/javascript" src="./schedule.js" defer></script>
 </head>
 
 <body>
-	<div class="pageFrame">
-		<div class="appFrame">
-			<main>
-                <div class="titlePanel">
-                    <div class="appTitle">Core Plan IT</div>
-                    <div id="siteMenu">
-                        <a class="siteMenuOption" id="siteViewManager" href="/manager">manager</a>
+    <div class="appFrame">
+        <div class="pageFrame">
+            <header>
+                <div class="siteLogo">CorePlanIt</div>
+                <div class="siteNavigation">
+                    <div id="pageTitle" class="pageTitle">Weekly Schedule</div>
+                    <div id="siteMenu" class="siteMenu">
+                        <a class="siteMenuOption" id="siteViewManager" href="/organization">manager</a>
                         <a class="siteMenuOption" href="/roadmap">roadmap</a>
                         <a class="siteMenuOption" href="/account">account</a>
-                        <a class="siteMenuOption" id="siteLogout">logout</a>
+                        <a class="siteLastMenuOption" id="siteLogout">logout</a>
                     </div>
                 </div>
+            </header>
+
+            <main>
                 <div class="navigationPanel">
-                    <div class="pageTitle">Weekly Schedule</div>
+                    <div class="pageTitle"></div>
                     <div>
                         <input id="viewPreviousWeek" type="button" value="Previous Week"/>
                         <input id="viewCurrentWeek" type="button" value="Current Week"/>
