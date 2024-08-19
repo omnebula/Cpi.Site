@@ -2,10 +2,20 @@ class DataTable {
     /*
     * Public Interface
     */
-    constructor(parentPredicate, tablePredicate, rowPredicate) {
-        this.#parent = (typeof parentPredicate === "string") ? $(parentPredicate) : parentPredicate;
-        this.#tableTemplate = ((typeof tablePredicate === "string") ? this.#parent.find(tablePredicate) : tablePredicate).detach();
+    constructor(tablePredicate, rowPredicate, createParams) {
+        this.#tableTemplate = ((typeof tablePredicate === "string") ? $(tablePredicate) : tablePredicate);
+
+        this.#parent = this.#tableTemplate.parent();
+
+        this.#tableTemplate.detach();
+
         this.#rowTemplate = ((typeof rowPredicate === "string") ? this.#tableTemplate.find(rowPredicate) : rowPredicate).detach();
+
+        this.#createParams = createParams || {
+            stripe: true,
+            setWidths: true,
+            maxHeight: "auto"
+        };
     }
 
     get tableTemplate() {
@@ -15,6 +25,10 @@ class DataTable {
         return this.#rowTemplate;
     }
 
+    get table() {
+        return this.#table;
+    }
+    
     get rows() {
         return this.#rowContainer ? this.#rowContainer.children() : undefined;
     }
@@ -44,11 +58,7 @@ class DataTable {
 
         this.#table.show();
 
-        this.#table.scrolltable({
-            stripe: true,
-            setWidths: true,
-            maxHeight: "auto"
-        });
+        this.#table.scrolltable(this.#createParams);
 
         this.#table.find("tbody").css("vertical-align", "top");
     }
@@ -104,6 +114,7 @@ class DataTable {
     #rowTemplate;
     #rowContainer;
     #selectedRow;
+    #createParams;
 
     #initTable() {
 

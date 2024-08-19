@@ -44,16 +44,23 @@
     align-items: center;    
     cursor: pointer;
     position: relative;
+    border: 1px solid #555;
+}
+.weeklyColumnLesson:hover {
+    border: 1px solid #888;
+}
+.weeklyColumnLesson_selected {
+    border: 1px solid #fff;
 }
 
 .weeklyColumnLessonCommandBar {
     position: absolute;
     top: 0;
-    font-size: 12px;
+    font-size: 11px;
     margin: 0 auto;
     display: none;
     flex-direction: row;
-    color: gray;
+    color: #777;
     z-index: 1;
 }
 
@@ -74,7 +81,7 @@
     outline: none;
     background-color: transparent;
     color: inherit;
-    font-size: inherit;
+    font-size: 13px;
     text-align: center;
     cursor: pointer;
 }

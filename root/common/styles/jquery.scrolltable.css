@@ -9,3 +9,10 @@
     left: 0;
     right: 0;
 }
+
+@-moz-document url-prefix() {
+    .st-body-scroll {
+        position: absolute;
+        top: 22px;
+    }
+}

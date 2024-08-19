@@ -9,19 +9,13 @@ class OrganizationPage extends CpiPage {
             return;
         }
 
-        // Initialize overlay selector handlers.
-        const overlayOptions = $(".overlaySelectorOption");
-        overlayOptions.on("click", (ev) => {
-            this.#showOverlay($(ev.currentTarget).val());
-        });
-
         this.#initSettingsOverlay();
         this.#initCalendarOverlay();
         this.#initStudentsOverlay();
-        this.#initTeachersOverlay();
+        this.#initAccountsOverlay();
         this.#initClassesOverlay();
+        this.#initCoursesOverlay();
         this.#initLocationsOverlay();
-        this.#initAdministratorsOverlay();
 
         // Show initial overlay.
         const lastOverlayName = localStorage.getItem("organizationOverlayName");
@@ -42,19 +36,29 @@ class OrganizationPage extends CpiPage {
         this.#currentOverlayName = listName;
         localStorage.setItem("organizationOverlayName", this.#currentOverlayName);
 
-        $(`input[value="${this.#currentOverlayName}"]`).toggleClass("overlaySelectorOption activeOverlaySelectorOption");
-        $(`#${this.#currentOverlayName}`).css("display", "flex");
-
         const context = this.#overlayContexts[this.#currentOverlayName];
         if (context && context.activate) {
             context.activate();
         }
+
+        $(`input[value="${this.#currentOverlayName}"]`).toggleClass("overlaySelectorOption activeOverlaySelectorOption");
+        $(`#${this.#currentOverlayName}`).css("display", "flex");
     }
 
     #getOverlayContext(overlayName) {
         return this.#overlayContexts[overlayName];
     }
     #registerOverlayContext(overlayName, context) {
+        const option = $("<input/>");
+        option.attr("type", "button");
+        option.val(overlayName);
+        option.addClass("inputButton overlaySelectorOption");
+        option.on("click", (ev) => {
+            this.#showOverlay(overlayName);
+        });
+
+        $(".overlaySelector").append(option);
+
         this.#overlayContexts[overlayName] = context;
     }
 
@@ -103,10 +107,17 @@ class OrganizationPage extends CpiPage {
     * Calendar
     */
     #initCalendarOverlay() {
+        const holidayTableParams = { 
+            stripe: true, 
+            oddClass: "holidayOddRow",
+            setWidths: true,
+            maxHeight: "auto"
+        };
+
         this.#registerOverlayContext("Calendar", {
             activate: () => { this.#activateCalendarOverlay(); },
             deactivate: () => { this.#enableCalendarModal(false); },
-            holidayTable: new DataTable("#holidayListSection", "#holidayListTable", "#holidayListRow")
+            holidayTable: new DataTable("#holidayTable", "#holidayListRow")          
         });
 
         $("#editCalendar").on("click", () => {
@@ -122,9 +133,19 @@ class OrganizationPage extends CpiPage {
             this.#enableCalendarModal(false);
         });
 
+        $("#addHoliday").on("click", () => {
+        });
+        $("#editHoliday").on("click", () => {
+        });
+        $("#deleteHoliday").on("click", () => {
+        });
+
         this.#enableCalendarModal(false);
     }
+
     #activateCalendarOverlay() {
+        this.#enableCalendarModal(false);
+
         this.sendApiRequest({
             method: "GET",
             url: "@/calendar",
@@ -140,14 +161,28 @@ class OrganizationPage extends CpiPage {
                     data.holidays, 
                     (row, data) => {
                         row.find("#holidayNameColumn").text(data[0]);
-                        row.find("#holidayStartDateColumn").text(data[1]);
-                        row.find("#holidayEndDateColumn").text(data[2] || data[1]);
+                        row.find("#holidayStartDateColumn").text(Cpi.FormatShortDateString(data[1]));
+                        row.find("#holidayEndDateColumn").text(Cpi.FormatShortDateString(data[2] || data[1]));
+
+                        row.on("click", () => {
+                            const currentSelection = $(".holidayListRow_selected");
+                            currentSelection.toggleClass("holidayListRow_selected");
+
+                            if (row.hasClass("holidayListRow_active")) {
+                                if (currentSelection[0] !== row[0]) {
+                                    row.addClass("holidayListRow_selected");
+                                    this.#enableHolidayActionButtons(true);
+                                }
+                                else {
+                                    this.#enableHolidayActionButtons(false);
+                                }
+                            }
+
+                        });
                     }
                 );
             }
         });
-
-        this.#enableCalendarModal(false);
     }
     #enableCalendarModal(enable) {
         this.#enableEditMode(
@@ -155,25 +190,48 @@ class OrganizationPage extends CpiPage {
             ["#calendarName", "#calendarStartDate", "#calendarEndDate"],
             "#calendarActionCommands",
             "#calendarModalCommands");
+
+        $("#holidayActionCommands").css("display", enable ? "flex" : "none");
+
+        if (enable) {
+            $(".holidayListRow").addClass("holidayListRow_active");
+        }
+        else {
+            $(".holidayListRow").removeClass("holidayListRow_active");
+        }
+
+        $(".holidayListRow_selected").removeClass("holidayListRow_selected");
+        this.#enableHolidayActionButtons(false);
+    }
+    #enableHolidayActionButtons(enable) {
+        $("#editHoliday").prop("disabled", !enable);
+        $("#deleteHoliday").prop("disabled", !enable);
     }
 
     /*
     * Students
     */
     #initStudentsOverlay() {
-        this.#registerOverlayContext("Students");
+        this.#registerOverlayContext("Students", {
+            activate: () => { this.#activateStudentsOverlay(); },
+            table: new DataTable("#studentTable", "#studentRow")          
+        });
     }
     #activateStudentsOverlay() {
-
-    }
-
-    /*
-    * Teachers
-    */
-    #initTeachersOverlay() {
-        this.#registerOverlayContext("Teachers");
-    }
-    #activateTeachersOverlay() {
+        this.sendApiRequest({
+            method: "GET",
+            url: "/@/students",
+            success: (data, status, xhr) => {
+                const context = this.#getOverlayContext("Students");
+                
+                context.table.setRows(data, (row, student) => {
+                    row.find("#studentNameColumn").text(`${student.lastName}, ${student.firstName}`);
+                    row.find("#studentNumberColumn").text(student.studentNumber || "");
+                    row.find("#studentGradeColumn").text(student.gradeName || "");
+                    row.find("#studentLocationColumn").text(student.locationName);
+                });
+            }
+        });
 
     }
 
@@ -181,30 +239,111 @@ class OrganizationPage extends CpiPage {
     * Classes
     */
     #initClassesOverlay() {
-        this.#registerOverlayContext("Classes");
+        this.#registerOverlayContext("Classes", {
+            activate: () => { this.#activateClassesOverlay(); },
+            table: new DataTable("#classTable", "#classRow")          
+        });
     }
     #activateClassesOverlay() {
+        this.sendApiRequest({
+            method: "GET",
+            url: "/@/classes",
+            success: (data, status, xhr) => {
+                const context = this.#getOverlayContext("Classes");
+                
+                context.table.setRows(data, (row, classData) => {
+                    row.find("#classNameColumn").text(classData.className);
+                    row.find("#classTeacherColumn").text(classData.teacherLastName ? `${classData.teacherLastName}, ${classData.teacherFirstName}` : "");
+                    row.find("#classLocationColumn").text(classData.locationName);
+                });
+            }
+        });
+    }
+
+    /*
+    * Courses
+    */
+    #initCoursesOverlay() {
+        this.#registerOverlayContext("Courses", {
+            activate: () => { this.#activateCoursesOverlay(); },
+            table: new DataTable("#courseTable", "#courseRow")          
+        });
+    }
+    #activateCoursesOverlay() {
+        this.sendApiRequest({
+            method: "GET",
+            url: "/@/courses",
+            success: (data, status, xhr) => {
+                const context = this.#getOverlayContext("Courses");
+                
+                context.table.setRows(data, (row, course) => {
+                    row.find("#courseNameColumn").text(course.courseName);
+                    row.find("#courseSubjectColumn").text(course.subjectName || "");
+                    row.find("#courseGradeColumn").text(course.gradeName || "");
+                });
+            }
+        });
     }
 
     /*
     * Locations
     */
     #initLocationsOverlay() {
-        this.#registerOverlayContext("Locations");
+        this.#registerOverlayContext("Locations", {
+            activate: () => { this.#activateLocationsOverlay(); },
+            table: new DataTable("#locationTable", "#locationRow")          
+        });
     }
     #activateLocationsOverlay() {
-
+        this.sendApiRequest({
+            method: "GET",
+            url: "/@/locations",
+            success: (data, status, xhr) => {
+                const context = this.#getOverlayContext("Locations");
+                
+                context.table.setRows(data, (row, location) => {
+                    row.find("#locationNameColumn").text(location.locationName);
+                });
+            }
+        });
     }
 
     /*
-    * Admnistrators
+    * Accounts
     */
-    #initAdministratorsOverlay() {
-        this.#registerOverlayContext("Administrators");
-    }
-    #activateAdministratorsOverlay() {
+    #initAccountsOverlay() {
+        this.#registerOverlayContext("Accounts", {
+            activate: () => { this.#activateAccountsOverlay(); },
+            table: new DataTable("#accountTable", "#accountRow")          
+        });
+
+        $("#addAccount").on("click", () => {
+        });
+        $("#editAccount").on("click", () => {
+        });
+        $("#deleteAccount").on("click", () => {
+        });
 
     }
+    #activateAccountsOverlay() {
+        this.sendApiRequest({
+            method: "GET",
+            url: "/@/accounts",
+            success: (data, status, xhr) => {
+                const context = this.#getOverlayContext("Accounts");
+                
+                context.table.setRows(data, (row, account) => {
+                    row.find("#accountNameColumn").text(`${account.lastName}, ${account.firstName}`);
+                    row.find("#accountAccessColumn").text(account.accessType);
+                    row.find("#accountStatusColumn").text(account.statusType);
+                });
+            }
+        });
+    }
+    #syncAccountActionButtons() {
+
+    }
+
 
     /*
     * Utilities

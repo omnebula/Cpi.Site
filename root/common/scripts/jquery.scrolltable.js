@@ -109,7 +109,7 @@ $.widget( "ui.scrolltable", {
 		var totalWidth = 0;
 		var $headCols = $container.find('thead th, thead td');
 		var $bodyCols = $container.find('tbody tr').eq(0).find('td');
-		var colCount = $headCols.size();
+		var colCount = $headCols.length;
 		var $col, width, stop = colCount - 1;
 		for(var i = 0; i < stop; i++){
 			$col = $headCols.eq(i);

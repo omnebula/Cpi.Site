@@ -12,7 +12,11 @@ class Cpi {
         return date.toISOString().substring(0, 10);
     }
     static FormatShortDateString(date) {
-        return `${date.getMonth() + 1}/${date.getDate()}`;
+        if (typeof date === "string") {
+            date = Cpi.ParseLocalDate(date);
+        }
+        return date.toLocaleString(undefined, { dateStyle: "medium" });
+        //return `${date.getMonth() + 1}/${date.getDate()}`;
     }
 
     static ParseLocalDate(dateString)

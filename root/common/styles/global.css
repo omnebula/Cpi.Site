@@ -95,8 +95,24 @@ input[type=button], input[type=submit] {
 .inputAcceptButton {
     background-color: darkgreen;
 }
+.inputAcceptButton:hover {
+    font-weight: bold;
+    background-color: green;
+}
+.inputAcceptButton:active {
+    font-weight: bold;
+    background-color: lightgreen;
+}
 .inputCancelButton {
     background-color: darkred;
+}
+.inputCancelButton:hover {
+    font-weight: bold;
+    background-color: #b70000;
+}
+.inputCancelButton:active {
+    font-weight: bold;
+    background-color: red;
 }
 
 /*

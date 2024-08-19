@@ -3,6 +3,9 @@ main {
     flex-direction: row;
 }
 
+.st-tr-odd {
+    background-color: #2a2a2a;
+}
 
 
 .overlaySelector {
@@ -10,13 +13,13 @@ main {
 }
 .overlaySelectorOption, .activeOverlaySelectorOption {
     width: 150px;
-    padding: 18px 0;
+    padding: 16px 0;
     font-size: 16px;
     border-bottom-left-radius: 0;
     border-top-left-radius: 0;
 }
 .overlaySelectorOption {
-    color: darkgray;
+    color: #dedede;
     background-color: #414141;
 }
 .overlaySelectorOption:hover {
@@ -40,6 +43,8 @@ main {
 .overlayContent {
     flex: 1;
     margin: 0 32px;
+    display: flex;
+    flex-direction: column;
 }
 .overlayCommands, .overlayCommandGroup {
     display: flex;
@@ -52,8 +57,12 @@ main {
     margin-bottom: 28px;
 }
 .overlayCommandInput {
-    width: 100%;
-    padding: 8px 8px;
+    padding: 10px 10px;
+    background-color: inherit;
+    color: lightgray;
+    font-family: inherit;
+    box-sizing: border-box;
+    border: 1px solid #555;
 }
 .overlayCommandButton {
     width: 100%;
@@ -68,12 +77,8 @@ main {
 }
 .overlayCommandButton:disabled {
     color: darkgray;
-    background-color: gray;    
-}
-.overlayCommandSelect {
-    background-color: inherit;
-    color: lightgray;
-    font-family: inherit;    
+    background-color: #555;    
+    font-weight: normal;
 }
 .overlayCommandSelectOption {
     background-color: inherit;
@@ -82,26 +87,36 @@ main {
     padding: 8px 0px;
 }
 
-/* Profile Panel */
-.organizationName {
-    width: 100%;
-}
-
-
 
 .listTable {
-    width: 100%;
+    flex: 1;
 }
 .listTableHeader {
     text-align: left;
     font-size: 14px;
-    color: green;
+    color: orange;
 }
 .listCommandsColumn {
     width: 50px;
 }
 
+.listRow_active:hover {
+    background-color: steelblue;
+}
+.listRow_selected {
+    background-color: #336699;
+}
+
+.listColumn {
+    padding: 6px 0;
+}
+
+
 /* Settings Overlay */
+.organizationName {
+    width: 100%;
+}
+
 #settingsModalCommands {
     display: none;
 }
@@ -118,17 +133,83 @@ main {
     width: 170px;
 }
 
+.holidayListSection {
+    flex: 1;
+    padding-top: 10px;
+    border-top: 1px solid #333;
+}
 .holidayHeaderSection {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 }
-.holidayDateColumn {
-    width: 150px;
+.holidayTableHeader {
+    color: green;
+}
+.holidayListRow {
+}
+.holidayListRow_active:hover {
+    background-color: steelblue;
+}
+.holidayListRow_selected {
+    background-color: #336699;
 }
 
-/* Students Overlay
+.holidayNameColumn {
+}
+.holidayDateColumn {
+    width: 130px;
+}
+
+.holidayActionCommands {
+    margin-top: 42px;
+    display: none;
+}
+
+/* Students Overlay */
+.studentNumberColumn {
+    width: 125px;
+}
 .studentGradeColumn {
-    width: 65px;
+    width: 125px;
     text-align: center;
 }
+.studentLocationColumn {
+    width: 200px;
+}
+
+/* Teachers Overlay */
+.teacherAccessColumn {
+    width: 140px;
+}
+
+.teacherStatusColumn {
+    width: 100px;
+}
+
+/* Classes Overlay */
+.classTeacherColumn {
+    width: 230px;
+}
+
+.classLocationColumn {
+    width: 200px;
+}
+
+/* Course Overlay */
+.courseSubjectColumn {
+    width: 200px;
+}
+.courseGradeColumn {
+    width: 100px;
+    text-align: center;
+}
+
+/* Locations Overlay */
+
+
+/* Administrators Overlay */
+.adminStatusColumn {
+    width: 100px;
+}
+
