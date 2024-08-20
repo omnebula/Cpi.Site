@@ -3,6 +3,9 @@ main {
     flex-direction: row;
 }
 
+.st-body-table {
+    vertical-align: top;
+}
 .st-tr-odd {
     background-color: #2a2a2a;
 }
@@ -100,7 +103,7 @@ main {
     width: 50px;
 }
 
-.listRow_active:hover {
+.listRow:hover {
     background-color: steelblue;
 }
 .listRow_selected {
@@ -178,14 +181,23 @@ main {
     width: 200px;
 }
 
-/* Teachers Overlay */
-.teacherAccessColumn {
-    width: 140px;
+.studentEditor {
+    width: 700px;
+    height: 400px;
 }
 
-.teacherStatusColumn {
-    width: 100px;
+/* Accounts Overlay */
+.accountAccessColumn {
+    width: 120px;
 }
+.accountStatusColumn {
+    width: 80px;
+}
+
+.accountEditor {
+    width: 700px;
+}
+
 
 /* Classes Overlay */
 .classTeacherColumn {
@@ -194,6 +206,11 @@ main {
 
 .classLocationColumn {
     width: 200px;
+}
+
+.classEditor {
+    width: 700px;
+    height: 400px;
 }
 
 /* Course Overlay */
@@ -205,11 +222,14 @@ main {
     text-align: center;
 }
 
-/* Locations Overlay */
-
-
-/* Administrators Overlay */
-.adminStatusColumn {
-    width: 100px;
+.courseEditor {
+    width: 700px;
+    height: 400px;
 }
 
+/* Locations Overlay */
+
+.locationEditor {
+    width: 700px;
+    height: 400px;
+}

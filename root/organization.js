@@ -117,7 +117,7 @@ class OrganizationPage extends CpiPage {
         this.#registerOverlayContext("Calendar", {
             activate: () => { this.#activateCalendarOverlay(); },
             deactivate: () => { this.#enableCalendarModal(false); },
-            holidayTable: new DataTable("#holidayTable", "#holidayListRow")          
+            holidayTable: new DataTable($("#holidayTable"))
         });
 
         $("#editCalendar").on("click", () => {
@@ -208,142 +208,50 @@ class OrganizationPage extends CpiPage {
         $("#deleteHoliday").prop("disabled", !enable);
     }
 
-    /*
-    * Students
-    */
     #initStudentsOverlay() {
+        const controller = new StudentController();
         this.#registerOverlayContext("Students", {
-            activate: () => { this.#activateStudentsOverlay(); },
-            table: new DataTable("#studentTable", "#studentRow")          
-        });
-    }
-    #activateStudentsOverlay() {
-        this.sendApiRequest({
-            method: "GET",
-            url: "/@/students",
-            success: (data, status, xhr) => {
-                const context = this.#getOverlayContext("Students");
-                
-                context.table.setRows(data, (row, student) => {
-                    row.find("#studentNameColumn").text(`${student.lastName}, ${student.firstName}`);
-                    row.find("#studentNumberColumn").text(student.studentNumber || "");
-                    row.find("#studentGradeColumn").text(student.gradeName || "");
-                    row.find("#studentLocationColumn").text(student.locationName);
-                });
+            activate: () => {
+                controller.refreshRows();
             }
         });
-
     }
 
-    /*
-    * Classes
-    */
     #initClassesOverlay() {
+        const controller = new ClassController();
         this.#registerOverlayContext("Classes", {
-            activate: () => { this.#activateClassesOverlay(); },
-            table: new DataTable("#classTable", "#classRow")          
-        });
-    }
-    #activateClassesOverlay() {
-        this.sendApiRequest({
-            method: "GET",
-            url: "/@/classes",
-            success: (data, status, xhr) => {
-                const context = this.#getOverlayContext("Classes");
-                
-                context.table.setRows(data, (row, classData) => {
-                    row.find("#classNameColumn").text(classData.className);
-                    row.find("#classTeacherColumn").text(classData.teacherLastName ? `${classData.teacherLastName}, ${classData.teacherFirstName}` : "");
-                    row.find("#classLocationColumn").text(classData.locationName);
-                });
+            activate: () => {
+                controller.refreshRows();
             }
         });
     }
 
-    /*
-    * Courses
-    */
     #initCoursesOverlay() {
+        const controller = new CourseController();
         this.#registerOverlayContext("Courses", {
-            activate: () => { this.#activateCoursesOverlay(); },
-            table: new DataTable("#courseTable", "#courseRow")          
-        });
-    }
-    #activateCoursesOverlay() {
-        this.sendApiRequest({
-            method: "GET",
-            url: "/@/courses",
-            success: (data, status, xhr) => {
-                const context = this.#getOverlayContext("Courses");
-                
-                context.table.setRows(data, (row, course) => {
-                    row.find("#courseNameColumn").text(course.courseName);
-                    row.find("#courseSubjectColumn").text(course.subjectName || "");
-                    row.find("#courseGradeColumn").text(course.gradeName || "");
-                });
+            activate: () => {
+                controller.refreshRows();
             }
         });
     }
 
-    /*
-    * Locations
-    */
     #initLocationsOverlay() {
+        const controller = new LocationController();
         this.#registerOverlayContext("Locations", {
-            activate: () => { this.#activateLocationsOverlay(); },
-            table: new DataTable("#locationTable", "#locationRow")          
-        });
-    }
-    #activateLocationsOverlay() {
-        this.sendApiRequest({
-            method: "GET",
-            url: "/@/locations",
-            success: (data, status, xhr) => {
-                const context = this.#getOverlayContext("Locations");
-                
-                context.table.setRows(data, (row, location) => {
-                    row.find("#locationNameColumn").text(location.locationName);
-                });
+            activate: () => {
+                controller.refreshRows();
             }
         });
     }
 
-    /*
-    * Accounts
-    */
     #initAccountsOverlay() {
+        const controller = new AccountController();
         this.#registerOverlayContext("Accounts", {
-            activate: () => { this.#activateAccountsOverlay(); },
-            table: new DataTable("#accountTable", "#accountRow")          
-        });
-
-        $("#addAccount").on("click", () => {
-        });
-        $("#editAccount").on("click", () => {
-        });
-        $("#deleteAccount").on("click", () => {
-        });
-
-    }
-    #activateAccountsOverlay() {
-        this.sendApiRequest({
-            method: "GET",
-            url: "/@/accounts",
-            success: (data, status, xhr) => {
-                const context = this.#getOverlayContext("Accounts");
-                
-                context.table.setRows(data, (row, account) => {
-                    row.find("#accountNameColumn").text(`${account.lastName}, ${account.firstName}`);
-                    row.find("#accountAccessColumn").text(account.accessType);
-                    row.find("#accountStatusColumn").text(account.statusType);
-                });
+            activate: () => {
+                controller.refreshRows();
             }
         });
     }
-    #syncAccountActionButtons() {
-
-    }
-
 
     /*
     * Utilities
@@ -357,5 +265,150 @@ class OrganizationPage extends CpiPage {
         $(modalGroupId).css("display", enable ? "flex" : "none");
     }
 }
+
+
+class StudentController extends EntityController {
+    constructor() {
+        super({
+            entityName: "student",
+            entitySetName: "students",
+            entityCaption: "Student",
+            table: $("#studentTable"),
+            addButton: $("#addStudent"),
+            editButton: $("#editStudent"),
+            deleteButton: $("#deleteStudent"),
+            toggleButtons: [ $("#assignStudentClasses") ],
+            editor: $("#studentEditor")
+        });
+    }
+
+    formatRow(row, student) {
+        row.find("#studentNameColumn").text(`${student.lastName}, ${student.firstName}`);
+        row.find("#studentNumberColumn").text(student.studentNumber || "");
+        row.find("#studentGradeColumn").text(student.gradeName || "");
+        row.find("#studentLocationColumn").text(student.locationName);
+    }
+
+    compareRows(lhs, rhs) {
+        const left = $(lhs).find("#studentNameColumn").text();
+        const right = $(rhs).find("#studentNameColumn").text();
+        return left.localeCompare(right);
+    }
+}
+
+
+class AccountController extends EntityController {
+    constructor() {
+        super({
+            entityName: "account",
+            entitySetName: "accounts",
+            entityCaption: "Account",
+            listUrl: "/@/accounts?columns=accountId,lastName,firstName,accessType,statusType",
+            table: $("#accountTable"),
+            addButton: $("#addAccount"),
+            editButton: $("#editAccount"),
+            deleteButton: $("#deleteAccount"),
+            toggleButtons: [ $("#sendAccountInvite"), $("#assignAccountClasses") ],
+            editor: $("#accountEditor")
+        });
+    }
+
+    formatRow(row, account) {
+        row.find("#accountNameColumn").text(`${account.lastName}, ${account.firstName}`);
+        row.find("#accountAccessColumn").text(account.accessType);
+        row.find("#accountStatusColumn").text(account.statusType);
+    }
+
+    compareRows(lhs, rhs) {
+        const left = $(lhs).find("#accountNameColumn").text();
+        const right = $(rhs).find("#accountNameColumn").text();
+        return left.localeCompare(right);
+    }
+}
+
+
+class ClassController extends EntityController {
+    constructor() {
+        super({
+            entityName: "class",
+            entitySetName: "classes",
+            entityCaption: "Class",
+            table: $("#classTable"),
+            addButton: $("#addClass"),
+            editButton: $("#editClass"),
+            deleteButton: $("#deleteClass"),
+            deleteButton: $("#deleteClass"),
+            toggleButtons: [ $("#assignClassStudents"), $("#assignClassCourses") ],
+            editor: $("#classEditor")
+        });
+    }
+
+    formatRow(row, classData) {
+        row.find("#classNameColumn").text(classData.className);
+        row.find("#classTeacherColumn").text(classData.teacherLastName ? `${classData.teacherLastName}, ${classData.teacherFirstName}` : "");
+        row.find("#classLocationColumn").text(classData.locationName);
+    }
+
+    compareRows(lhs, rhs) {
+        const left = $(lhs).find("#classNameColumn").text();
+        const right = $(rhs).find("#classNameColumn").text();
+        return left.localeCompare(right);
+    }
+}
+
+class CourseController extends EntityController {
+    constructor() {
+        super({
+            entityName: "course",
+            entitySetName: "courses",
+            entityCaption: "Course",
+            table: $("#courseTable"),
+            addButton: $("#addCourse"),
+            editButton: $("#editCourse"),
+            deleteButton: $("#deleteCourse"),
+            toggleButtons: [ $("#assignCourseClasses") ],
+            editor: $("#courseEditor")
+        });
+    }
+
+    formatRow(row, course) {
+        row.find("#courseNameColumn").text(course.courseName);
+        row.find("#courseSubjectColumn").text(course.subjectName || "");
+        row.find("#courseGradeColumn").text(course.gradeName || "");
+    }
+
+    compareRows(lhs, rhs) {
+        const left = $(lhs).find("#courseNameColumn").text();
+        const right = $(rhs).find("#courseNameColumn").text();
+        return left.localeCompare(right);
+    }
+}
+
+
+class LocationController extends EntityController {
+    constructor() {
+        super({
+            entityName: "location",
+            entitySetName: "locations",
+            entityCaption: "Location",
+            table: $("#locationTable"),
+            addButton: $("#addLocation"),
+            editButton: $("#editLocation"),
+            deleteButton: $("#deleteLocation"),
+            editor: $("#locationEditor")
+        });
+    }
+
+    formatRow(row, location) {
+        row.find("#locationNameColumn").text(location.locationName);
+    }
+
+    compareRows(lhs, rhs) {
+        const left = $(lhs).find("#locationNameColumn").text();
+        const right = $(rhs).find("#locationNameColumn").text();
+        return left.localeCompare(right);
+    }
+}
+
 
 window.page = new OrganizationPage();

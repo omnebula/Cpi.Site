@@ -126,11 +126,23 @@ class Cpi {
         }
     }
     static ShowLogin() {
-        $("#loginPanel").css("display", "flex");
+        $("#loginFrame").css("display", "flex");
     }
 
     static ShowAlert(message) {
         window.alert(message);
+    }
+
+    static ShowPopup(popup) {
+        popup.css("display", "flex");
+        $(".popupFrame").css("display", "block");
+        $(".appFrame").css("opacity", "0.5");
+    }
+
+    static HidePopup(popup) {
+        popup.css("display", "none");
+        $(".popupFrame").css("display", "none");
+        $(".appFrame").css("opacity", "");
     }
 
     static EnableEditMode() {
@@ -326,8 +338,8 @@ class CpiPage
         </div>`;
 
     #loginHtml = String.raw`
-                <div id="loginPanel" class="loginPanel">
-                    <div class="loginFrame">
+                <div id="loginFrame" class="loginFrame">
+                    <div class="loginBox">
                         <form id="loginForm">
                             <div class="inputRow">
                                 <div class="inputCell">

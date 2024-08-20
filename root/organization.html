@@ -12,7 +12,8 @@
     <script type="text/javascript" src="/common/scripts/jquery-ui.min.js" defer></script>
     <script type="text/javascript" src="/common/scripts/jquery.scrolltable.js" defer></script>
     <script type="text/javascript" src="/common/scripts/global.js" defer></script>
-    <script type="text/javascript" src="/common/scripts/DataTable.js" defer></script>
+    <script type="text/javascript" src="/common/classes/DataTable.js" defer></script>
+    <script type="text/javascript" src="/common/classes/EntityController.js" defer></script>
     <script type="text/javascript" src="/common/data/static.js" defer></script>
     <script type="text/javascript" src="./organization.js" defer></script>
 </head>
@@ -139,7 +140,7 @@
                             </table>
                         </div>
                         <div class="overlayCommands">
-                            <div class="overlayCommandGroup">
+                            <!--div class="overlayCommandGroup">
                                 <input id="searchStudents" class="overlayCommandInput" type="text" placeholder="Enter a search term" />
                                 <select id="studentGrades" class="overlayCommandInput">
                                     <option value="" class="overlayCommandSelectOption" disabled selected>Select a grade</option>
@@ -150,16 +151,18 @@
                                 <select id="studentClasses" class="overlayCommandInput">
                                     <option value="" class="overlayCommandSelectOption" disabled selected>Select a class</option>
                                 </select>
-                            </div>
-                            <div class="overlayCommandGroup">
-                                <input id="uploadStudents" type="button" class="inputButton overlayCommandButton" value="Upload Students..."/>
-                            </div>
+                            </div-->
                             <div class="overlayCommandGroup">
                                 <input id="addStudent" type="button" class="inputButton overlayCommandButton" value="Add Student"/>
                                 <input id="editStudent" type="button" class="inputButton overlayCommandButton" value="Edit Student"/>
                                 <input id="deleteStudent" type="button" class="inputButton overlayCommandButton" value="Delete Student"/>
                             </div>
-                            <input id="assignStudentClasses" type="button" class="inputButton overlayCommandButton" value="Assign Classes..."/>
+                            <div class="overlayCommandGroup">
+                                <input id="assignStudentClasses" type="button" class="inputButton overlayCommandButton" value="Assign Classes..."/>
+                            </div>
+                            <div class="overlayCommandGroup">
+                                <input id="uploadStudents" type="button" class="inputButton overlayCommandButton" value="Upload Students..." disabled/>
+                            </div>
                         </div>
                     </div>
                     <div id="Classes" class="overlayPanel">
@@ -182,15 +185,12 @@
                             </table>
                         </div>
                         <div class="overlayCommands">
-                            <div class="overlayCommandGroup">
+                            <!--div class="overlayCommandGroup">
                                 <input id="searchClasses" class="overlayCommandInput" type="text" placeholder="Enter a search term" />
                                 <select id="classLocations" class="overlayCommandInput">
                                     <option value="" class="overlayCommandSelectOption" disabled selected>Select a location</option>
                                 </select>
-                            </div>
-                            <div class="overlayCommandGroup">
-                                <input id="uploadClasses" type="button" class="inputButton overlayCommandButton" value="Upload Classes..."/>
-                            </div>
+                            </div-->
                             <div class="overlayCommandGroup">
                                 <input id="addClass" type="button" class="inputButton overlayCommandButton" value="Add Class"/>
                                 <input id="editClass" type="button" class="inputButton overlayCommandButton" value="Edit Class"/>
@@ -199,6 +199,9 @@
                             <div class="overlayCommandGroup">
                                 <input id="assignClassStudents" type="button" class="inputButton overlayCommandButton" value="Assign Students..."/>
                                 <input id="assignClassCourses" type="button" class="inputButton overlayCommandButton" value="Assign Courses..."/>
+                            </div>
+                            <div class="overlayCommandGroup">
+                                <input id="uploadClasses" type="button" class="inputButton overlayCommandButton" value="Upload Classes..." disabled/>
                             </div>
                         </div>
                     </div>
@@ -222,18 +225,20 @@
                             </table>
                         </div>
                         <div class="overlayCommands">
-                            <div class="overlayCommandGroup">
+                            <!--div class="overlayCommandGroup">
                                 <input id="searchCourses" class="overlayCommandInput" type="text" placeholder="Enter a search term" />
-                            </div>
-                            <div class="overlayCommandGroup">
-                                <input id="uploadCourses" type="button" class="inputButton overlayCommandButton" value="Upload Courses..."/>
-                            </div>
+                            </div-->
                             <div class="overlayCommandGroup">
                                 <input id="addCourse" type="button" class="inputButton overlayCommandButton" value="Add Course"/>
                                 <input id="editCourse" type="button" class="inputButton overlayCommandButton" value="Edit Course"/>
                                 <input id="deleteCourse" type="button" class="inputButton overlayCommandButton" value="Delete Course"/>
                             </div>
-                            <input id="assignCourseClasses" type="button" class="inputButton overlayCommandButton" value="Assign Classes..."/>
+                            <div class="overlayCommandGroup">
+                                <input id="assignCourseClasses" type="button" class="inputButton overlayCommandButton" value="Assign Classes..."/>
+                            </div>
+                            <div class="overlayCommandGroup">
+                                <input id="uploadCourses" type="button" class="inputButton overlayCommandButton" value="Upload Courses..." disabled/>
+                            </div>
                         </div>
                     </div>
                     <div id="Locations" class="overlayPanel">
@@ -252,15 +257,17 @@
                             </table>
                         </div>
                         <div class="overlayCommands">
-                            <div class="overlayCommandGroup">
+                            <!--div class="overlayCommandGroup">
                                 <input id="searchLocations" class="overlayCommandInput" type="text" placeholder="Enter a search term" />
+                            </div-->
+                            <div class="overlayCommandGroup">
+                                <input id="addLocation" type="button" class="inputButton overlayCommandButton" value="Add Location"/>
+                                <input id="editLocation" type="button" class="inputButton overlayCommandButton" value="Edit Location"/>
+                                <input id="deleteLocation" type="button" class="inputButton overlayCommandButton" value="Delete Location"/>
                             </div>
                             <div class="overlayCommandGroup">
-                                <input id="uploadLocations" type="button" class="inputButton overlayCommandButton" value="Upload Locations..."/>
+                                <input id="uploadLocations" type="button" class="inputButton overlayCommandButton" value="Upload Locations..." disabled/>
                             </div>
-                            <input id="addLocation" type="button" class="inputButton overlayCommandButton" value="Add Location"/>
-                            <input id="editLocation" type="button" class="inputButton overlayCommandButton" value="Edit Location"/>
-                            <input id="deleteLocation" type="button" class="inputButton overlayCommandButton" value="Delete Location"/>
                         </div>
                     </div>
                     <div id="Accounts" class="overlayPanel">
@@ -269,41 +276,43 @@
                                 <thead>
                                     <tr>
                                         <th class="listTableHeader accountNameColumn">Account Name</th>
-                                        <th class="listTableHeader accountAcccessColumn">Access</th>
+                                        <th class="listTableHeader accountAccessColumn">Access</th>
                                         <th class="listTableHeader accountStatusColumn">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr id="accountRow" class="listRow">
-                                        <td id="accountNameColumn" class="listColumn accountNameColumn">Luzadas, Joel</td>
-                                        <td id="accountAccessColumn" class="listColumn accountAccessColumn">organization</td>
-                                        <td id="accountStatusColumn" class="listColumn accountStatusColumn">invited</td>
+                                        <td id="accountNameColumn" class="listColumn accountNameColumn"></td>
+                                        <td id="accountAccessColumn" class="listColumn accountAccessColumn"></td>
+                                        <td id="accountStatusColumn" class="listColumn accountStatusColumn"></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                         <div class="overlayCommands">
-                            <div class="overlayCommandGroup">
+                            <!--div class="overlayCommandGroup">
                                 <input id="searchAccounts" class="overlayCommandInput" type="text" placeholder="Enter a search term" />
-                                <select id="accountLocations" class="overlayCommandInput">
-                                    <option value="" class="overlayCommandSelectOption" disabled selected>Select a location</option>
-                                </select>
                                 <select id="accountAccesses" class="overlayCommandInput">
                                     <option value="" class="overlayCommandSelectOption" disabled selected>Select an access</option>
                                 </select>
                                 <select id="accountStatuses" class="overlayCommandInput">
                                     <option value="" class="overlayCommandSelectOption" disabled selected>Select a status</option>
                                 </select>
-                            </div>
-                            <div class="overlayCommandGroup">
-                                <input id="uploadAccounts" type="button" class="inputButton overlayCommandButton" value="Upload Accounts..."/>
-                            </div>
+                            </div-->
                             <div class="overlayCommandGroup">
                                 <input id="addAccount" type="button" class="inputButton overlayCommandButton" value="Add Account"/>
                                 <input id="editAccount" type="button" class="inputButton overlayCommandButton" value="Edit Account"/>
                                 <input id="deleteAccount" type="button" class="inputButton overlayCommandButton" value="Delete Account"/>
                             </div>
-                            <input id="assignAccountClasses" type="button" class="inputButton overlayCommandButton" value="Assign Classes..."/>
+                            <div class="overlayCommandGroup">
+                                <input id="sendAccountInvite" type="button" class="inputButton overlayCommandButton" value="Send Invite"/>
+                            </div>
+                            <div class="overlayCommandGroup">
+                                <input id="assignAccountClasses" type="button" class="inputButton overlayCommandButton" value="Assign Classes..."/>
+                            </div>
+                            <div class="overlayCommandGroup">
+                                <input id="uploadAccounts" type="button" class="inputButton overlayCommandButton" value="Upload Accounts..." disabled/>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -316,7 +325,86 @@
         </div>
     
     </div>
+    <div class="popupFrame">
+        <div id="studentEditor" class="popupBox studentEditor">
+            <div class="popupCaption">
+                <div class="popupCaptionTitle">Student</div>
+                <div>
+                    <input id="popupAccept" class="popupCaptionButton" type="button" value="Accept"/>
+                    <input id="popupCancel" class="popupCaptionButton" type="button" value="Cancel"/>
+                </div>
+            </div>
+        </div>
 
+        <div id="accountEditor" class="popupBox accountEditor">
+            <div class="popupCaption">
+                <div class="popupCaptionTitle">Account</div>
+                <div>
+                    <input id="popupAccept" class="popupCaptionButton" type="button" value="Accept"/>
+                    <input id="popupCancel" class="popupCaptionButton" type="button" value="Cancel"/>
+                </div>
+            </div>
+
+            <div class="inputRow">
+                <div class="inputCell">
+                    <label class="inputLabel" for="email">Email</label>
+                    <input class="inputTextBox accountParam" id="email" type="text" autocomplete="off"/>
+                </div>
+            </div>
+            <div class="inputRow">
+                <div class="inputCell">
+                    <label class="inputLabel" for="accessType">Access</label>
+                    <select class="inputSelect accountParam" id="accessType">
+                        <option class="inputOption" value="guest">Guest</option>
+                        <option class="inputOption" value="student">Student</option>
+                        <option class="inputOption" value="teacher">Teacher</option>
+                        <option class="inputOption" value="account">Account</option>
+                        <option class="inputOption" value="organization">Organization</option>
+                    </select>
+                </div>
+
+                <div class="inputCell">
+                    <label class="inputLabel" for="statusType">Status</label>
+                    <select class="inputSelect accountParam" id="statusType">
+                        <option class="inputOption" value="created">Created</option>
+                        <option class="inputOption" value="invited">Invited</option>
+                        <option class="inputOption" value="active">Active</option>
+                        <option class="inputOption" value="disabled">Disabled</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div id="classEditor" class="popupBox classEditor">
+            <div class="popupCaption">
+                <div class="popupCaptionTitle">Class</div>
+                <div>
+                    <input id="popupAccept" class="popupCaptionButton" type="button" value="Accept"/>
+                    <input id="popupCancel" class="popupCaptionButton" type="button" value="Cancel"/>
+                </div>
+            </div>
+        </div>
+
+        <div id="courseEditor" class="popupBox courseEditor">
+            <div class="popupCaption">
+                <div class="popupCaptionTitle">Course</div>
+                <div>
+                    <input id="popupAccept" class="popupCaptionButton" type="button" value="Accept"/>
+                    <input id="popupCancel" class="popupCaptionButton" type="button" value="Cancel"/>
+                </div>
+            </div>
+        </div>
+
+        <div id="locationEditor" class="popupBox locationEditor">
+            <div class="popupCaption">
+                <div class="popupCaptionTitle">Location</div>
+                <div>
+                    <input id="popupAccept" class="popupCaptionButton" type="button" value="Accept"/>
+                    <input id="popupCancel" class="popupCaptionButton" type="button" value="Cancel"/>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
