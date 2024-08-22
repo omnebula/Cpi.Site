@@ -1,197 +1,186 @@
+
+
 class OrganizationPage extends CpiPage {
-    #currentOverlayName;
-    #overlayContexts = {};
+    #overlayController;
 
     constructor() {
         super();
         
-        if (!Cpi.IsLoggedIn()) {
+        if (!Cpi.ValidateLogin()) {
             return;
         }
 
-        this.#initSettingsOverlay();
-        this.#initCalendarOverlay();
-        this.#initStudentsOverlay();
-        this.#initAccountsOverlay();
-        this.#initClassesOverlay();
-        this.#initCoursesOverlay();
-        this.#initLocationsOverlay();
+        const overlays = [
+            new SettingsOverlay(),
+            new CalendarOverlay(),
+            new StudentOverlay(),
+            new AccountOverlay(),
+            new ClassOverlay(),
+            new CourseOverlay(),
+            new LocationOverlay()
+        ];
+        this.#overlayController = new OverlayController(overlays);
 
         // Show initial overlay.
         const lastOverlayName = localStorage.getItem("organizationOverlayName");
-        this.#showOverlay(lastOverlayName || $(overlayOptions[0]).val());
+        this.#overlayController.showOverlay(lastOverlayName || overlays[0].name);
     }
+}
 
-    #showOverlay(listName) {
-        if (this.#currentOverlayName) {
-            $(`input[value="${this.#currentOverlayName}"]`).toggleClass("overlaySelectorOption activeOverlaySelectorOption");
-            $(`#${this.#currentOverlayName}`).css("display", "none");
 
-            const context = this.#overlayContexts[this.#currentOverlayName];
-            if (context && context.deactivate) {
-                context.deactivate();
-            }
-        }
+class SettingsOverlay extends OverlayContext {
+    #editController;
+    #currentData;
 
-        this.#currentOverlayName = listName;
-        localStorage.setItem("organizationOverlayName", this.#currentOverlayName);
-
-        const context = this.#overlayContexts[this.#currentOverlayName];
-        if (context && context.activate) {
-            context.activate();
-        }
-
-        $(`input[value="${this.#currentOverlayName}"]`).toggleClass("overlaySelectorOption activeOverlaySelectorOption");
-        $(`#${this.#currentOverlayName}`).css("display", "flex");
-    }
-
-    #getOverlayContext(overlayName) {
-        return this.#overlayContexts[overlayName];
-    }
-    #registerOverlayContext(overlayName, context) {
-        const option = $("<input/>");
-        option.attr("type", "button");
-        option.val(overlayName);
-        option.addClass("inputButton overlaySelectorOption");
-        option.on("click", (ev) => {
-            this.#showOverlay(overlayName);
+    constructor() {
+        super({
+            overlayName: "Settings",
+            overlayElement: $("#Settings")
         });
 
-        $(".overlaySelector").append(option);
-
-        this.#overlayContexts[overlayName] = context;
+        this.#editController = new EditController({
+            editButton: $("#editSettings"),
+            inputElements: $("#Settings input[type=text]"),
+            acceptButton: $("#acceptSettingsChanges"),
+            acceptChanges: () => { this.#acceptSettingsChanges(); },
+            cancelButton: $("#cancelSettingsChanges"),
+            cancelChanges: () => { this.#cancelSettingsChanges(); },
+            viewElements: [ $("#settingsViewButtons") ],
+            editElements: [ $("#settingsEditButtons") ]
+        });
     }
 
-    /*
-    * Settings
-    */
-    #initSettingsOverlay() {
-        this.#registerOverlayContext("Settings", {
-            activate: () => { this.#activateSettingsOverlay(); },
-            deactivate: () => { this.#enableSettingsModal(false); }
-         } );
+    _activateOverlay() {
+        this.#editController.enableEditMode(false);
 
-        $("#editSettings").on("click", () => {
-            this.#enableSettingsModal(true);
-        });
-        $("#acceptSettingsChanges").on("click", () => {
-            this.#enableSettingsModal(false);
-        });
-        $("#cancelSettingsChanges").on("click", () => {
-            this.#enableSettingsModal(false);
-        });
-
-        this.#enableSettingsModal(false);
-    }
-    #activateSettingsOverlay() {
-        this.sendApiRequest({
+        Cpi.SendApiRequest({
             method: "GET",
             url: "/@/organization",
             success: (data, status, xhr) => {
-                // Initialize property editor
-                $("#organizationName").val(data.organizationName);
+                this.#currentData = data;
+                this.#setOverlayData(this.#currentData);
             }
         });
     }
-    #enableSettingsModal(enable) {
-        this.#enableEditMode(
-            enable,
-            ["#organizationName"],
-            "#settingsActionCommands",
-            "#settingsModalCommands");
+
+    #acceptSettingsChanges() {
+        const data = {
+            organizationName: $("#organizationName").val()
+        };
+
+        Cpi.SendApiRequest({
+            method: "PATCH",
+            url: "/@/organization",
+            data: JSON.stringify(data),
+            success: (data) => {
+                this.#currentData = data;
+                this.#setOverlayData(this.#currentData);
+            }
+        })
     }
-    #updateSettings() {
+
+    #cancelSettingsChanges() {
+        this.#setOverlayData(this.#currentData);
+    }
+
+    #setOverlayData(data) {
+        $("#organizationName").val(data.organizationName);
+    }
+}
+
+
+/*
+* Calendar Overlay
+*/
+
+class CalendarOverlay extends OverlayContext {
+    #calendarEditController;
+    #holidayTableController;
+    #currentData;
+    #isNewCalendar = false;
+
+    constructor() {
+        super({
+            overlayName: "Calendar",
+            overlayElement: $("#Calendar")
+        });
+
+        this.#calendarEditController = new CalendarEditController(this);
+        this.#holidayTableController = new HolidayTableController();
+
+        $("#addCalendar").on("click", () => {
+            this.#isNewCalendar = true;
+
+            this.#setOverlayData(undefined);
+
+            this.#calendarEditController.enableEditMode(true);
+        });
+    }
+
+    acceptChanges() {
+
+    }
+
+    cancelChanges() {
+        this.#setOverlayData(this.#currentData);
     }
 
     /*
-    * Calendar
+    * Overlay overrides
     */
-    #initCalendarOverlay() {
-        const holidayTableParams = { 
-            stripe: true, 
-            oddClass: "holidayOddRow",
-            setWidths: true,
-            maxHeight: "auto"
-        };
+    _activateOverlay() {
+        super._activateOverlay();
 
-        this.#registerOverlayContext("Calendar", {
-            activate: () => { this.#activateCalendarOverlay(); },
-            deactivate: () => { this.#enableCalendarModal(false); },
-            holidayTable: new DataTable($("#holidayTable"))
-        });
+        this.#calendarEditController.enableEditMode(false);
 
-        $("#editCalendar").on("click", () => {
-            this.#enableCalendarModal(true);
-        });
-        $("#addCalendar").on("click", () => {
-            this.#enableCalendarModal(true);
-        });
-        $("#acceptCalendarChanges").on("click", () => {
-            this.#enableCalendarModal(false);
-        });
-        $("#cancelCalendarChanges").on("click", () => {
-            this.#enableCalendarModal(false);
-        });
-
-        $("#addHoliday").on("click", () => {
-        });
-        $("#editHoliday").on("click", () => {
-        });
-        $("#deleteHoliday").on("click", () => {
-        });
-
-        this.#enableCalendarModal(false);
-    }
-
-    #activateCalendarOverlay() {
-        this.#enableCalendarModal(false);
-
-        this.sendApiRequest({
+        Cpi.SendApiRequest({
             method: "GET",
             url: "@/calendar",
             success: (data, status, xhr) => {
-                $("#calendarName").val(data.calendarName);
-                $("#calendarStartDate").val(data.startDate);
-                $("#calendarEndDate").val(data.endDate);
-
-                const context = this.#getOverlayContext("Calendar");
-                const holidayTable = context.holidayTable;
-
-                holidayTable.setRows(
-                    data.holidays, 
-                    (row, data) => {
-                        row.find("#holidayNameColumn").text(data[0]);
-                        row.find("#holidayStartDateColumn").text(Cpi.FormatShortDateString(data[1]));
-                        row.find("#holidayEndDateColumn").text(Cpi.FormatShortDateString(data[2] || data[1]));
-
-                        row.on("click", () => {
-                            const currentSelection = $(".holidayListRow_selected");
-                            currentSelection.toggleClass("holidayListRow_selected");
-
-                            if (row.hasClass("holidayListRow_active")) {
-                                if (currentSelection[0] !== row[0]) {
-                                    row.addClass("holidayListRow_selected");
-                                    this.#enableHolidayActionButtons(true);
-                                }
-                                else {
-                                    this.#enableHolidayActionButtons(false);
-                                }
-                            }
-
-                        });
-                    }
-                );
+                this.#currentData = data;
+                this.#setOverlayData(this.#currentData);
             }
         });
     }
-    #enableCalendarModal(enable) {
-        this.#enableEditMode(
-            enable,
-            ["#calendarName", "#calendarStartDate", "#calendarEndDate"],
-            "#calendarActionCommands",
-            "#calendarModalCommands");
 
-        $("#holidayActionCommands").css("display", enable ? "flex" : "none");
+    #setOverlayData(data) {
+        if (data) {
+            $("#calendarName").val(data.calendarName);
+            $("#calendarStartDate").val(data.startDate);
+            $("#calendarEndDate").val(data.endDate);
+    
+            this.#holidayTableController.setRows(data.holidays);
+        }
+        else {
+            $("#calendarName").val("");
+            $("#calendarStartDate").val("");
+            $("#calendarEndDate").val("");
+
+            this.#holidayTableController.findRows("td.holidayDateColumn").text("");
+        }
+    }
+}
+
+class CalendarEditController extends EditController {
+    #calendarOverlay;
+
+    constructor(calendarOverlay) {
+        super({
+            editButton: $("#editCalendar"),
+            inputElements: $("#Calendar input[type=text]"),
+            acceptButton: $("#acceptCalendarChanges"),
+            acceptChanges: () => { this.#calendarOverlay.acceptChanges(); },
+            cancelButton: $("#cancelCalendarChanges"),
+            cancelChanges: () => { this.#calendarOverlay.cancelChanges(); },
+            viewElements: [ $("#calendarViewButtons") ],
+            editElements: [ $("#calendarEditButtons"), $("#holidayActionCommands") ],
+        });
+
+        this.#calendarOverlay = calendarOverlay;
+    }
+
+    enableEditMode(enable) {
+        super.enableEditMode(enable);
 
         if (enable) {
             $(".holidayListRow").addClass("holidayListRow_active");
@@ -199,79 +188,115 @@ class OrganizationPage extends CpiPage {
         else {
             $(".holidayListRow").removeClass("holidayListRow_active");
         }
-
-        $(".holidayListRow_selected").removeClass("holidayListRow_selected");
-        this.#enableHolidayActionButtons(false);
     }
-    #enableHolidayActionButtons(enable) {
-        $("#editHoliday").prop("disabled", !enable);
-        $("#deleteHoliday").prop("disabled", !enable);
-    }
+}
 
-    #initStudentsOverlay() {
-        const controller = new StudentController();
-        this.#registerOverlayContext("Students", {
-            activate: () => {
-                controller.refreshRows();
-            }
-        });
-    }
-
-    #initClassesOverlay() {
-        const controller = new ClassController();
-        this.#registerOverlayContext("Classes", {
-            activate: () => {
-                controller.refreshRows();
-            }
-        });
-    }
-
-    #initCoursesOverlay() {
-        const controller = new CourseController();
-        this.#registerOverlayContext("Courses", {
-            activate: () => {
-                controller.refreshRows();
-            }
-        });
-    }
-
-    #initLocationsOverlay() {
-        const controller = new LocationController();
-        this.#registerOverlayContext("Locations", {
-            activate: () => {
-                controller.refreshRows();
-            }
-        });
-    }
-
-    #initAccountsOverlay() {
-        const controller = new AccountController();
-        this.#registerOverlayContext("Accounts", {
-            activate: () => {
-                controller.refreshRows();
-            }
+class HolidayTableController extends TableController {
+    constructor() {
+        super({
+            entityCaption: "Holiday",
+            table: $("#holidayTable"),
+            addButton: $("#addHoliday"),
+            editButton: $("#editHoliday"),
+            deleteButton: $("#deleteHoliday"),
+            editor: $("#holidayEditor")
         });
     }
 
     /*
-    * Utilities
+    * Protected Members
     */
-    #enableEditMode(enable, inputElements, actionGroupId, modalGroupId) {
-        for (const id of inputElements) {
-            $(id).prop("disabled", !enable);
-        }
+    _formatRow(row, data) {
+        row.find("#holidayNameColumn").text(data[0]);
+        row.find("#holidayStartDateColumn").text(Cpi.FormatShortDateString(data[1]));
+        row.find("#holidayEndDateColumn").text(Cpi.FormatShortDateString(data[2] || data[1]));
+    }
 
-        $(actionGroupId).css("display", enable ? "none" : "flex");
-        $(modalGroupId).css("display", enable ? "flex" : "none");
+    _onClickRow(row) {
+        if (row.hasClass("holidayListRow_active")) {
+            super._onClickRow(row);
+        }
+    }
+
+    fetchEntity(row, success) {
+        const data = {
+            holidayName: row.find("#holidayNameColumn").text(),
+            startDate: row.find("#holidayStartDateColumn").text(),
+            endDate: row.find("#holidayEndDateColumn").text()
+        };
+
+        success(data);
+    }
+
+    insertEntity(data, success) {
+        success(data);
+    }
+
+    updateEntity(row, data, success) {
+        success(data);
+    }
+
+    deleteEntity(row, success) {
+    }
+
+    _getEditorData(editor) {
+        const data = {
+            holidayName: editor.find("#holidayName").val(),
+            startDate: editor.find("#startDate").val(),
+            endDate: editor.find("#endDate").val()
+        };
+        return data;
+    }
+
+    _setEditorData(editor, data) {
+        if (data) {
+            editor.find("#holidayName").val(data.holidayName);
+            editor.find("#startDate").val(data.startDate);
+            editor.find("#endDate").val(data.endDate);
+        }
+        else {
+            editor.find("#holidayName").val("");
+            editor.find("#startDate").val("");
+            editor.find("#endDate").val("");
+        }
     }
 }
 
 
-class StudentController extends EntityController {
+class TableOverlay extends OverlayContext {
+    #tableController;
+
+    constructor(settings) {
+        super(settings);
+
+        this.#tableController = new TableController(settings);
+        this.#tableController._formatRow = this._formatRow || this.#tableController._formatRow;
+        this.#tableController._compareRows = this._compareRows || this.#tableController._compareRows;
+        this.#tableController.insertEntity = this.insertEntity || this.#tableController.insertEntity;
+        this.#tableController.updateEntity = this.updateEntity || this.#tableController.updateEntity;
+        this.#tableController.deleteEntity = this.deleteEntity || this.#tableController.deleteEntity;
+        this.#tableController._getEditorData = this._getEditorData || this.#tableController._getEditorData;
+        this.#tableController._setEditorData = this._setEditorData || this.#tableController._setEditorData;
+    }
+
+    _activateOverlay() {
+        super._activateOverlay();
+        this.#tableController.refreshRows();
+    }
+}
+
+
+class StudentOverlay extends TableOverlay {
     constructor() {
         super({
-            entityName: "student",
-            entitySetName: "students",
+            overlayName: "Students",
+            overlayElement: $("#Students"),
+
+            entityBroker: new EntityBroker({
+                entityName: "student",
+                entitySetName: "students"
+            }),
+
             entityCaption: "Student",
             table: $("#studentTable"),
             addButton: $("#addStudent"),
@@ -282,26 +307,39 @@ class StudentController extends EntityController {
         });
     }
 
-    formatRow(row, student) {
+    _formatRow(row, student) {
+        row.attr("id", student.studentId);
         row.find("#studentNameColumn").text(`${student.lastName}, ${student.firstName}`);
         row.find("#studentNumberColumn").text(student.studentNumber || "");
         row.find("#studentGradeColumn").text(student.gradeName || "");
         row.find("#studentLocationColumn").text(student.locationName);
     }
 
-    compareRows(lhs, rhs) {
+    _compareRows(lhs, rhs) {
         const left = $(lhs).find("#studentNameColumn").text();
         const right = $(rhs).find("#studentNameColumn").text();
         return left.localeCompare(right);
     }
+
+    _getEditorData(editor) {
+    }
+
+    _setEditorData(editor, data) {
+    }
 }
 
 
-class AccountController extends EntityController {
+class AccountOverlay extends TableOverlay {
     constructor() {
         super({
-            entityName: "account",
-            entitySetName: "accounts",
+            overlayName: "Accounts",
+            overlayElement: $("#Accounts"),
+
+            entityBroker: new EntityBroker({
+                entityName: "account",
+                entitySetName: "accounts"
+            }),
+
             entityCaption: "Account",
             listUrl: "/@/accounts?columns=accountId,lastName,firstName,accessType,statusType",
             table: $("#accountTable"),
@@ -311,27 +349,74 @@ class AccountController extends EntityController {
             toggleButtons: [ $("#sendAccountInvite"), $("#assignAccountClasses") ],
             editor: $("#accountEditor")
         });
+
+        $("#sendAccountInvite").on("click", () => {
+            const row = this.getSelectedRow();
+            if (row) {
+                const params = {
+                    accountId: row.attr("id")
+                };
+                Cpi.SendApiRequest({
+                    method: "POST",
+                    url: "/@/account/invitation",
+                    data: JSON.stringify(params),
+                    success: (data) => {
+                        const registrationUrl = `${window.location.protocol}//${window.location.host}/`
+                        Cpi.ShowAlert()
+                    }
+                });
+    
+            }
+
+        });
     }
 
-    formatRow(row, account) {
+    _formatRow(row, account) {
+        row.attr("id", account.accountId);
         row.find("#accountNameColumn").text(`${account.lastName}, ${account.firstName}`);
         row.find("#accountAccessColumn").text(account.accessType);
         row.find("#accountStatusColumn").text(account.statusType);
     }
 
-    compareRows(lhs, rhs) {
+    _compareRows(lhs, rhs) {
         const left = $(lhs).find("#accountNameColumn").text();
         const right = $(rhs).find("#accountNameColumn").text();
         return left.localeCompare(right);
     }
+
+    _getEditorData(editor) {
+        return {
+            email: editor.find("#email").val(),
+            accessType: editor.find("#accessType").val(),
+            statusType: editor.find("#statusType").val()
+        };
+    }
+
+    _setEditorData(editor, data) {
+        if (data) {
+            editor.find("#email").val(data.email);
+            editor.find("#accessType").val(data.accessType);
+            editor.find("#statusType").val(data.statusType);
+        }
+        else {
+            editor.find("#email").val("");
+            editor.find("#accessType").val("");
+            editor.find("#statusType").val("");
+        }
+    }
 }
 
 
-class ClassController extends EntityController {
+class ClassOverlay extends TableOverlay {
     constructor() {
         super({
-            entityName: "class",
-            entitySetName: "classes",
+            overlayName: "Classes",
+            overlayElement: $("#Classes"),
+
+            entityBroker: new EntityBroker({
+                entityName: "class",
+                entitySetName: "classes"
+            }),
             entityCaption: "Class",
             table: $("#classTable"),
             addButton: $("#addClass"),
@@ -341,55 +426,107 @@ class ClassController extends EntityController {
             toggleButtons: [ $("#assignClassStudents"), $("#assignClassCourses") ],
             editor: $("#classEditor")
         });
+
+        $("#assignClassCourses").on("click", () => {
+            Cpi.ShowPopup($("#coursePicker"));
+        });
     }
 
-    formatRow(row, classData) {
+    _formatRow(row, classData) {
+        row.attr("id", classData.classId);
         row.find("#classNameColumn").text(classData.className);
         row.find("#classTeacherColumn").text(classData.teacherLastName ? `${classData.teacherLastName}, ${classData.teacherFirstName}` : "");
         row.find("#classLocationColumn").text(classData.locationName);
     }
 
-    compareRows(lhs, rhs) {
+    _compareRows(lhs, rhs) {
         const left = $(lhs).find("#classNameColumn").text();
         const right = $(rhs).find("#classNameColumn").text();
         return left.localeCompare(right);
     }
+
+    _getEditorData(editor) {
+    }
+
+    _setEditorData(editor, data) {
+    }
 }
 
-class CourseController extends EntityController {
+class CourseOverlay extends TableOverlay {
     constructor() {
+        const editor = $("#courseEditor");
+
         super({
-            entityName: "course",
-            entitySetName: "courses",
+            overlayName: "Courses",
+            overlayElement: $("#Courses"),
+
+            entityBroker: new EntityBroker({
+                entityName: "course",
+                entitySetName: "courses"
+            }),
+
             entityCaption: "Course",
             table: $("#courseTable"),
             addButton: $("#addCourse"),
             editButton: $("#editCourse"),
             deleteButton: $("#deleteCourse"),
             toggleButtons: [ $("#assignCourseClasses") ],
-            editor: $("#courseEditor")
+            editor: editor
         });
+
+        const subjectDropdown = editor.find("#courseSubject");
+        for (const subjectName of cpidata.organization.curriculum.search.subjects) {
+            subjectDropdown.append(`<option>${subjectName}</option>`);
+        }
     }
 
-    formatRow(row, course) {
+    _formatRow(row, course) {
+        row.attr("id", course.courseId);
         row.find("#courseNameColumn").text(course.courseName);
         row.find("#courseSubjectColumn").text(course.subjectName || "");
         row.find("#courseGradeColumn").text(course.gradeName || "");
     }
 
-    compareRows(lhs, rhs) {
+    _compareRows(lhs, rhs) {
         const left = $(lhs).find("#courseNameColumn").text();
         const right = $(rhs).find("#courseNameColumn").text();
         return left.localeCompare(right);
     }
+
+    _getEditorData(editor) {
+        return {
+            courseName: editor.find("#courseName").val(),
+            subjectName: editor.find("#courseSubject").val(),
+            gradeName: editor.find("#courseGrade").val()
+        };
+    }
+
+    _setEditorData(editor, data) {
+        if (data) {
+            editor.find("#courseName").val(data.courseName);
+            editor.find("#courseSubject").val(data.subjectName);
+            editor.find("#courseGrade").val(data.gradeName);
+        }
+        else {
+            editor.find("#courseName").val("");
+            editor.find("#courseSubject").val("");
+            editor.find("#courseGrade").val("");
+        }
+    }
 }
 
 
-class LocationController extends EntityController {
+class LocationOverlay extends TableOverlay {
     constructor() {
         super({
-            entityName: "location",
-            entitySetName: "locations",
+            overlayName: "Locations",
+            overlayElement: $("#Locations"),
+
+            entityBroker: new EntityBroker({
+                entityName: "location",
+                entitySetName: "locations"
+            }),
+
             entityCaption: "Location",
             table: $("#locationTable"),
             addButton: $("#addLocation"),
@@ -399,14 +536,21 @@ class LocationController extends EntityController {
         });
     }
 
-    formatRow(row, location) {
+    _formatRow(row, location) {
+        row.attr("id", location.locationId);
         row.find("#locationNameColumn").text(location.locationName);
     }
 
-    compareRows(lhs, rhs) {
+    _compareRows(lhs, rhs) {
         const left = $(lhs).find("#locationNameColumn").text();
         const right = $(rhs).find("#locationNameColumn").text();
         return left.localeCompare(right);
+    }
+
+    _getEditorData(editor) {
+    }
+
+    _setEditorData(editor, data) {
     }
 }
 

@@ -58,8 +58,7 @@ class BenchmarkPicker {
             const grade = $("#benchmarkPickerGrade").val();
             const keyword = $("#benchmarkPickerKeyword").val();
 
-            const api = new CpiApi();
-            api.sendRequest({
+            Cpi.SendApiRequest({
                 method: "GET",
                 url: `/@/curriculum/search?subject=${subject}&grade=${grade}&keyword=${keyword}`,
                 success: (data) => {

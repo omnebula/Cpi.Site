@@ -3,7 +3,13 @@ class AccountPage extends CpiPage {
     #authCodeChanged;
 
     constructor() {
-        super({
+        super();
+
+        if (!Cpi.ValidateLogin()) {
+            return;
+        }
+
+        Cpi.SendApiRequest({
             method: "GET",
             url: "/@/account/",
             success: (data, status, xhr) => {
@@ -89,7 +95,7 @@ class AccountPage extends CpiPage {
             params["authCode"] = authCode;
         }
 
-        this.sendApiRequest({
+        Cpi.SendApiRequest({
             method: "PUT",
             url: "/@/account",
             data: JSON.stringify(params),

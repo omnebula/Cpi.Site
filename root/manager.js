@@ -139,7 +139,7 @@ class ManagerPage extends CpiPage {
                 });
 
                 if (!params.email) {
-                    this.alert("Missing email");
+                    Cpi.ShowAlert("Missing email");
                     return false;
                 }
 
@@ -148,7 +148,7 @@ class ManagerPage extends CpiPage {
                     url += `/${data.accountId}`;
                 }
 
-                this.sendApiRequest({
+                Cpi.SendApiRequest({
                     method: apiMethod,
                     url: url,
                     data: JSON.stringify(params),
@@ -180,7 +180,7 @@ class ManagerPage extends CpiPage {
             return;
         }
 
-        this.sendApiRequest({
+        Cpi.SendApiRequest({
             method: "DELETE",
             url: `/@/account/${data.accountId}`,
             success: () => {
@@ -194,7 +194,7 @@ class ManagerPage extends CpiPage {
             accountId: data.accountId
         };
 
-        this.sendApiRequest({
+        Cpi.SendApiRequest({
             method: "POST",
             url: "/@/account/invitation",
             data: JSON.stringify(params),
@@ -206,7 +206,7 @@ class ManagerPage extends CpiPage {
 
     #showInvitation(invitationId) {
         const invitationUrl = `${window.location.origin}/registration?id=${invitationId}`;
-        this.alert(invitationUrl);
+        Cpi.ShowAlert(invitationUrl);
     }
 }
 

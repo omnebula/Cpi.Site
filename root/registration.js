@@ -3,7 +3,15 @@
 class RegistrationPage extends CpiPage {
 
     constructor() {
-        super({
+        super();
+
+        const searchParams = new URLSearchParams(window.location.search);
+        const invitationId = searchParams.get("id");
+        if (!invitationId) {
+            window.open("/");
+        }
+
+        Cpi.SendApiRequest({
             method: "GET",
             url: `/@/account/invitation/${invitationId}`,
             success: (data) => {
@@ -11,7 +19,7 @@ class RegistrationPage extends CpiPage {
             },
             error: (xhr, status, message) => {
                 if (xhr.status === 404) {
-                    this.alert("This registration request is invalid");
+                    Cpi.ShowAlert("This registration request is invalid");
                     window.location.href = "/";
                 }
             }
@@ -19,12 +27,6 @@ class RegistrationPage extends CpiPage {
     }
 
     #init(data) {
-        const searchParams = new URLSearchParams(window.location.search);
-        const invitationId = searchParams.get("id");
-        if (!invitationId) {
-            window.open("/");
-        }
-
         $("#username").val(data.email);
         $("#firstName").val(data.firstName);
         $("#lastName").val(data.lastName);
@@ -50,28 +52,28 @@ class RegistrationPage extends CpiPage {
 
         params.firstName = $("#firstName").val().trim();
         if (!params.firstName.length) {
-            this.alert("Missing first name");
+            Cpi.ShowAlert("Missing first name");
             $("#firstName").focus();
             return;
         }
 
         params.lastName = $("#lastName").val().trim();
         if (!params.lastName.length) {
-            this.alert("Missing last name");
+            Cpi.ShowAlert("Missing last name");
             $("#lastName").focus();
             return;
         }
 
         params.authCode = $("#password").val().trim();
         if (!params.authCode.length) {
-            this.alert("Missing password");
+            Cpi.ShowAlert("Missing password");
             $("#password").focus();
             return;
         }
 
         const confirmAuthCode = $("#confirm").val().trim();
         if (!confirmAuthCode.length) {
-            this.alert("Missing password confirmation");
+            Cpi.ShowAlert("Missing password confirmation");
             $("#confirm").focus();
             return;
         }
@@ -81,7 +83,7 @@ class RegistrationPage extends CpiPage {
             return;
         }
 
-        this.sendApiRequest({
+        Cpi.SendApiRequest({
             method: "POST",
             url: "/@/account/registration",
             data: JSON.stringify(params),
@@ -93,7 +95,7 @@ class RegistrationPage extends CpiPage {
                     window.location.href = "/";
                 }
                 else {
-                    this.alert(message);
+                    Cpi.ShowAlert(message);
                 }
             }
         });

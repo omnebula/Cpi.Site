@@ -113,8 +113,32 @@ class Cpi {
         };
     }
 
-    static IsLoggedIn() {
-        return window.cpidata ? true : false;
+
+    static SendApiRequest(params)
+    {
+        const prevErrorHandler = params.error;
+        params.error = (xhr, status, error) => {
+            switch (xhr.status) {
+                case 401:  // denied
+                    Cpi.ShowLogin();
+                    break;
+                default:
+                    if (prevErrorHandler) {
+                        prevErrorHandler(xhr, status, error);
+                    }
+                    else {
+                        alert(`${xhr.status} - ${error}`);
+                    }
+                    break;
+            }
+        };
+
+        $.ajax(params);
+    }
+
+
+    static IsLoggedIn(autoLogin) {
+        return window.cpidata !== undefined;
     }
     static ValidateLogin() {
         if (Cpi.IsLoggedIn()) {
@@ -133,10 +157,23 @@ class Cpi {
         window.alert(message);
     }
 
-    static ShowPopup(popup) {
+    static ShowPopup(popup, accept, cancel) {
         popup.css("display", "flex");
         $(".popupFrame").css("display", "block");
         $(".appFrame").css("opacity", "0.5");
+
+        if (accept) {
+            popup.find("#popupAccept").off("click").on("click", accept);
+        }
+        else {
+            popup.find("#popupAccept").off("click").on("click", () => { Cpi.HidePopup(popup); });
+        }
+        if (cancel) {
+            popup.find("#popupCancel").off("click").on("click", cancel);
+        }
+        else {
+            popup.find("#popupCancel").off("click").on("click", () => { Cpi.HidePopup(popup); });
+        }
     }
 
     static HidePopup(popup) {
@@ -172,36 +209,10 @@ class Cpi {
 }
 
 
-class CpiApi {
-    sendRequest(params)
-    {
-        const prevErrorHandler = params.error;
-        params.error = (xhr, status, error) => {
-            switch (xhr.status) {
-                case 401:  // denied
-                    Cpi.ShowLogin();
-                    break;
-                default:
-                    if (prevErrorHandler) {
-                        prevErrorHandler(xhr, status, error);
-                    }
-                    else {
-                        alert(`${xhr.status} - ${error}`);
-                    }
-                    break;
-            }
-        };
+class CpiPage {
+    #accountData;
 
-        $.ajax(params);
-    }
-}
-
-
-class CpiPage
-{
-    accountData;
-
-    constructor(initParam) {
+    constructor() {
         // Dynamically insert the login panel.
         const output = $.parseHTML(this.#loginHtml);
         $("body").append(output[1]);
@@ -228,89 +239,22 @@ class CpiPage
             });
         });
 
-        // Check if static data was successfully loaded.
-        if (!window.cpidata) {
-            Cpi.ShowLogin();
-        }
-        else {
+        if (Cpi.IsLoggedIn()) {
             // Initialize Site Menu
             $("#siteLogout").on("click", () => {
                 this.#onLogout();
             });
 
-            this.accountData = JSON.parse(localStorage.getItem("accountData"));
+            this.#accountData = JSON.parse(localStorage.getItem("accountData"));
 
-            if (this.accountData && this.accountData.accessType === "organization") {
+            if (this.#accountData && this.#accountData.accessType === "organization") {
                 $("#siteViewManager").css("display", "inline");
             }
-
-            if (initParam) {
-                this.sendApiRequest(initParam);
-            }
         }
     }
 
-    initPage() {
-    }
-
-    validateLogin() {
-        if (window.cpidata) {
-            return true;
-        }
-        else {
-            Cpi.ShowLogin();
-            return false;
-        }
-    }
-
-    /*
-    * API Request
-    */
-    sendApiRequest(params)
-    {
-        const api = new CpiApi();
-        api.sendRequest(params);
-    }
-
-    /*
-    * Popups
-    */
-    showEditPopup(params) {
-        const popup = $(params.popupId).css("display", "flex");
-
-        if (params.popupTitle) {
-            popup.find(".popupCaptionTitle").text(params.popupTitle);
-        }
-
-        popup.find("#popupAccept")
-            .on("click", () => {
-                if (params.accept) {
-                    if (!params.accept(popup)) {
-                        return;
-                    }
-                }
-                popup.hide();
-            });
-        
-        popup.find("#popupCancel")
-            .on("click", () => {
-                if (params.cancel) {
-                    params.cancel(popup);
-                }
-                popup.hide();
-            });
-
-        if (params.show) {
-            params.show(popup);
-        }
-   
-    }
-
-    alert(message) {
-        window.alert(message);
-    }
-    confirm(message) {
-        return window.confirm(message);
+    get accountData() {
+        return this.#accountData;
     }
 
     /*
@@ -320,7 +264,7 @@ class CpiPage
     #onLogout() {
         localStorage.removeItem("accountData");
 
-        this.sendApiRequest({
+        Cpi.SendApiRequest({
             method: "POST",
             url: "/@/account/logout",
             success: () => {

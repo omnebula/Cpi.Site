@@ -6,9 +6,14 @@ class LessonPage extends CpiPage {
     #detailChanged;
 
     constructor() {
-        const searchParams = new URLSearchParams(window.location.search);
+        super();
 
-        super({
+        if (!Cpi.ValidateLogin()) {
+            return;
+        }
+
+        const searchParams = new URLSearchParams(window.location.search);
+        Cpi.SendApiRequest({
             method: "GET",
             url: `/@/lesson/${searchParams.get("id")}`,
             success: (data, status, xhr) => {
@@ -104,7 +109,7 @@ class LessonPage extends CpiPage {
                 lessonName: lessonName.val()
             };
 
-            this.sendApiRequest({
+            Cpi.SendApiRequest({
                 method: "PUT",
                 url: `/@/lesson/${this.#lessonId}?noecho`,
                 data: JSON.stringify(params),
@@ -144,7 +149,7 @@ class LessonPage extends CpiPage {
             params.benchmarks.push(current.benchmarkId);
         }
 
-        this.sendApiRequest({
+        Cpi.SendApiRequest({
             method: "POST",
             url: "/@/lesson/benchmark",
             data: JSON.stringify(params),
@@ -160,7 +165,7 @@ class LessonPage extends CpiPage {
             benchmarkId: benchmarkId
         };
 
-        this.sendApiRequest({
+        Cpi.SendApiRequest({
             method: "DELETE",
             url: "/@/lesson/benchmark",
             data: JSON.stringify(params),
@@ -183,7 +188,7 @@ class LessonPage extends CpiPage {
             params.details[detailName] = $(element).val();
         });
 
-        this.sendApiRequest({
+        Cpi.SendApiRequest({
             method: "PUT",
             url: `/@/lesson/${this.#lessonId}?noecho`,
             data: JSON.stringify(params),
@@ -194,7 +199,7 @@ class LessonPage extends CpiPage {
     }
 
     #seekLesson(lessonId, direction) {
-        this.sendApiRequest({
+        Cpi.SendApiRequest({
             method: "GET",
             url: `/@/lesson/${lessonId}?seek=${direction}`,
             success: (data) => {

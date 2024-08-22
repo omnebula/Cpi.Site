@@ -7,7 +7,7 @@ class SchedulePage extends CpiPage {
     constructor() {
         super();
 
-        if (!Cpi.IsLoggedIn()) {
+        if (!Cpi.ValidateLogin()) {
             return;
         }
 
@@ -59,7 +59,7 @@ class SchedulePage extends CpiPage {
             containerDate = Cpi.DateAdd(containerDate, 1);
         }
 
-        this.sendApiRequest({
+        Cpi.SendApiRequest({
             method: "GET",
             url: `/@/lessons?start=${Cpi.FormatDateString(this.#weekDates.start)}&end=${Cpi.FormatDateString(this.#weekDates.end)}`,
             success: (data, status, xhr) => {
@@ -121,7 +121,7 @@ class SchedulePage extends CpiPage {
         input.off("blur").off("keyup");
 
         if (!this.accountData.classes || this.accountData.classes.length === 0) {
-            this.alert("No class assigned");
+            Cpi.ShowAlert("No class assigned");
             return;
         }
 
@@ -131,7 +131,7 @@ class SchedulePage extends CpiPage {
             classId: this.accountData.classes[0].classId
         };
 
-        this.sendApiRequest({
+        Cpi.SendApiRequest({
             method: "POST",
             url: `/@/lesson`,
             data: JSON.stringify(params),
@@ -183,7 +183,7 @@ class SchedulePage extends CpiPage {
     #deleteLesson(lesson) {
         const lessonId = lesson.attr("id");
 
-        this.sendApiRequest({
+        Cpi.SendApiRequest({
             method: "DELETE",
             url: `/@/lesson/${lessonId}`,
             success: (data, status, xhr) => {
@@ -213,7 +213,7 @@ class SchedulePage extends CpiPage {
             }
         ];
 
-        this.sendApiRequest({
+        Cpi.SendApiRequest({
             method: "PUT",
             url: `/@/lesson?noecho`,
             data: JSON.stringify(params),
@@ -237,7 +237,7 @@ class SchedulePage extends CpiPage {
             lessonDate: Cpi.FormatDateString(lessonDate)
         };
 
-        this.sendApiRequest({
+        Cpi.SendApiRequest({
             method: "POST",
             url: "/@/lesson/repeat",
             data: JSON.stringify(params),

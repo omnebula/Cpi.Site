@@ -6,7 +6,13 @@ class RoadmapPage extends CpiPage
     #coverageRowTemplate;
 
     constructor() {
-        super({
+        super();
+
+        if (!Cpi.ValidateLogin()) {
+            return;
+        }
+        
+        Cpi.SendApiRequest({
             method: "GET",
             url: "/@/lesson/coverage?subject=Mathematics&grade=3",
             success: (data, status, xhr) => {

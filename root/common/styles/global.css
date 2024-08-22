@@ -42,12 +42,6 @@ input[type=button], input[type=submit] {
     display: flex;
     flex-direction: row;
     gap: 16px;
-    margin-bottom: 24px;
-}
-
-.inputRow {
-    display: flex;
-    gap: 16px;
     margin-bottom: 30px;
 }
 
@@ -66,7 +60,7 @@ input[type=button], input[type=submit] {
     color: orange;
 }
 
-.inputTextBox {
+.inputTextBox, .inputSelect {
     outline: none;
     padding: 16px;
     border-radius: 8px;
@@ -80,11 +74,13 @@ input[type=button], input[type=submit] {
 }
 .inputTextBox:disabled {
     background-color: inherit;
+    color: #ddd;
 }
-.inputTextBox:focus {
+.inputTextBox:focus, .inputSelect:focus {
     border-color: white;
     background-color: #272727;
 }
+
 .inputButton, .inputAcceptButton, .inputCancelButton {
     border-radius: 8px;
     padding: 8px 16px;
@@ -156,8 +152,7 @@ input[type=button], input[type=submit] {
 }
 
 .popupBox {
-    padding: 8px;
-    border: 1px solid green;
+    border: 2px solid #336699;
     display: none;
     flex-direction: column;
     background-color: #414141;
@@ -170,15 +165,28 @@ input[type=button], input[type=submit] {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    border-bottom:1px solid white;
-    padding-bottom: 8px;
+    padding: 12px;
+    background-color: #272727;
+    margin-bottom: 24px;
 }
 .popupCaptionTitle {
     font-size: 17px;
-    font-weight: bolder;
+    color: lightyellow;
 }
 .popupCaptionButton {
-    width: 75px;
+    min-width: 64px;
+    width: 64px;
+    height: 100%;
+    padding: 0;
+    border-radius: 4px;
+    font-family: inherit;
+}
+
+.popupRow {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    margin: 0 36px 36px 36px;
 }
 
 /*

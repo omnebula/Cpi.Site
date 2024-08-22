@@ -6,8 +6,11 @@ main {
 .st-body-table {
     vertical-align: top;
 }
+.st-tr-even {
+    background-color: inherit;
+}
 .st-tr-odd {
-    background-color: #2a2a2a;
+    background-color: #1c1c1c;
 }
 
 
@@ -120,12 +123,12 @@ main {
     width: 100%;
 }
 
-#settingsModalCommands {
+#settingsEditButtons {
     display: none;
 }
 
 /* Calendar Overlay */
-#calendarModalCommands {
+#calendarEditButtons {
     display: none;
 }
 
@@ -136,10 +139,11 @@ main {
     width: 170px;
 }
 
-.holidayListSection {
+.holidayTableSection {
     flex: 1;
     padding-top: 10px;
     border-top: 1px solid #333;
+    color: #ddd;
 }
 .holidayHeaderSection {
     display: flex;
@@ -149,7 +153,8 @@ main {
 .holidayTableHeader {
     color: green;
 }
-.holidayListRow {
+.holidayListRow_active {
+    color: white;
 }
 .holidayListRow_active:hover {
     background-color: steelblue;
@@ -169,6 +174,13 @@ main {
     display: none;
 }
 
+.holidayEditor {
+    width: 428px;
+}
+.holidayEditorDate {
+    width: 170px;
+}
+
 /* Students Overlay */
 .studentNumberColumn {
     width: 125px;
@@ -182,8 +194,7 @@ main {
 }
 
 .studentEditor {
-    width: 700px;
-    height: 400px;
+    width: 400px;
 }
 
 /* Accounts Overlay */
@@ -195,7 +206,7 @@ main {
 }
 
 .accountEditor {
-    width: 700px;
+    width: 400px;
 }
 
 
@@ -209,8 +220,7 @@ main {
 }
 
 .classEditor {
-    width: 700px;
-    height: 400px;
+    width: 400px;
 }
 
 /* Course Overlay */
@@ -223,13 +233,22 @@ main {
 }
 
 .courseEditor {
-    width: 700px;
-    height: 400px;
+    width: 500px;
+}
+.courseEditor #courseSubject {
+    width: 300px;
+}
+
+.coursePicker {
+    width: 650px;
+}
+
+.coursePickerTable {
+    height: 200px;
 }
 
 /* Locations Overlay */
 
 .locationEditor {
-    width: 700px;
-    height: 400px;
+    width: 400px;
 }
