@@ -20,24 +20,30 @@ class EditController {
 
         if (settings.acceptButton) {
             settings.acceptButton.on("click", () => {
+                var disableEdit = true;
                 if (settings.acceptChanges) {
-                    settings.acceptChanges();
+                    disableEdit = settings.acceptChanges() || true;
                 }
                 else {
-                    this.acceptChanges();
+                    disableEdit = this.acceptChanges() || true;
                 }
-                this.enableEditMode(false);
+                if (disableEdit) {
+                    this.enableEditMode(false);
+                }
             });
         }
         if (settings.cancelButton) {
             settings.cancelButton.on("click", () => {
+                var disableEdit = true;
                 if (settings.cancelChanges) {
-                    settings.cancelChanges();
+                    disableEdit = settings.cancelChanges() || true;
                 }
                 else {
-                    this.cancelChanges();
+                    disableEdiot = this.cancelChanges() || true;
                 }
-                this.enableEditMode(false);
+                if (disableEdit) {
+                    this.enableEditMode(false);
+                }
             });
         }
     }

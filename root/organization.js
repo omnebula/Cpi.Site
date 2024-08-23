@@ -138,7 +138,33 @@ class CalendarOverlay extends OverlayContext {
     }
 
     acceptChanges() {
+        const data = {
+            calendarName: this.element.find("#calendarName").val(),
+            startDate: Cpi.ShortDateToIsoString(this.element.find("#calendarStartDate").val()),
+            endDate: Cpi.ShortDateToIsoString(this.element.find("#calendarEndDate").val()),
+            holidays: this.#holidayTableController.getHolidays()
+        };
 
+        var method, url;
+        if (this.#isNewCalendar) {
+            method = "PUT";
+            url = "/@/calendar";
+        }
+        else {
+            method = "PATCH";
+            url = `/@/calendar/${this.#currentData.calendarId}`;
+        }
+
+        // Check if new or update.
+        Cpi.SendApiRequest({
+            method: method,
+            url: url,
+            data: JSON.stringify(data),
+            success: (data) => {
+                this.#currentData = data;
+                this.#setOverlayData(this.#currentData);
+            }
+        })
     }
 
     cancelChanges() {
@@ -166,8 +192,8 @@ class CalendarOverlay extends OverlayContext {
     #setOverlayData(data) {
         if (data) {
             $("#calendarName").val(data.calendarName);
-            $("#calendarStartDate").val(data.startDate);
-            $("#calendarEndDate").val(data.endDate);
+            $("#calendarStartDate").val(Cpi.FormatShortDateString(data.startDate));
+            $("#calendarEndDate").val(Cpi.FormatShortDateString(data.endDate));
     
             this.#holidayTableController.setRows(data.holidays);
         }
@@ -178,6 +204,8 @@ class CalendarOverlay extends OverlayContext {
 
             this.#holidayTableController.findRows("td.holidayDateColumn").text("");
         }
+
+        this.#isNewCalendar = false;
     }
 }
 
@@ -225,6 +253,24 @@ class HolidayTableController extends TableController {
         });
     }
 
+    getHolidays() {
+        const holidays = [];
+
+        const rows = this.getRows();
+        for (const current of rows) {
+            const row = $(current);
+            const holiday = [
+                row.find("#holidayNameColumn").text(),
+                Cpi.ShortDateToIsoString(row.find("#holidayStartDateColumn").text()),
+                Cpi.ShortDateToIsoString(row.find("#holidayEndDateColumn").text()),
+            ]
+
+            holidays.push(holiday);
+        }
+
+        return holidays;
+    }
+
     /*
     * Protected Members
     */
@@ -239,21 +285,26 @@ class HolidayTableController extends TableController {
             super._onClickRow(row);
         }
     }
+    _onDoubleClickRow(row) {
+        if (row.hasClass("holidayListRow_active")) {
+            super._onDoubleClickRow(row);
+        }
+    }
 
     _getEditorData(editor) {
-        const data = {
-            holidayName: editor.find("#holidayName").val(),
-            startDate: editor.find("#startDate").val(),
-            endDate: editor.find("#endDate").val()
-        };
+        const data = [
+            editor.find("#holidayName").val(),
+            Cpi.ShortDateToIsoString(editor.find("#startDate").val()),
+            Cpi.ShortDateToIsoString(editor.find("#endDate").val())
+        ];
         return data;
     }
 
     _setEditorData(editor, data) {
         if (data) {
-            editor.find("#holidayName").val(data.holidayName);
-            editor.find("#startDate").val(data.startDate);
-            editor.find("#endDate").val(data.endDate);
+            editor.find("#holidayName").val(data[0]);
+            editor.find("#startDate").val(Cpi.FormatShortDateString(data[1]));
+            editor.find("#endDate").val(Cpi.FormatShortDateString(data[2]));
         }
         else {
             editor.find("#holidayName").val("");
@@ -269,12 +320,11 @@ class HolidayBroker extends EntityBroker {
     }
 
     fetchEntity(row, success) {
-        const data = {
-            holidayName: row.find("#holidayNameColumn").text(),
-            startDate: row.find("#holidayStartDateColumn").text(),
-            endDate: row.find("#holidayEndDateColumn").text()
-        };
-
+        const data = [
+            row.find("#holidayNameColumn").text(),
+            Cpi.ShortDateToIsoString(row.find("#holidayStartDateColumn").text()),
+            Cpi.ShortDateToIsoString(row.find("#holidayEndDateColumn").text())
+        ];
         success(data);
     }
 
@@ -283,7 +333,7 @@ class HolidayBroker extends EntityBroker {
     }
 
     updateEntity(row, data, success) {
-        success(data);
+        success(row, data);
     }
 
     deleteEntity(row, success) {

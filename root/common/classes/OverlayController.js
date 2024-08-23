@@ -59,6 +59,9 @@ class OverlayContext {
     get name() {
         return this.#overlayName;
     }
+    get element() {
+        return this.#overlayElement;
+    }
 
     showOverlay() {
         this._activateOverlay();

@@ -29,7 +29,7 @@ td {
     cursor: default;
 }
 
-input[type=button], input[type=submit] {
+input[type=submit] {
     border: 0;
 }
 
@@ -84,10 +84,24 @@ input[type=button], input[type=submit] {
 .inputButton, .inputAcceptButton, .inputCancelButton {
     border-radius: 8px;
     padding: 8px 16px;
-    min-width: 100px;
     color: white;
     background-color: #336699;
+    border: 0;
 }
+.inputButton:hover {
+    font-weight: bold;
+    background-color: steelblue;    
+}
+.inputButton:active {
+    font-weight: bold;
+    background-color: lightsteelblue;    
+}
+.inputButton:disabled {
+    color: darkgray;
+    background-color: #555;    
+    font-weight: normal;
+}
+
 .inputAcceptButton {
     background-color: darkgreen;
 }

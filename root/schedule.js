@@ -18,6 +18,21 @@ class SchedulePage extends CpiPage {
         this.#weekDates = Cpi.CalculateWeekDates(weekNumber);
 
         // Initialize navigation controls.
+        const selector = $("#selectWeek");
+        for (var week = 1; week <= Cpi.GetLastWeekNumber(); ++week) {
+            const option = $(document.createElement("option"));
+            option.val(week);
+            option.text(`Week ${week} - ${Cpi.FormatShortDateString(Cpi.CalculateWeekStartDate(week))}`);
+            selector.append(option);
+        }
+        selector.val(weekNumber);
+        selector.on("change", () => {
+            const newWeekNumber = selector.val();
+            if (weekNumber !== newWeekNumber) {
+                this.#viewWeek(newWeekNumber);
+            }
+        });
+
         if (weekNumber > 1) {
             $("#viewPreviousWeek").on("click", () => { this.#viewWeek(weekNumber - 1); });
         }
@@ -44,6 +59,7 @@ class SchedulePage extends CpiPage {
         this.#lessonTemplate.css("visibility", "visible");
 
         // Initialize column headers.
+        const today = Cpi.GetTodayDate();
         var containerDate = this.#weekDates.start;
         const columns = $(".weeklyColumn");
         for (const current of columns) {
@@ -53,15 +69,27 @@ class SchedulePage extends CpiPage {
 
             column.find(".weeklyColumnDate").text(Cpi.FormatShortDateString(lessonDate));
 
-            column.find("#addLesson").on("click", () => { this.#onAddLesson(container, lessonDate); });
-            column.find("#repeatColumn").on("click", () => { this.#onRepeatColumn(lessonDate); });
+            if (Cpi.IsHoliday(lessonDate)) {
+                column.find(".weeklyColumnDay").addClass("weeklyColumnHoliday");
+                column.find(".weeklyColumnDate").addClass("weeklyColumnHoliday");
+                column.find("#addLesson").css("visibility", "hidden");
+                column.find("#repeatColumn").css("visibility", "hidden");
+            }
+            else {
+                column.find("#addLesson").on("click", () => { this.#onAddLesson(container, lessonDate); });
+                column.find("#repeatColumn").on("click", () => { this.#onRepeatColumn(lessonDate); });
+            }
+
+            if (lessonDate.getTime() === today.getTime()) {
+                column.find(".weeklyColumnHeader").addClass("weeklyColumnHeader_today");
+            }
             
             containerDate = Cpi.DateAdd(containerDate, 1);
         }
 
         Cpi.SendApiRequest({
             method: "GET",
-            url: `/@/lessons?start=${Cpi.FormatDateString(this.#weekDates.start)}&end=${Cpi.FormatDateString(this.#weekDates.end)}`,
+            url: `/@/lessons?start=${Cpi.FormatIsoDateString(this.#weekDates.start)}&end=${Cpi.FormatIsoDateString(this.#weekDates.end)}`,
             success: (data, status, xhr) => {
                 this.#populateSchedule(data);
             }
@@ -127,12 +155,12 @@ class SchedulePage extends CpiPage {
 
         const params = {
             lessonName: lessonName,
-            lessonDate: Cpi.FormatDateString(date),
+            lessonDate: Cpi.FormatIsoDateString(date),
             classId: this.accountData.classes[0].classId
         };
 
         Cpi.SendApiRequest({
-            method: "POST",
+            method: "PUT",
             url: `/@/lesson`,
             data: JSON.stringify(params),
             success: (data, status, xhr) => {
@@ -214,7 +242,7 @@ class SchedulePage extends CpiPage {
         ];
 
         Cpi.SendApiRequest({
-            method: "PUT",
+            method: "PATCH",
             url: `/@/lesson?noecho`,
             data: JSON.stringify(params),
             success: (data, status, xhr) => {
@@ -234,7 +262,7 @@ class SchedulePage extends CpiPage {
 
     #onRepeatColumn(lessonDate) {
         const params = {
-            lessonDate: Cpi.FormatDateString(lessonDate)
+            lessonDate: Cpi.FormatIsoDateString(lessonDate)
         };
 
         Cpi.SendApiRequest({
@@ -242,12 +270,20 @@ class SchedulePage extends CpiPage {
             url: "/@/lesson/repeat",
             data: JSON.stringify(params),
             success: (data) => {
-                // Clear out the target (next) column.
-                const containerId = Cpi.DateDiff(lessonDate, this.#weekDates.start) + 1;
-                $($(".weeklyColumnLessonContainer")[containerId]).children().remove();
+                // Check if the target date is in the current week.
+                const targetWeek = Cpi.CalculateWeekNumber(data.targetDate);
+                if (targetWeek !== Cpi.GetCurrentWeekNumber()) {
+                    this.#viewWeek(targetWeek);
+                }
+                else {
+                    // Clear out the target (next) column.
+                    const containerId = Cpi.DateDiff(lessonDate, this.#weekDates.start) + 1;
+                    const container = $(".weeklyColumnLessonContainer")[containerId];
+                    $(container).children().remove();
 
-                // Repopulate the column.
-                this.#populateSchedule(data);
+                    // Repopulate the column.
+                    this.#populateSchedule(data.lessons);
+                }
             }
         })
     }

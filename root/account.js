@@ -96,7 +96,7 @@ class AccountPage extends CpiPage {
         }
 
         Cpi.SendApiRequest({
-            method: "PUT",
+            method: "PATCH",
             url: "/@/account",
             data: JSON.stringify(params),
             success: (data, status, xhr) => {

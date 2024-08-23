@@ -110,7 +110,7 @@ class LessonPage extends CpiPage {
             };
 
             Cpi.SendApiRequest({
-                method: "PUT",
+                method: "PATCH",
                 url: `/@/lesson/${this.#lessonId}?noecho`,
                 data: JSON.stringify(params),
                 success: () => {
@@ -150,7 +150,7 @@ class LessonPage extends CpiPage {
         }
 
         Cpi.SendApiRequest({
-            method: "POST",
+            method: "PUT",
             url: "/@/lesson/benchmark",
             data: JSON.stringify(params),
             success: (data, status, xhr) => {
@@ -189,7 +189,7 @@ class LessonPage extends CpiPage {
         });
 
         Cpi.SendApiRequest({
-            method: "PUT",
+            method: "PATCH",
             url: `/@/lesson/${this.#lessonId}?noecho`,
             data: JSON.stringify(params),
             success: (data, status, xhr) => {

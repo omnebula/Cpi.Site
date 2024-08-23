@@ -30,11 +30,13 @@
 
             <main>
                 <div class="navigationPanel">
-                    <div class="pageTitle"></div>
                     <div>
-                        <input id="viewPreviousWeek" type="button" value="Previous Week"/>
-                        <input id="viewCurrentWeek" type="button" value="Current Week"/>
-                        <input id="viewNextWeek" type="button" value="Next Week"/>
+                        <select id="selectWeek" class="inputSelect navigationSelect"></select>
+                        <input id="viewPreviousWeek" class="inputButton navigationButton" type="button" value="Previous"/>
+                        <input id="viewNextWeek" class="inputButton navigationButton" type="button" value="Next"/>
+                        <input id="viewCurrentWeek" class="inputButton navigationButton" type="button" value="Current"/>
+                    </div>
+                    <div>
                     </div>
                 </div>
 
@@ -42,10 +44,9 @@
                     <div class="weeklyColumnContainer">
                         <div class="weeklyColumn">
                             <div class="weeklyColumnHeader">
-                                <div class="weeklyColumn-name">Mon&nbsp;<span class="weeklyColumnDate"></span></div>
+                                <div class="weeklyColumnName"><span class="weeklyColumnDay">MON</span><span class="weeklyColumnDate"></span></div>
                                 <div class="weeklyColumnCommands">
-                                    <button id="addLesson" class="weeklyColumnButton">&plus;</button>
-                                    <button id="repeatColumn" class="weeklyColumnButton">&gt;</button>
+                                    <input id="addLesson" class="weeklyColumnHeaderButton" type="button" value="&plus;"/><input id="repeatColumn" class="weeklyColumnHeaderButton" type="button" value="&gt;"/>
                                 </div>
                             </div>
                             <div class="weeklyColumnLessonContainer">
@@ -61,10 +62,10 @@
                         </div>
                         <div class="weeklyColumn">
                             <div class="weeklyColumnHeader">
-                                <div class="weeklyColumn-name">Tue&nbsp;<span class="weeklyColumnDate"></span></div>
+                                <div class="weeklyColumnName"><span class="weeklyColumnDay">TUE</span><span class="weeklyColumnDate"></span></div>
                                 <div class="weeklyColumnCommands">
-                                    <button id="addLesson" class="weeklyColumnButton">&plus;</button>
-                                    <button id="repeatColumn" class="weeklyColumnButton">&gt;</button>
+                                    <input id="addLesson" class="weeklyColumnHeaderButton" type="button" value="&plus;"/>
+                                    <input id="repeatColumn" class="weeklyColumnHeaderButton" type="button" value="&gt;"/>
                                 </div>
                             </div>
                             <div class="weeklyColumnLessonContainer">
@@ -72,10 +73,10 @@
                         </div>
                         <div class="weeklyColumn">
                             <div class="weeklyColumnHeader">
-                                <div class="weeklyColumn-name">Wed&nbsp;<span class="weeklyColumnDate"></span></div>
+                                <div class="weeklyColumnName"><span class="weeklyColumnDay">WED</span><span class="weeklyColumnDate"></span></div>
                                 <div class="weeklyColumnCommands">
-                                    <button id="addLesson" class="weeklyColumnButton">&plus;</button>
-                                    <button id="repeatColumn" class="weeklyColumnButton">&gt;</button>
+                                    <input id="addLesson" class="weeklyColumnHeaderButton" type="button" value="&plus;"/>
+                                    <input id="repeatColumn" class="weeklyColumnHeaderButton" type="button" value="&gt;"/>
                                 </div>
                             </div>
                             <div class="weeklyColumnLessonContainer">
@@ -83,21 +84,21 @@
                         </div>
                         <div class="weeklyColumn">
                             <div class="weeklyColumnHeader">
-                                <div class="weeklyColumn-name">Thu&nbsp;<span class="weeklyColumnDate"></span></div>
+                                <div class="weeklyColumnName"><span class="weeklyColumnDay">THU</span><span class="weeklyColumnDate"></span></div>
                                 <div class="weeklyColumnCommands">
-                                    <button id="addLesson" class="weeklyColumnButton">&plus;</button>
-                                    <button id="repeatColumn" class="weeklyColumnButton">&gt;</button>
+                                    <input id="addLesson" class="weeklyColumnHeaderButton" type="button" value="&plus;"/>
+                                    <input id="repeatColumn" class="weeklyColumnHeaderButton" type="button" value="&gt;"/>
                                 </div>
                             </div>
                             <div class="weeklyColumnLessonContainer">
                             </div>
                         </div>
                         <div class="weeklyColumn">
-                            <div class="weeklyColumnHeader weeklyColumnLastHeader">
-                                <div class="weeklyColumn-name">Fri&nbsp;<span class="weeklyColumnDate"></span></div>
+                            <div class="weeklyColumnHeader">
+                                <div class="weeklyColumnName"><span class="weeklyColumnDay">FRI</span><span class="weeklyColumnDate"></span></div>
                                 <div class="weeklyColumnCommands">
-                                    <button id="addLesson" class="weeklyColumnButton">&plus;</button>
-                                    <button id="repeatColumn" class="weeklyColumnButton">&gt;</button>
+                                    <input id="addLesson" class="weeklyColumnHeaderButton" type="button" value="&plus;"/>
+                                    <input id="repeatColumn" class="weeklyColumnHeaderButton" type="button" value="&gt;"/>
                                 </div>
                             </div>
                             <div class="weeklyColumnLessonContainer">

@@ -5,10 +5,13 @@ class Cpi {
     static GetTodayDate() {
         const today = new Date();
         today.setHours(0);        
+        today.setMinutes(0);        
+        today.setSeconds(0); 
+        today.setMilliseconds(0);
         return today;
     }
 
-    static FormatDateString(date) {
+    static FormatIsoDateString(date) {
         return date.toISOString().substring(0, 10);
     }
     static FormatShortDateString(date) {
@@ -16,7 +19,11 @@ class Cpi {
             date = Cpi.ParseLocalDate(date);
         }
         return date.toLocaleString(undefined, { dateStyle: "medium" });
-        //return `${date.getMonth() + 1}/${date.getDate()}`;
+    }
+
+    static ShortDateToIsoString(shortDateString) {
+        const date = new Date(shortDateString);
+        return Cpi.FormatIsoDateString(date);
     }
 
     static ParseLocalDate(dateString)
@@ -71,6 +78,10 @@ class Cpi {
     }
 
     static CalculateWeekNumber(date) {
+        if (typeof date === "string") {
+            date = Cpi.ParseLocalDate(date);
+        }
+
         const startDate = Cpi.ParseLocalDate(cpidata.organization.calendar.startDate);
         if (!startDate) {
             return undefined;
@@ -95,7 +106,7 @@ class Cpi {
         return (delta / 7) + 1;
     }
 
-    static CalculateWeekDates(weekNumber) {
+    static CalculateWeekStartDate(weekNumber) {
         if (!weekNumber) {
             return undefined;
         }
@@ -106,11 +117,29 @@ class Cpi {
         }
 
         const weekStartDate = Cpi.DateAdd(calendarStartDate, (weekNumber - 1) * 7);
+        return weekStartDate;
+    }
 
+
+    static CalculateWeekDates(weekNumber) {
+        const weekStartDate = Cpi.CalculateWeekStartDate(weekNumber);
         return {
             start: weekStartDate,
             end: Cpi.DateAdd(weekStartDate, 4)
         };
+    }
+
+    static GetHolidayName(date) {
+        if (date) {
+            const dateString = Cpi.FormatIsoDateString(date);
+            return cpidata.organization.calendar.holidays[dateString];
+        }
+        else {
+            return undefined;
+        }
+    }
+    static IsHoliday(date) {
+        return Cpi.GetHolidayName(date) !== undefined;
     }
 
 

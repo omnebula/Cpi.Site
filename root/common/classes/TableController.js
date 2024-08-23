@@ -36,7 +36,7 @@ class TableController {
     }
 
     getRows() {
-        return this.#dataTable.getRows();
+        return this.#dataTable.rows;
     }
 
     getSelectedRow() {
@@ -94,13 +94,13 @@ class TableController {
             const row = this.getSelectedRow();
             if (row) {
                 // Fetch entity data from the datasource
-                this.#entityBroker.fetchEntity(row, (data) => {
+                this.#entityBroker.fetchEntity(row, (fetchedData) => {
                     // Show the editor
-                    this.#showEditor(`Edit ${this.#entityCaption}`, data, (data) => {
+                    this.#showEditor(`Edit ${this.#entityCaption}`, fetchedData, (editedData) => {
                         // Store accepted changes in the datasource.
-                        this.#entityBroker.updateEntity(row, data, (data) => {
+                        this.#entityBroker.updateEntity(row, editedData, (row, updatedData) => {
                             // Update the table row.
-                            this._formatRow(row, data);
+                            this._formatRow(row, updatedData);
                             this.#dataTable.sortRows((lhs, rhs) => { return this._compareRows(lhs, rhs)});
                             this.#dataTable.stripeRows();
                         });

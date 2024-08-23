@@ -87,19 +87,7 @@ main {
 .overlayCommandButton {
     width: 100%;
 }
-.overlayCommandButton:hover {
-    font-weight: bold;
-    background-color: steelblue;    
-}
-.overlayCommandButton:active {
-    font-weight: bold;
-    background-color: lightsteelblue;    
-}
-.overlayCommandButton:disabled {
-    color: darkgray;
-    background-color: #555;    
-    font-weight: normal;
-}
+
 .overlayCommandSelectOption {
     background-color: inherit;
     color: lightgray;
@@ -165,7 +153,7 @@ main {
     justify-content: space-between;
 }
 .holidayTableHeader {
-    color: green;
+    color: forestgreen;
 }
 .holidayListRow_active {
     color: white;
