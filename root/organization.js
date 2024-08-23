@@ -1,5 +1,3 @@
-
-
 class OrganizationPage extends CpiPage {
     #overlayController;
 
@@ -25,6 +23,28 @@ class OrganizationPage extends CpiPage {
         const lastOverlayName = localStorage.getItem("organizationOverlayName");
         this.#overlayController.showOverlay(lastOverlayName || overlays[0].name);
     }
+
+    /* Brokers */
+    static StudentBroker = new EntityBroker({ entityName: "student" });
+    static AccountBroker = new EntityBroker({ entityName: "account" });
+    static ClassBroker = new EntityBroker({ entityName: "class", entitySetName: "classes" });
+    static CourseBroker = new EntityBroker({ entityName: "course" });
+    static LocationBroker = new EntityBroker({ entityName: "location" });
+
+    /* Pickers */
+    static CoursePicker = new EntityPicker({
+        pickerPopup: $("#coursePicker"),
+        pickerTable: $("#coursePicker #courseTable"),
+        entityBroker:  OrganizationPage.CourseBroker,
+        formatRow: (row, data) => {
+            row.attr("id", data.courseId);
+            row.find(".pickerCheckbox").prop("checked", data.assigned);
+            row.find("#courseNameColumn").text(data.courseName);
+            row.find("#courseSubjectColumn").text(data.subjectName);
+            row.find("#courseGradeColumn").text(data.gradeName);
+        }
+    });
+
 }
 
 
@@ -194,6 +214,8 @@ class CalendarEditController extends EditController {
 class HolidayTableController extends TableController {
     constructor() {
         super({
+            entityBroker: new HolidayBroker(),
+
             entityCaption: "Holiday",
             table: $("#holidayTable"),
             addButton: $("#addHoliday"),
@@ -216,27 +238,6 @@ class HolidayTableController extends TableController {
         if (row.hasClass("holidayListRow_active")) {
             super._onClickRow(row);
         }
-    }
-
-    fetchEntity(row, success) {
-        const data = {
-            holidayName: row.find("#holidayNameColumn").text(),
-            startDate: row.find("#holidayStartDateColumn").text(),
-            endDate: row.find("#holidayEndDateColumn").text()
-        };
-
-        success(data);
-    }
-
-    insertEntity(data, success) {
-        success(data);
-    }
-
-    updateEntity(row, data, success) {
-        success(data);
-    }
-
-    deleteEntity(row, success) {
     }
 
     _getEditorData(editor) {
@@ -262,6 +263,33 @@ class HolidayTableController extends TableController {
     }
 }
 
+class HolidayBroker extends EntityBroker {
+    constructor() {
+        super();
+    }
+
+    fetchEntity(row, success) {
+        const data = {
+            holidayName: row.find("#holidayNameColumn").text(),
+            startDate: row.find("#holidayStartDateColumn").text(),
+            endDate: row.find("#holidayEndDateColumn").text()
+        };
+
+        success(data);
+    }
+
+    insertEntity(data, success) {
+        success(data);
+    }
+
+    updateEntity(row, data, success) {
+        success(data);
+    }
+
+    deleteEntity(row, success) {
+    }
+}
+
 
 class TableOverlay extends OverlayContext {
     #tableController;
@@ -279,6 +307,10 @@ class TableOverlay extends OverlayContext {
         this.#tableController._setEditorData = this._setEditorData || this.#tableController._setEditorData;
     }
 
+    get tableController() {
+        return this.#tableController;
+    }
+
     _activateOverlay() {
         super._activateOverlay();
         this.#tableController.refreshRows();
@@ -292,10 +324,7 @@ class StudentOverlay extends TableOverlay {
             overlayName: "Students",
             overlayElement: $("#Students"),
 
-            entityBroker: new EntityBroker({
-                entityName: "student",
-                entitySetName: "students"
-            }),
+            entityBroker: OrganizationPage.StudentBroker,
 
             entityCaption: "Student",
             table: $("#studentTable"),
@@ -335,10 +364,7 @@ class AccountOverlay extends TableOverlay {
             overlayName: "Accounts",
             overlayElement: $("#Accounts"),
 
-            entityBroker: new EntityBroker({
-                entityName: "account",
-                entitySetName: "accounts"
-            }),
+            entityBroker: OrganizationPage.AccountBroker,
 
             entityCaption: "Account",
             listUrl: "/@/accounts?columns=accountId,lastName,firstName,accessType,statusType",
@@ -413,10 +439,8 @@ class ClassOverlay extends TableOverlay {
             overlayName: "Classes",
             overlayElement: $("#Classes"),
 
-            entityBroker: new EntityBroker({
-                entityName: "class",
-                entitySetName: "classes"
-            }),
+            entityBroker: OrganizationPage.ClassBroker,
+
             entityCaption: "Class",
             table: $("#classTable"),
             addButton: $("#addClass"),
@@ -428,7 +452,7 @@ class ClassOverlay extends TableOverlay {
         });
 
         $("#assignClassCourses").on("click", () => {
-            Cpi.ShowPopup($("#coursePicker"));
+            this.#showCourseOptions();
         });
     }
 
@@ -450,6 +474,40 @@ class ClassOverlay extends TableOverlay {
 
     _setEditorData(editor, data) {
     }
+
+    #showCourseOptions() {
+        const selectedRow = this.tableController.getSelectedRow();
+        if (selectedRow) {
+            OrganizationPage.CoursePicker.show({
+                listUrl: `/@/class/courses?classId=${selectedRow.attr("id")}`,
+                accept: (selection) => {
+                    this.#assignCourses(selection);
+                }
+            });
+        }
+    }
+    #assignCourses(selection) {
+        const selectedRow = this.tableController.getSelectedRow();
+        if (selectedRow) {
+            const classId = selectedRow.attr("id");
+
+            const params = {
+                courses: []
+            }
+    
+            if (selection) {
+                for (const current of selection) {
+                    params.courses.push(current.attr("id"));
+                }
+            }
+    
+            Cpi.SendApiRequest({
+                method: "PUT",
+                url: `/@/class/courses?classId=${selectedRow.attr("id")}`,
+                data: JSON.stringify(params)
+            });
+        }
+    }
 }
 
 class CourseOverlay extends TableOverlay {
@@ -460,10 +518,7 @@ class CourseOverlay extends TableOverlay {
             overlayName: "Courses",
             overlayElement: $("#Courses"),
 
-            entityBroker: new EntityBroker({
-                entityName: "course",
-                entitySetName: "courses"
-            }),
+            entityBroker: OrganizationPage.CourseBroker,
 
             entityCaption: "Course",
             table: $("#courseTable"),
@@ -522,10 +577,7 @@ class LocationOverlay extends TableOverlay {
             overlayName: "Locations",
             overlayElement: $("#Locations"),
 
-            entityBroker: new EntityBroker({
-                entityName: "location",
-                entitySetName: "locations"
-            }),
+            entityBroker: OrganizationPage.LocationBroker,
 
             entityCaption: "Location",
             table: $("#locationTable"),

@@ -1,3 +1,5 @@
+
+
 class DataTable {
     /*
     * Public Interface
@@ -6,7 +8,7 @@ class DataTable {
         this.#options = {
             height: 'auto',
             maxHeight: 'auto',
-            stripe: true,
+            stripe: false,
             setWidths: true,
             oddClass: "st-tr-odd",
             evenClass: "st-tr-even",

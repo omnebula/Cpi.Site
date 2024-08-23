@@ -31,6 +31,10 @@ class TableController {
         this.#toggleButtons.push(params.deleteButton);
     }
 
+    get entityBroker() {
+        return this.#entityBroker;
+    }
+
     getRows() {
         return this.#dataTable.getRows();
     }

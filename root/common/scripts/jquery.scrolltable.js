@@ -32,7 +32,7 @@ $.widget( "ui.scrolltable", {
 		var self = this;
 		var $self = $(this.element);
 		var opts = this.options;
-		
+
 		this._convertTable($self);
 
 		if(opts.stripe === true) this._stripe($self);

@@ -162,18 +162,18 @@ class Cpi {
         $(".popupFrame").css("display", "block");
         $(".appFrame").css("opacity", "0.5");
 
-        if (accept) {
-            popup.find("#popupAccept").off("click").on("click", accept);
-        }
-        else {
-            popup.find("#popupAccept").off("click").on("click", () => { Cpi.HidePopup(popup); });
-        }
-        if (cancel) {
-            popup.find("#popupCancel").off("click").on("click", cancel);
-        }
-        else {
-            popup.find("#popupCancel").off("click").on("click", () => { Cpi.HidePopup(popup); });
-        }
+        popup.find("#popupAccept").off("click").on("click", () => {
+            Cpi.HidePopup(popup);
+            if (accept) {
+                accept();
+            }
+        });
+        popup.find("#popupCancel").off("click").on("click", () => {
+            Cpi.HidePopup(popup);
+            if (cancel) {
+                cancel();
+            }
+        });
     }
 
     static HidePopup(popup) {

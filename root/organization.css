@@ -13,6 +13,20 @@ main {
     background-color: #1c1c1c;
 }
 
+.pickerSelectColumn {
+    width: 40px;
+}
+
+.pickerCheckbox {
+    outline: none;
+    box-sizing: border-box;
+    color: white;
+    background-color: inherit;
+    border: 1px solid #333;
+    font-size: inherit;
+    font-family: inherit;
+}
+
 
 .overlaySelector {
     gap: 4px;
@@ -244,7 +258,7 @@ main {
 }
 
 .coursePickerTable {
-    height: 200px;
+    height: 400px;
 }
 
 /* Locations Overlay */

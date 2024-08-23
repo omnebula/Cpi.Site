@@ -12,8 +12,9 @@
     <script type="text/javascript" src="/common/scripts/jquery-ui.min.js" defer></script>
     <script type="text/javascript" src="/common/scripts/jquery.scrolltable.js" defer></script>
     <script type="text/javascript" src="/common/scripts/global.js" defer></script>
-    <script type="text/javascript" src="/common/classes/EntityBroker.js" defer></script>
     <script type="text/javascript" src="/common/classes/DataTable.js" defer></script>
+    <script type="text/javascript" src="/common/classes/EntityBroker.js" defer></script>
+    <script type="text/javascript" src="/common/classes/EntityPicker.js" defer></script>
     <script type="text/javascript" src="/common/classes/EditController.js" defer></script>
     <script type="text/javascript" src="/common/classes/TableController.js" defer></script>
     <script type="text/javascript" src="/common/classes/OverlayController.js" defer></script>
@@ -115,8 +116,8 @@
                                 <input id="cancelCalendarChanges" value="Cancel Changes" type="button" class="inputButton inputCancelButton"/>
                             </div>
                             <div id="holidayActionCommands" class="overlayCommands holidayActionCommands">
-                                <input id="addHoliday" value="Add Holiday" type="button" class="inputButton overlayCommandButton"/>
-                                <input id="editHoliday" value="Edit Holiday" type="button" class="inputButton overlayCommandButton"/>
+                                <input id="addHoliday" value="Add Holiday..." type="button" class="inputButton overlayCommandButton"/>
+                                <input id="editHoliday" value="Edit Holiday..." type="button" class="inputButton overlayCommandButton"/>
                                 <input id="deleteHoliday" value="Delete Holiday" type="button" class="inputButton overlayCommandButton"/>
                             </div>
                         </div>
@@ -493,6 +494,7 @@
                 <table id="courseTable" class="scrollTable listTable coursePickerTable" cellpadding="0" cellspacing="0">
                     <thead>
                         <tr>
+                            <th class="listTableHeader pickerSelectColumn"><input id="selectAll" class="pickerCheckbox" type="checkbox"/></th>
                             <th class="listTableHeader courseNameColumn">Course Name</th>
                             <th class="listTableHeader courseSubjectColumn">Subject</th>
                             <th class="listTableHeader courseGradeColumn">Grade</th>
@@ -500,9 +502,11 @@
                     </thead>
                     <tbody>
                         <tr id="courseRow" class="listRow">
-                            <td id="courseNameColumn" class="listColumn courseNameColumn">XXXX</td>
-                            <td id="courseSubjectColumn" class="listColumn courseSubjectColumn">Subject</td>
-                            <td id="courseGradeColumn" class="listColumn courseGradeColumn">Grade</td>
+                            <td class="listColumn pickerSelectColumn"><input class="pickerCheckbox" type="checkbox"/></td>
+                            <td class="listColumn courseNameColumn">
+                                <span id="courseNameColumn"></span></td>
+                            <td id="courseSubjectColumn" class="listColumn courseSubjectColumn"></td>
+                            <td id="courseGradeColumn" class="listColumn courseGradeColumn"></td>
                         </tr>
                     </tbody>
                 </table>
