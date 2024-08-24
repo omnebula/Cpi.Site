@@ -271,15 +271,16 @@ class SchedulePage extends CpiPage {
             data: JSON.stringify(params),
             success: (data) => {
                 // Check if the target date is in the current week.
-                const targetWeek = Cpi.CalculateWeekNumber(data.targetDate);
+                const targetDate = Cpi.ParseLocalDate(data.targetDate);
+                const targetWeek = Cpi.CalculateWeekNumber(targetDate);
                 if (targetWeek !== Cpi.GetCurrentWeekNumber()) {
                     this.#viewWeek(targetWeek);
                 }
                 else {
                     // Clear out the target (next) column.
-                    const containerId = Cpi.DateDiff(lessonDate, this.#weekDates.start) + 1;
+                    const containerId = Cpi.DateDiff(targetDate, this.#weekDates.start);
                     const container = $(".weeklyColumnLessonContainer")[containerId];
-                    $(container).children().remove();
+                    $(container).empty();
 
                     // Repopulate the column.
                     this.#populateSchedule(data.lessons);
