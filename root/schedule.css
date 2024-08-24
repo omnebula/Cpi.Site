@@ -1,34 +1,28 @@
-.navigationButton {
-    width:80px;
-    padding: 5px 0;
-}
-.navigationSelect {
-    color: #ddd;
-    background-color: transparent;
-    display: inline-block;
-    padding: 4px 16px;
-    margin-right: 12px;
-    border: 1px solid #777;
-}
-.navigationSelect:active {
-    border: 1px solid #777;
-}
-.navigationSelect:focus {
-    border: 1px solid #777;
+main {
+    display: flex;
+    flex-direction: column;    
 }
 
-.weeklyColumnContainer {
+
+.schedulePanel {
+    flex: 1;
+}
+
+.scheduleHeader, .scheduleContainer {
     display: flex;
-    margin-top: 24px;
     gap: 2px;
 }
 
-.weeklyColumn {
+.scheduleHeader {
+    margin-top: 24px;
+}
+
+.scheduleColumn {
     flex: 1; /* Each column takes up an equal amount of space */
     box-sizing: border-box;
 }
 
-.weeklyColumnHeader {
+.scheduleColumnHeader {
     color: #ddd;
     background-color: #274965;
     font-size: 13px;
@@ -40,23 +34,23 @@
     justify-content: space-between;
     line-height: 24px;
 }
-.weeklyColumnHeader_today {
+.scheduleColumnHeader_today {
     background-color: #3c6d95;
 }
 
-.weeklyColumnDay {
+.scheduleColumnDay {
     color: orange;
     font-weight: bold;
     margin-right: 8px;
 }
-.weeklyColumnDate {
+.scheduleColumnDate {
     color: lightblue;
 }
-.weeklyColumnHoliday {
+.scheduleColumnHoliday {
     color: #aaa;
 }
 
-.weeklyColumnHeaderButton {
+.scheduleColumnHeaderButton {
     background-color: transparent;
     color: #aaa;
     border-radius: 4px;
@@ -66,22 +60,23 @@
     width: 23px;
     height: 24px;
 }
-.weeklyColumnHeaderButton:hover {
+.scheduleColumnHeaderButton:hover {
     background-color: #1f1f1f;
     border: 1px solid #777;
     color: white;
 }
-.weeklyColumnHeaderButton:active {
+.scheduleColumnHeaderButton:active {
     background-color: #777;
     border: 1px solid white;
     color: black;
 }
 
-.weeklyColumnLessonContainer {
+.scheduleLessonContainer {
     padding: 0 4px;
+    position: relative;    
 }
 
-.weeklyColumnLesson {
+.scheduleLesson {
     visibility: hidden;
     height: 70px;
     color: yellow;
@@ -96,14 +91,14 @@
     position: relative;
     border: 1px solid #274965;
 }
-.weeklyColumnLesson:hover {
+.scheduleLesson:hover {
     border: 1px solid steelblue;
 }
-.weeklyColumnLesson_selected {
+.scheduleLesson_selected {
     border: 1px solid #fff;
 }
 
-.weeklyColumnLessonCommandBar {
+.scheduleLessonCommandBar {
     position: absolute;
     top: 0;
     font-size: 11px;
@@ -114,24 +109,39 @@
     z-index: 1;
 }
 
-.weeklyColumnLessonCommand {
+.scheduleLessonCommand {
     width: 30px;
     text-align: center;
 }
-.weeklyColumnLessonCommand:hover {
+.scheduleLessonCommand:hover {
     color: white;
 }
-.weeklyColumnLessonCommandBorder {
+.scheduleLessonCommandBorder {
     border-right: 1px solid gray;
 }
 
-.weeklyColumnLessonInput {
-    border: 0;
-    box-sizing: border-box;    
-    outline: none;
-    background-color: transparent;
-    color: inherit;
-    font-size: 13px;
+.scheduleLessonName {
     text-align: center;
-    cursor: pointer;
+}
+
+.coursePicker {
+    width: 500px;
+}
+
+.courseTable {
+    height: 420px;
+    width: 100%
+}
+
+.courseTableBody {
+    vertical-align: top;;
+}
+
+.courseNameColumn {
+    width: 50%;
+}
+
+
+.pickerListColumn {
+    padding: 3px 0;
 }

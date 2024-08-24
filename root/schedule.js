@@ -3,6 +3,7 @@
 class SchedulePage extends CpiPage {
     #weekDates;
     #lessonTemplate;
+    #coursePicker;
 
     constructor() {
         super();
@@ -10,6 +11,9 @@ class SchedulePage extends CpiPage {
         if (!Cpi.ValidateLogin()) {
             return;
         }
+
+        // Initialize course picker.
+        this.#coursePicker = new CoursePicker(this.accountData.courses);
 
         // Compute the start and end dates.
         const searchParams = new URLSearchParams(window.location.search);
@@ -55,33 +59,33 @@ class SchedulePage extends CpiPage {
         }
 
         // Initialize lesson template.
-        this.#lessonTemplate = $(".weeklyColumnLesson").detach();
+        this.#lessonTemplate = $(".scheduleLesson").detach();
         this.#lessonTemplate.css("visibility", "visible");
 
         // Initialize column headers.
         const today = Cpi.GetTodayDate();
         var containerDate = this.#weekDates.start;
-        const columns = $(".weeklyColumn");
+        const columns = $(".scheduleColumn");
         for (const current of columns) {
             const column = $(current);
-            const container = column.find(".weeklyColumnLessonContainer");
+            const container = column.find(".scheduleLessonContainer");
             const lessonDate = containerDate;
 
-            column.find(".weeklyColumnDate").text(Cpi.FormatShortDateString(lessonDate));
+            column.find(".scheduleColumnDate").text(Cpi.FormatShortDateString(lessonDate));
 
             if (Cpi.IsHoliday(lessonDate)) {
-                column.find(".weeklyColumnDay").addClass("weeklyColumnHoliday");
-                column.find(".weeklyColumnDate").addClass("weeklyColumnHoliday");
+                column.find(".scheduleColumnDay").addClass("scheduleColumnHoliday");
+                column.find(".scheduleColumnDate").addClass("scheduleColumnHoliday");
                 column.find("#addLesson").css("visibility", "hidden");
                 column.find("#repeatColumn").css("visibility", "hidden");
             }
             else {
-                column.find("#addLesson").on("click", () => { this.#onAddLesson(container, lessonDate); });
+                column.find("#addLesson").on("click", () => { this.#onAddLesson(lessonDate); });
                 column.find("#repeatColumn").on("click", () => { this.#onRepeatColumn(lessonDate); });
             }
 
             if (lessonDate.getTime() === today.getTime()) {
-                column.find(".weeklyColumnHeader").addClass("weeklyColumnHeader_today");
+                column.find(".scheduleColumnHeader").addClass("scheduleColumnHeader_today");
             }
             
             containerDate = Cpi.DateAdd(containerDate, 1);
@@ -96,18 +100,81 @@ class SchedulePage extends CpiPage {
         });
     }
 
+    #onAddLesson(lessonDate) {
+        const containerId = this.#calcContainerId(lessonDate);
+        const lessons = $(`.scheduleContainer #${containerId} .scheduleLesson`);
+
+        const exclusions = [];
+        for (const current of lessons) {
+            exclusions.push($(current).attr("courseId") + $(current).attr("classId"));
+        }
+
+        this.#coursePicker.show(exclusions, (selection) => {
+            lessonDate = Cpi.FormatIsoDateString(lessonDate);
+
+            const params = {
+                lessonDate: lessonDate,
+                lessons: []
+            }
+
+            for (const current of selection) {
+                params.lessons.push({
+                    courseId: current.courseId,
+                    classId: current.classId
+                });
+            }
+
+            if (params.lessons.length) {
+                Cpi.SendApiRequest({
+                    method: "PUT",
+                    url: `/@/lesson/batch`,
+                    data: JSON.stringify(params),
+                    success: (results, status, xhr) => {
+                        this.#populateSchedule(results);
+                    }
+                });
+       
+            }
+        });
+    }
+
+    #onRepeatColumn(lessonDate) {
+        const params = {
+            lessonDate: Cpi.FormatIsoDateString(lessonDate)
+        };
+
+        Cpi.SendApiRequest({
+            method: "POST",
+            url: "/@/lesson/repeat",
+            data: JSON.stringify(params),
+            success: (data) => {
+                // Check if the target date is in the current week.
+                const targetDate = Cpi.ParseLocalDate(data.targetDate);
+                const targetWeek = Cpi.CalculateWeekNumber(targetDate);
+                if (targetWeek !== Cpi.GetCurrentWeekNumber()) {
+                    this.#viewWeek(targetWeek);
+                }
+                else {
+                    // Clear out the target (next) column.
+                    const containerId = Cpi.DateDiff(targetDate, this.#weekDates.start);
+                    const container = $(".scheduleLessonContainer")[containerId];
+                    $(container).empty();
+
+                    // Repopulate the column.
+                    this.#populateSchedule(data.lessons);
+                }
+            }
+        })
+    }
+
     #populateSchedule(data) {
-        const containers = $(".weeklyColumnLessonContainer");
+        const containers = $(".scheduleLessonContainer");
 
         for (const current of data) {
             const lessonDate = Cpi.ParseLocalDate(current.lessonDate);
-            const containerId = Cpi.DateDiff(lessonDate, this.#weekDates.start);
+            const containerId = this.#calcContainerId(lessonDate);
 
             const lesson = this.#lessonTemplate.clone(true);
-
-            const input = lesson.find(".weeklyColumnLessonInput");
-            input.val(current.lessonName);
-            input.attr("readonly", true);
 
             this.#initLesson(lesson, current);
 
@@ -116,66 +183,22 @@ class SchedulePage extends CpiPage {
         }
     }
 
-    #onAddLesson(container, containerDate) {
-        const lesson = this.#lessonTemplate.clone(true);
-
-        container.append(lesson);
-
-        const input = lesson.find(".weeklyColumnLessonInput");
-        input.on("keyup", (event) => {
-                if (!input.attr("readonly")) {
-                    if (event.keyCode === 13) {
-                        input.blur();
-                    }
-                    else if (event.keyCode === 27) {
-                        lesson.remove();
-                    }
-                }
-            })
-            .on("blur", (event) => {
-                this.#saveLesson(lesson, input, containerDate);
-            })
-            .focus();
-    }
-
-    #saveLesson(lesson, input, date) {
-        const lessonName = input.val().trim();
-        if (!lessonName.length) {
-            lesson.remove();
-            return;
-        }
-
-        input.attr("readonly", true);
-        input.off("blur").off("keyup");
-
-        if (!this.accountData.classes || this.accountData.classes.length === 0) {
-            Cpi.ShowAlert("No class assigned");
-            return;
-        }
-
-        const params = {
-            lessonName: lessonName,
-            lessonDate: Cpi.FormatIsoDateString(date),
-            classId: this.accountData.classes[0].classId
-        };
-
-        Cpi.SendApiRequest({
-            method: "PUT",
-            url: `/@/lesson`,
-            data: JSON.stringify(params),
-            success: (data, status, xhr) => {
-                this.#initLesson(lesson, data);
-            }
-        });
+    #calcContainerId(lessonDate) {
+        return Cpi.DateDiff(lessonDate, this.#weekDates.start);
     }
 
     #initLesson(lesson, data) {
         lesson.attr("id", data.lessonId);
+        lesson.attr("courseId", data.courseId);
+        lesson.attr("classId", data.classId);
         lesson.attr("lessonSequence", data.lessonSequence);
         lesson.attr("href", `/lesson?id=${data.lessonId}`);
 
+        // Init name.
+        lesson.find("#scheduleLessonName").text(data.lessonName);
+
         // Init command bar.
-        const commandBar = lesson.find(".weeklyColumnLessonCommandBar");
+        const commandBar = lesson.find(".scheduleLessonCommandBar");
         commandBar.find("#delete").on("click", (event) => {
             event.stopPropagation();
             this.#deleteLesson(lesson);
@@ -259,35 +282,59 @@ class SchedulePage extends CpiPage {
             }
         });
     }
+}
 
-    #onRepeatColumn(lessonDate) {
-        const params = {
-            lessonDate: Cpi.FormatIsoDateString(lessonDate)
-        };
 
-        Cpi.SendApiRequest({
-            method: "POST",
-            url: "/@/lesson/repeat",
-            data: JSON.stringify(params),
-            success: (data) => {
-                // Check if the target date is in the current week.
-                const targetDate = Cpi.ParseLocalDate(data.targetDate);
-                const targetWeek = Cpi.CalculateWeekNumber(targetDate);
-                if (targetWeek !== Cpi.GetCurrentWeekNumber()) {
-                    this.#viewWeek(targetWeek);
-                }
-                else {
-                    // Clear out the target (next) column.
-                    const containerId = Cpi.DateDiff(targetDate, this.#weekDates.start);
-                    const container = $(".weeklyColumnLessonContainer")[containerId];
-                    $(container).empty();
+class CoursePicker {
+    #popup = $("#coursePicker");
+    #courseContainer = $("#courseTableBody");
 
-                    // Repopulate the column.
-                    this.#populateSchedule(data.lessons);
-                }
+    constructor(courses) {
+        const courseRowTemplate = this.#courseContainer.find("#courseRow").detach();
+        
+        for (const current of courses) {
+            const row = courseRowTemplate.clone(true);
+
+            row.attr("id", current.courseId + current.classId);
+            row.attr("courseId", current.courseId);
+            row.attr("classId", current.classId);
+            row.find("#courseName").text(current.courseName);
+            row.find("#className").text(current.className);
+
+            this.#courseContainer.append(row);
+        }
+    }
+
+    show(exclusions, accept) {
+        this.#courseContainer.children().css("display", "table-row");
+        this.#courseContainer.find("input:checked").prop("checked", false);
+
+        if (exclusions) {
+            for (const current of exclusions) {
+                this.#courseContainer.find(`#${current}`).css("display", "none");
             }
-        })
+        }
+
+        Cpi.ShowPopup("#coursePicker", () => {
+            this.#acceptSelection(accept);
+        });
+    }
+
+    #acceptSelection(accept) {
+        const selection = [];
+        const rows = this.#courseContainer.find("input:checked");
+
+        for (const current of rows) {
+            const row = $(current).parent().parent();
+            selection.push({
+                courseId: row.attr("courseId"),
+                classId: row.attr("classId")
+            });
+        }
+
+        accept(selection);
     }
 }
+
 
 window.page = new SchedulePage();

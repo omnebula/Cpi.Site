@@ -187,6 +187,10 @@ class Cpi {
     }
 
     static ShowPopup(popup, accept, cancel) {
+        if (typeof popup === "string") {
+            popup = $(popup);
+        }
+
         popup.css("display", "flex");
         $(".popupFrame").css("display", "block");
         $(".appFrame").css("opacity", "0.5");

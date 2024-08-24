@@ -40,74 +40,97 @@
                     </div>
                 </div>
 
-                <div id="weeklySchedulePanel">
-                    <div class="weeklyColumnContainer">
-                        <div class="weeklyColumn">
-                            <div class="weeklyColumnHeader">
-                                <div class="weeklyColumnName"><span class="weeklyColumnDay">MON</span><span class="weeklyColumnDate"></span></div>
-                                <div class="weeklyColumnCommands">
-                                    <input id="addLesson" class="weeklyColumnHeaderButton" type="button" value="&plus;"/><input id="repeatColumn" class="weeklyColumnHeaderButton" type="button" value="&gt;"/>
-                                </div>
-                            </div>
-                            <div class="weeklyColumnLessonContainer">
-                                <div class="weeklyColumnLesson">
-                                    <div class="weeklyColumnLessonCommandBar">
-                                        <div id="delete" class="weeklyColumnLessonCommand weeklyColumnLessonCommandBorder">X</div>
-                                        <div id="moveUp" class="weeklyColumnLessonCommand weeklyColumnLessonCommandBorder">UP</div>
-                                        <div id="moveDown" class="weeklyColumnLessonCommand">DN</div>
-                                    </div>
-                                    <input id="lessonName" class="weeklyColumnLessonInput" type="input" autocomplete="off"/>
+                <div class="schedulePanel">
+                    <div class="scheduleHeader">
+                        <div class="scheduleColumn">
+                            <div class="scheduleColumnHeader">
+                                <div class="scheduleColumnName"><span class="scheduleColumnDay">MON</span><span class="scheduleColumnDate"></span></div>
+                                <div class="scheduleColumnCommands">
+                                    <input id="addLesson" class="scheduleColumnHeaderButton" type="button" value="&plus;"/><input id="repeatColumn" class="scheduleColumnHeaderButton" type="button" value="&gt;"/>
                                 </div>
                             </div>
                         </div>
-                        <div class="weeklyColumn">
-                            <div class="weeklyColumnHeader">
-                                <div class="weeklyColumnName"><span class="weeklyColumnDay">TUE</span><span class="weeklyColumnDate"></span></div>
-                                <div class="weeklyColumnCommands">
-                                    <input id="addLesson" class="weeklyColumnHeaderButton" type="button" value="&plus;"/>
-                                    <input id="repeatColumn" class="weeklyColumnHeaderButton" type="button" value="&gt;"/>
+                        <div class="scheduleColumn">
+                            <div class="scheduleColumnHeader">
+                                <div class="scheduleColumnName"><span class="scheduleColumnDay">TUE</span><span class="scheduleColumnDate"></span></div>
+                                <div class="scheduleColumnCommands">
+                                    <input id="addLesson" class="scheduleColumnHeaderButton" type="button" value="&plus;"/><input id="repeatColumn" class="scheduleColumnHeaderButton" type="button" value="&gt;"/>
                                 </div>
-                            </div>
-                            <div class="weeklyColumnLessonContainer">
                             </div>
                         </div>
-                        <div class="weeklyColumn">
-                            <div class="weeklyColumnHeader">
-                                <div class="weeklyColumnName"><span class="weeklyColumnDay">WED</span><span class="weeklyColumnDate"></span></div>
-                                <div class="weeklyColumnCommands">
-                                    <input id="addLesson" class="weeklyColumnHeaderButton" type="button" value="&plus;"/>
-                                    <input id="repeatColumn" class="weeklyColumnHeaderButton" type="button" value="&gt;"/>
+                        <div class="scheduleColumn">
+                            <div class="scheduleColumnHeader">
+                                <div class="scheduleColumnName"><span class="scheduleColumnDay">WED</span><span class="scheduleColumnDate"></span></div>
+                                <div class="scheduleColumnCommands">
+                                    <input id="addLesson" class="scheduleColumnHeaderButton" type="button" value="&plus;"/><input id="repeatColumn" class="scheduleColumnHeaderButton" type="button" value="&gt;"/>
                                 </div>
-                            </div>
-                            <div class="weeklyColumnLessonContainer">
                             </div>
                         </div>
-                        <div class="weeklyColumn">
-                            <div class="weeklyColumnHeader">
-                                <div class="weeklyColumnName"><span class="weeklyColumnDay">THU</span><span class="weeklyColumnDate"></span></div>
-                                <div class="weeklyColumnCommands">
-                                    <input id="addLesson" class="weeklyColumnHeaderButton" type="button" value="&plus;"/>
-                                    <input id="repeatColumn" class="weeklyColumnHeaderButton" type="button" value="&gt;"/>
+                        <div class="scheduleColumn">
+                            <div class="scheduleColumnHeader">
+                                <div class="scheduleColumnName"><span class="scheduleColumnDay">THU</span><span class="scheduleColumnDate"></span></div>
+                                <div class="scheduleColumnCommands">
+                                    <input id="addLesson" class="scheduleColumnHeaderButton" type="button" value="&plus;"/><input id="repeatColumn" class="scheduleColumnHeaderButton" type="button" value="&gt;"/>
                                 </div>
-                            </div>
-                            <div class="weeklyColumnLessonContainer">
                             </div>
                         </div>
-                        <div class="weeklyColumn">
-                            <div class="weeklyColumnHeader">
-                                <div class="weeklyColumnName"><span class="weeklyColumnDay">FRI</span><span class="weeklyColumnDate"></span></div>
-                                <div class="weeklyColumnCommands">
-                                    <input id="addLesson" class="weeklyColumnHeaderButton" type="button" value="&plus;"/>
-                                    <input id="repeatColumn" class="weeklyColumnHeaderButton" type="button" value="&gt;"/>
+                        <div class="scheduleColumn">
+                            <div class="scheduleColumnHeader">
+                                <div class="scheduleColumnName"><span class="scheduleColumnDay">FRI</span><span class="scheduleColumnDate"></span></div>
+                                <div class="scheduleColumnCommands">
+                                    <input id="addLesson" class="scheduleColumnHeaderButton" type="button" value="&plus;"/><input id="repeatColumn" class="scheduleColumnHeaderButton" type="button" value="&gt;"/>
                                 </div>
                             </div>
-                            <div class="weeklyColumnLessonContainer">
+                        </div>
+                    </div>
+
+                    <div class="scheduleContainer">
+                        <div id="0" class="scheduleColumn scheduleLessonContainer">
+                            <div class="scheduleLesson">
+                                <div class="scheduleLessonCommandBar">
+                                    <div id="delete" class="scheduleLessonCommand scheduleLessonCommandBorder">X</div>
+                                    <div id="moveUp" class="scheduleLessonCommand scheduleLessonCommandBorder">UP</div>
+                                    <div id="moveDown" class="scheduleLessonCommand">DN</div>
+                                </div>
+                                <div id="scheduleLessonName" class="scheduleLessonName"></div>
                             </div>
+                        </div>
+                        <div id="1" class="scheduleColumn scheduleLessonContainer">
+                        </div>
+                        <div id="2" class="scheduleColumn scheduleLessonContainer">
+                        </div>
+                        <div id="3" class="scheduleColumn scheduleLessonContainer">
+                        </div>
+                        <div id="4" class="scheduleColumn scheduleLessonContainer">
                         </div>
                     </div>
                 </div>
 			</main>
 		</div>
 	</div>
+    <idv class="popupFrame">
+
+        <div id="coursePicker" class="popupBox coursePicker">
+            <div class="popupCaption">
+                <div id="popupCaptionTitle" class="popupCaptionTitle">Add Lessons</div>
+                <div>
+                    <input id="popupAccept" class="inputAcceptButton popupCaptionButton" type="button" value="Accept"/>
+                    <input id="popupCancel" class="inputCancelButton popupCaptionButton" type="button" value="Cancel"/>
+                </div>
+            </div>
+            <div class="popupRow">
+                <table id="courseTable" class="scrollTable listTable courseTable" cellpadding="0" cellspacing="0">
+                    <tbody id="courseTableBody" class="courseTableBody">
+                        <tr id="courseRow" class="listRow">
+                            <td class="pickerListColumn pickerSelectColumn"><input class="pickerCheckbox" type="checkbox"/></td>
+                            <td id="courseName" class="pickerListColumn courseNameColumn"></td>
+                            <td id="className" class="pickerListColumn classNameColumn"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </idv>
 </body>
 </html>

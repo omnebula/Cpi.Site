@@ -291,15 +291,33 @@ a.siteMenuOption:hover, a.siteLastMenuOption:hover {
 * Main Section
 */
 main {
-    height: 300px;
     flex: 1;
 }
 
 .navigationPanel {
-    margin-bottom: 16px;
     display: flex;
     justify-content: space-between;
 }
+.navigationButton {
+    width:80px;
+    padding: 5px 0;
+}
+.navigationSelect {
+    color: #ddd;
+    background-color: transparent;
+    display: inline-block;
+    padding: 4px 16px;
+    margin-right: 12px;
+    border: 1px solid #777;
+}
+.navigationSelect:active {
+    border: 1px solid #777;
+}
+.navigationSelect:focus {
+    border: 1px solid #777;
+}
+
+
 
 
 /*
