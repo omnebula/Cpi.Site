@@ -110,7 +110,6 @@ main {
 }
 
 .scheduleLesson {
-    visibility: hidden;
     height: 60px;
     color: #c7c7c7;
     background-color: #171717;

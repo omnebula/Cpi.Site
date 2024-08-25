@@ -1,8 +1,8 @@
 class LessonPage extends CpiPage {
+    #benchmarkContainer = $(".lessonBenchmarkContainer");
+    #benchmarkRowTemplate = $(".lessonBenchmarkRow").detach();
+    #benchmarkPicker = new BenchmarkPicker();
     #lessonId;
-    #benchmarkContainer;
-    #benchmarkRowTemplate;
-    #benchmarkPicker;
     #detailChanged;
 
     constructor() {
@@ -63,9 +63,6 @@ class LessonPage extends CpiPage {
         $("#lessonDate").text(data.lessonDate);
 
         // Benchmark
-        this.#benchmarkContainer = $(".lessonBenchmarkContainer");
-        this.#benchmarkRowTemplate = $(".lessonBenchmarkRow").detach();
-        this.#benchmarkPicker = new BenchmarkPicker();
 
         $("#lessonAddBenchmarkButton").on("click", () => {
             const exclusions = {};

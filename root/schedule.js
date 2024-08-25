@@ -1,9 +1,9 @@
 
 
 class SchedulePage extends CpiPage {
+    #lessonTemplate = $(".scheduleLesson").detach();
+    #coursePicker = new CoursePicker(this.accountData.courses);
     #weekDates;
-    #lessonTemplate;
-    #coursePicker;
 
     constructor() {
         super();
@@ -11,9 +11,6 @@ class SchedulePage extends CpiPage {
         if (!Cpi.ValidateLogin()) {
             return;
         }
-
-        // Initialize course picker.
-        this.#coursePicker = new CoursePicker(this.accountData.courses);
 
         // Compute the start and end dates.
         const searchParams = new URLSearchParams(window.location.search);
@@ -57,10 +54,6 @@ class SchedulePage extends CpiPage {
         else {
             $("#viewNextWeek").prop("disabled", true);
         }
-
-        // Initialize lesson template.
-        this.#lessonTemplate = $(".scheduleLesson").detach();
-        this.#lessonTemplate.css("visibility", "visible");
 
         // Initialize column headers.
         const today = Cpi.GetTodayDate();
