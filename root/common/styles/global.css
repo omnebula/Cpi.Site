@@ -135,9 +135,10 @@ input[type=submit] {
     left: 0;
     bottom: 0;
     right: 0;
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: stretch;
+    overflow: hidden;
 }
 
 .pageFrame {
@@ -258,7 +259,7 @@ header {
 }
 
 .pageTitle {
-    color: forestgreen;
+    color: lightblue;
     text-align: right;
     font-size: 19px;
     font-weight: bold;
@@ -293,6 +294,7 @@ a.siteMenuOption:hover, a.siteLastMenuOption:hover {
 main {
     flex: 1;
 }
+
 
 .navigationPanel {
     display: flex;

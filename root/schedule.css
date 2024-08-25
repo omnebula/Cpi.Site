@@ -4,8 +4,15 @@ main {
 }
 
 
+.listRow:hover {
+    background-color: steelblue;
+}
+
+
 .schedulePanel {
     flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .scheduleHeader, .scheduleContainer {
@@ -37,16 +44,20 @@ main {
 .scheduleColumnHeader_today {
     background-color: #3c6d95;
 }
+.scheduleColumnHeader_holiday {
+    background-color: #303030;
+}
 
 .scheduleColumnDay {
     color: orange;
     font-weight: bold;
+    margin-left: 4px;
     margin-right: 8px;
 }
 .scheduleColumnDate {
     color: lightblue;
 }
-.scheduleColumnHoliday {
+.scheduleColumn_holiday {
     color: #aaa;
 }
 
@@ -71,6 +82,28 @@ main {
     color: black;
 }
 
+
+.scheduleBody {
+    position: relative;
+    overflow-y: scroll;
+    flex: 1;
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scheduleBody::-webkit-scrollbar {
+    display: none;
+}
+ 
+.scheduleContainer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+}
+
 .scheduleLessonContainer {
     padding: 0 4px;
     position: relative;    
@@ -78,24 +111,27 @@ main {
 
 .scheduleLesson {
     visibility: hidden;
-    height: 70px;
-    color: yellow;
-    background-color: #141414;
-    font-size: 14px;
-    margin-top: 12px;
+    height: 60px;
+    color: #c7c7c7;
+    background-color: #171717;
+    font-size: 13px;
+    margin-top: 10px;
     border-radius: 24px;
     display: flex;
     justify-content: center;
     align-items: center;    
-    cursor: pointer;
     position: relative;
     border: 1px solid #274965;
+    cursor: default;
 }
 .scheduleLesson:hover {
     border: 1px solid steelblue;
+    color: white;
 }
 .scheduleLesson_selected {
-    border: 1px solid #fff;
+    color: white;
+    border: 1px solid steelblue;
+    background-color: #336699;
 }
 
 .scheduleLessonCommandBar {
@@ -105,13 +141,14 @@ main {
     margin: 0 auto;
     display: none;
     flex-direction: row;
-    color: #777;
+    color: #888;
     z-index: 1;
 }
 
 .scheduleLessonCommand {
     width: 30px;
     text-align: center;
+    cursor: pointer;
 }
 .scheduleLessonCommand:hover {
     color: white;
@@ -125,12 +162,12 @@ main {
 }
 
 .coursePicker {
-    width: 500px;
+    width: 480px;
+    flex: 0;
 }
 
 .courseTable {
-    height: 420px;
-    width: 100%
+    width: 100%;
 }
 
 .courseTableBody {
@@ -144,4 +181,22 @@ main {
 
 .pickerListColumn {
     padding: 3px 0;
+}
+.pickerCaption {
+    margin-bottom: 0;
+}
+.pickerCaptionButton {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    height: 100%;
+}
+.pickerSelectButton {
+    width: 100px;
+    border-radius: 4px;
+}
+.pickerRow {
+    margin: 0 12px 12px 12px;
+}
+.classNameColumn {
+    color: #ddd;
 }

@@ -108,10 +108,15 @@ main {
     width: 50px;
 }
 
+.listRow {
+    color: #eee;
+}
 .listRow:hover {
+    color: white;
     background-color: steelblue;
 }
 .listRow_selected {
+    color: white;
     background-color: #336699;
 }
 
@@ -153,7 +158,7 @@ main {
     justify-content: space-between;
 }
 .holidayTableHeader {
-    color: forestgreen;
+    color: lightblue;
 }
 .holidayListRow_active {
     color: white;

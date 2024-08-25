@@ -73,12 +73,15 @@ class SchedulePage extends CpiPage {
 
             column.find(".scheduleColumnDate").text(Cpi.FormatShortDateString(lessonDate));
 
+            // Handle holiday
             if (Cpi.IsHoliday(lessonDate)) {
-                column.find(".scheduleColumnDay").addClass("scheduleColumnHoliday");
-                column.find(".scheduleColumnDate").addClass("scheduleColumnHoliday");
-                column.find("#addLesson").css("visibility", "hidden");
+                column.find(".scheduleColumnHeader").addClass("scheduleColumnHeader_holiday")
+                column.find(".scheduleColumnDay").addClass("scheduleColumn_holiday");
+                column.find(".scheduleColumnDate").addClass("scheduleColumn_holiday");
+                column.find("#addLesson").css("visibility", "hidden").prop("holiday", true);
                 column.find("#repeatColumn").css("visibility", "hidden");
             }
+            // Else, do regular school day/
             else {
                 column.find("#addLesson").on("click", () => { this.#onAddLesson(lessonDate); });
                 column.find("#repeatColumn").on("click", () => { this.#onRepeatColumn(lessonDate); });
@@ -91,11 +94,28 @@ class SchedulePage extends CpiPage {
             containerDate = Cpi.DateAdd(containerDate, 1);
         }
 
+        $(".appFrame").on("mousedown", () => {
+            this.#selectLesson(undefined);
+        });
+
+        // Query lessons.
         Cpi.SendApiRequest({
             method: "GET",
             url: `/@/lessons?start=${Cpi.FormatIsoDateString(this.#weekDates.start)}&end=${Cpi.FormatIsoDateString(this.#weekDates.end)}`,
             success: (data, status, xhr) => {
                 this.#populateSchedule(data);
+
+                // Update insert-lesson button visibility.
+                this.#syncInsertButtons();
+
+                // Conditionally set the current selection.
+                const url = new URL(document.referrer);
+                if (url.pathname === "/lesson") {
+                    const lessonId = url.searchParams.get("id");
+                    if (lessonId) {
+                        this.#selectLesson($(`#${lessonId}`));
+                    }
+                }
             }
         });
     }
@@ -131,6 +151,9 @@ class SchedulePage extends CpiPage {
                     data: JSON.stringify(params),
                     success: (results, status, xhr) => {
                         this.#populateSchedule(results);
+
+                        // Update insert-lesson button visibility.
+                        this.#syncInsertButtons(containerId);
                     }
                 });
        
@@ -167,6 +190,10 @@ class SchedulePage extends CpiPage {
         })
     }
 
+    #calcContainerId(lessonDate) {
+        return Cpi.DateDiff(lessonDate, this.#weekDates.start);
+    }
+
     #populateSchedule(data) {
         const containers = $(".scheduleLessonContainer");
 
@@ -176,51 +203,55 @@ class SchedulePage extends CpiPage {
 
             const lesson = this.#lessonTemplate.clone(true);
 
-            this.#initLesson(lesson, current);
-
+            lesson.attr("id", current.lessonId);
+            lesson.attr("courseId", current.courseId);
+            lesson.attr("classId", current.classId);
+            lesson.attr("lessonSequence", current.lessonSequence);
+            lesson.attr("href", `/lesson?id=${current.lessonId}`);
+    
+            // Init name.
+            lesson.find("#scheduleLessonName").text(current.lessonName);
+    
+            // Init command bar.'
+            const commandBar = lesson.find(".scheduleLessonCommandBar");
+            commandBar.on("mouseup", (event) => {
+                if (event.which === 1) {    // Left-click only
+                    event.stopPropagation();
+                }
+            });
+            commandBar.find("#delete").on("click", (event) => {
+                event.stopPropagation();
+                this.#deleteLesson(lesson, containerId);
+            });
+            commandBar.find("#moveUp").on("click", (event) => {
+                event.stopPropagation();
+                this.#moveLesson(lesson, true);
+            });
+            commandBar.find("#moveDown").on("click", (event) => {
+                event.stopPropagation();
+                this.#moveLesson(lesson, false);
+            });
+    
+            lesson.on("mouseenter", () => { // Show commmand bar on mouse-enter
+                commandBar.css("display", "flex");
+            })
+            .on("mouseleave", () => {       // Hide command bar on mouse-leave
+                commandBar.css("display", "none");
+            })
+            .on("mousedown", (event) => {
+                event.stopPropagation();
+                this.#selectLesson(lesson);
+            })
+            .on("mouseup", (event) => {
+                if (event.which === 1) {  // Left click only
+                    event.stopPropagation();
+                    window.open(`/lesson?id=${current.lessonId}`, event.ctrlKey ? "_blank" : "_self");
+                }
+            });
+    
             // Add to container.
             $(containers[containerId]).append(lesson);
         }
-    }
-
-    #calcContainerId(lessonDate) {
-        return Cpi.DateDiff(lessonDate, this.#weekDates.start);
-    }
-
-    #initLesson(lesson, data) {
-        lesson.attr("id", data.lessonId);
-        lesson.attr("courseId", data.courseId);
-        lesson.attr("classId", data.classId);
-        lesson.attr("lessonSequence", data.lessonSequence);
-        lesson.attr("href", `/lesson?id=${data.lessonId}`);
-
-        // Init name.
-        lesson.find("#scheduleLessonName").text(data.lessonName);
-
-        // Init command bar.
-        const commandBar = lesson.find(".scheduleLessonCommandBar");
-        commandBar.find("#delete").on("click", (event) => {
-            event.stopPropagation();
-            this.#deleteLesson(lesson);
-        });
-        commandBar.find("#moveUp").on("click", (event) => {
-            event.stopPropagation();
-            this.#moveLesson(lesson, true);
-        });
-        commandBar.find("#moveDown").on("click", (event) => {
-            event.stopPropagation();
-            this.#moveLesson(lesson, false);
-        });
-
-        lesson.on("mouseenter", () => { // Show commmand bar on mouse-enter
-            commandBar.css("display", "flex");
-        })
-        .on("mouseleave", () => {       // Hide command bar on mouse-leave
-            commandBar.css("display", "none");
-        })
-        .on("click", (event) => {
-            window.open(`/lesson?id=${data.lessonId}`, event.ctrlKey ? "_blank" : "_self");
-        });
     }
 
     #viewWeek(weekNumber) {
@@ -231,7 +262,7 @@ class SchedulePage extends CpiPage {
         window.location.href = `/schedule?week=${weekNumber}`;
     }
 
-    #deleteLesson(lesson) {
+    #deleteLesson(lesson, containerId) {
         const lessonId = lesson.attr("id");
 
         Cpi.SendApiRequest({
@@ -239,14 +270,18 @@ class SchedulePage extends CpiPage {
             url: `/@/lesson/${lessonId}`,
             success: (data, status, xhr) => {
                 lesson.remove();
+                this.#syncInsertButtons(containerId);
             }
         })
     }
+
     #moveLesson(target, moveUp) {
         const other = moveUp ? target.prev() : target.next();
         if (!other.length) {
             return;
         }
+
+        this.#selectLesson(target);
 
         const targetId = target.attr("id");
         const targetSequence = target.attr("lessonSequence");
@@ -282,6 +317,41 @@ class SchedulePage extends CpiPage {
             }
         });
     }
+
+    #selectLesson(lesson) {
+        const scheduleContainer = $("#scheduleContainer");
+        scheduleContainer.find(".scheduleLesson_selected").removeClass("scheduleLesson_selected");
+        if (lesson) {
+            lesson.addClass("scheduleLesson_selected");                
+        }
+    }
+
+    #syncInsertButtons(containerId) {
+        const maxCourses = this.accountData.courses.length;
+        const buttons = $(".addLesson");
+        const containers = $(".scheduleLessonContainer");
+
+        var index, max;
+        if (containerId) {
+            index = containerId;
+            max = index + 1;
+        }
+        else {
+            index = 0;
+            max = buttons.length;
+        }
+
+        while (index < max) {
+            const button = $(buttons[index]);
+            if (!button.prop("holiday")) {
+                const current = $(containers[index]);
+                const children = current.children();
+                button.css("visibility", (children.length < maxCourses) ? "visible" : "hidden");
+            }
+
+            ++index;  
+        }
+    }
 }
 
 
@@ -290,6 +360,15 @@ class CoursePicker {
     #courseContainer = $("#courseTableBody");
 
     constructor(courses) {
+        // Mass selection button.
+        this.#popup.find("#selectAll").on("click", () => {
+            this.#courseContainer.find("input[type=checkbox]").prop("checked", true);
+        });
+        this.#popup.find("#deselectAll").on("click", () => {
+            this.#courseContainer.find("input[type=checkbox]").prop("checked", false);
+        });
+
+        // Init table contents
         const courseRowTemplate = this.#courseContainer.find("#courseRow").detach();
         
         for (const current of courses) {
@@ -322,14 +401,16 @@ class CoursePicker {
 
     #acceptSelection(accept) {
         const selection = [];
-        const rows = this.#courseContainer.find("input:checked");
+        const checkboxes = this.#courseContainer.find("input:checked");
 
-        for (const current of rows) {
+        for (const current of checkboxes) {
             const row = $(current).parent().parent();
-            selection.push({
-                courseId: row.attr("courseId"),
-                classId: row.attr("classId")
-            });
+            if (row.css("display") !== "none") {
+                selection.push({
+                    courseId: row.attr("courseId"),
+                    classId: row.attr("classId")
+                });
+            }
         }
 
         accept(selection);

@@ -65,7 +65,6 @@ class LessonPage extends CpiPage {
         // Benchmark
         this.#benchmarkContainer = $(".lessonBenchmarkContainer");
         this.#benchmarkRowTemplate = $(".lessonBenchmarkRow").detach();
-        this.#benchmarkRowTemplate.css("visibility", "visible");
         this.#benchmarkPicker = new BenchmarkPicker();
 
         $("#lessonAddBenchmarkButton").on("click", () => {

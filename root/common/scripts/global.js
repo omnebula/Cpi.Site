@@ -283,6 +283,9 @@ class CpiPage {
             if (this.#accountData && this.#accountData.accessType === "organization") {
                 $("#siteViewManager").css("display", "inline");
             }
+
+            // Show the app frame.
+            $(".appFrame").css("display", "flex");
         }
     }
 

@@ -31,22 +31,22 @@
             <main>
                 <div class="navigationPanel">
                     <div>
-                        <select id="selectWeek" class="inputSelect navigationSelect"></select>
-                        <input id="viewPreviousWeek" class="inputButton navigationButton" type="button" value="Previous"/>
-                        <input id="viewNextWeek" class="inputButton navigationButton" type="button" value="Next"/>
-                        <input id="viewCurrentWeek" class="inputButton navigationButton" type="button" value="Current"/>
+                        <select id="selectWeek" class="inputSelect navigationSelect" title="Got to a specific week"></select>
+                        <input id="viewPreviousWeek" class="inputButton navigationButton" type="button" value="Previous" title="Go to the previous week"/>
+                        <input id="viewNextWeek" class="inputButton navigationButton" type="button" value="Next" title="Go to the next week"/>
+                        <input id="viewCurrentWeek" class="inputButton navigationButton" type="button" value="Current" title="Go to the current week"/>
                     </div>
                     <div>
                     </div>
                 </div>
 
                 <div class="schedulePanel">
-                    <div class="scheduleHeader">
+                    <div id="scheduleHeader" class="scheduleHeader">
                         <div class="scheduleColumn">
                             <div class="scheduleColumnHeader">
                                 <div class="scheduleColumnName"><span class="scheduleColumnDay">MON</span><span class="scheduleColumnDate"></span></div>
                                 <div class="scheduleColumnCommands">
-                                    <input id="addLesson" class="scheduleColumnHeaderButton" type="button" value="&plus;"/><input id="repeatColumn" class="scheduleColumnHeaderButton" type="button" value="&gt;"/>
+                                    <input id="addLesson" class="scheduleColumnHeaderButton addLesson" type="button" value="&plus;" title="Add Lessons"/><input id="repeatColumn" class="scheduleColumnHeaderButton" type="button" value="&gt;" title="Repeat Lessons"/>
                                 </div>
                             </div>
                         </div>
@@ -54,7 +54,7 @@
                             <div class="scheduleColumnHeader">
                                 <div class="scheduleColumnName"><span class="scheduleColumnDay">TUE</span><span class="scheduleColumnDate"></span></div>
                                 <div class="scheduleColumnCommands">
-                                    <input id="addLesson" class="scheduleColumnHeaderButton" type="button" value="&plus;"/><input id="repeatColumn" class="scheduleColumnHeaderButton" type="button" value="&gt;"/>
+                                    <input id="addLesson" class="scheduleColumnHeaderButton addLesson" type="button" value="&plus;" title="Add Lessons"/><input id="repeatColumn" class="scheduleColumnHeaderButton" type="button" value="&gt;" title="Repeat Lessons"/>
                                 </div>
                             </div>
                         </div>
@@ -62,7 +62,7 @@
                             <div class="scheduleColumnHeader">
                                 <div class="scheduleColumnName"><span class="scheduleColumnDay">WED</span><span class="scheduleColumnDate"></span></div>
                                 <div class="scheduleColumnCommands">
-                                    <input id="addLesson" class="scheduleColumnHeaderButton" type="button" value="&plus;"/><input id="repeatColumn" class="scheduleColumnHeaderButton" type="button" value="&gt;"/>
+                                    <input id="addLesson" class="scheduleColumnHeaderButton addLesson" type="button" value="&plus;" title="Add Lessons"/><input id="repeatColumn" class="scheduleColumnHeaderButton" type="button" value="&gt;" title="Repeat Lessons"/>
                                 </div>
                             </div>
                         </div>
@@ -70,7 +70,7 @@
                             <div class="scheduleColumnHeader">
                                 <div class="scheduleColumnName"><span class="scheduleColumnDay">THU</span><span class="scheduleColumnDate"></span></div>
                                 <div class="scheduleColumnCommands">
-                                    <input id="addLesson" class="scheduleColumnHeaderButton" type="button" value="&plus;"/><input id="repeatColumn" class="scheduleColumnHeaderButton" type="button" value="&gt;"/>
+                                    <input id="addLesson" class="scheduleColumnHeaderButton addLesson" type="button" value="&plus;" title="Add Lessons"/><input id="repeatColumn" class="scheduleColumnHeaderButton" type="button" value="&gt;" title="Repeat Lessons"/>
                                 </div>
                             </div>
                         </div>
@@ -78,30 +78,31 @@
                             <div class="scheduleColumnHeader">
                                 <div class="scheduleColumnName"><span class="scheduleColumnDay">FRI</span><span class="scheduleColumnDate"></span></div>
                                 <div class="scheduleColumnCommands">
-                                    <input id="addLesson" class="scheduleColumnHeaderButton" type="button" value="&plus;"/><input id="repeatColumn" class="scheduleColumnHeaderButton" type="button" value="&gt;"/>
+                                    <input id="addLesson" class="scheduleColumnHeaderButton addLesson" type="button" value="&plus;" title="Add Lessons"/><input id="repeatColumn" class="scheduleColumnHeaderButton" type="button" value="&gt;" title="Repeat Lessons"/>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="scheduleContainer">
-                        <div id="0" class="scheduleColumn scheduleLessonContainer">
-                            <div class="scheduleLesson">
-                                <div class="scheduleLessonCommandBar">
-                                    <div id="delete" class="scheduleLessonCommand scheduleLessonCommandBorder">X</div>
-                                    <div id="moveUp" class="scheduleLessonCommand scheduleLessonCommandBorder">UP</div>
-                                    <div id="moveDown" class="scheduleLessonCommand">DN</div>
+                    <div class="scheduleBody">
+                        <div id="scheduleContainer" class="scheduleContainer">
+                            <div id="0" class="scheduleColumn scheduleLessonContainer">
+                                <div class="scheduleLesson">
+                                    <div class="scheduleLessonCommandBar">
+                                        <div id="delete" class="scheduleLessonCommand scheduleLessonCommandBorder">X</div>
+                                        <div id="moveUp" class="scheduleLessonCommand scheduleLessonCommandBorder">UP</div>
+                                        <div id="moveDown" class="scheduleLessonCommand">DN</div>
+                                    </div>
+                                    <div id="scheduleLessonName" class="scheduleLessonName"></div>
                                 </div>
-                                <div id="scheduleLessonName" class="scheduleLessonName"></div>
                             </div>
-                        </div>
-                        <div id="1" class="scheduleColumn scheduleLessonContainer">
-                        </div>
-                        <div id="2" class="scheduleColumn scheduleLessonContainer">
-                        </div>
-                        <div id="3" class="scheduleColumn scheduleLessonContainer">
-                        </div>
-                        <div id="4" class="scheduleColumn scheduleLessonContainer">
+                            <div id="1" class="scheduleColumn scheduleLessonContainer">
+                            </div>
+                            <div id="2" class="scheduleColumn scheduleLessonContainer">
+                            </div>
+                            <div id="3" class="scheduleColumn scheduleLessonContainer">
+                            </div>
+                            <div id="4" class="scheduleColumn scheduleLessonContainer">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -111,14 +112,19 @@
     <idv class="popupFrame">
 
         <div id="coursePicker" class="popupBox coursePicker">
-            <div class="popupCaption">
-                <div id="popupCaptionTitle" class="popupCaptionTitle">Add Lessons</div>
+            <div class="popupCaption pickerCaption">
+                <div id="popupCaptionTitle" class="popupCaptionTitle">
+                    <input id="selectAll" type="button" class="inputButton popupCaptionButton pickerSelectButton" value="Select All"/>
+                    <input id="deselectAll" type="button" class="inputButton popupCaptionButton pickerSelectButton" value="Deelect All"/>
+                </div>
                 <div>
                     <input id="popupAccept" class="inputAcceptButton popupCaptionButton" type="button" value="Accept"/>
                     <input id="popupCancel" class="inputCancelButton popupCaptionButton" type="button" value="Cancel"/>
                 </div>
             </div>
-            <div class="popupRow">
+            <div class="popupRow pickerRow">
+            </div>
+            <div class="popupRow pickerRow">
                 <table id="courseTable" class="scrollTable listTable courseTable" cellpadding="0" cellspacing="0">
                     <tbody id="courseTableBody" class="courseTableBody">
                         <tr id="courseRow" class="listRow">

@@ -2,10 +2,6 @@
     margin-left: 10px;
 }
 
-.inputLabel {
-    font-size: 16px;
-}
-
 #lessonPanel {
     display: flex;
     flex: 1;
@@ -48,7 +44,6 @@
 }
 
 .lessonHeader {
-    font-size: 16px;
     display: flex;
     justify-content: space-between;
     margin-bottom: 3px;
@@ -58,15 +53,19 @@
     flex: 1;
     background-color: #333;
     padding: 8px;
-    min-height: 34px;
+    min-height: 40px;
     border-radius: 8px;
+}
+
+#lessonAddBenchmarkButton {
+    padding: 4px 10px;
 }
 
 .lessonBenchmarkRow {
     display: flex;
     flex-direction: row;
     margin-top: 8px;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 .lessonBenchmarkCode {
@@ -87,7 +86,7 @@
     resize: none;
     padding: 16px;
     font-size: 14px;
-    height: 96px;
+    height: 52px;
     background-color: #333;
     color: white;
 }
