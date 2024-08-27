@@ -1,6 +1,5 @@
 .benchmarkPickerPanel {
     flex: 1;
-    align-items: center;
     justify-content: center;
     display: none;
     z-index: 2;
@@ -21,6 +20,7 @@
     flex-direction: column;
     background-color: #414141;
     z-index: 3;
+    margin-top: 10%;
 }
 .benchmarkPickerCaption {
     display: flex;

@@ -16,3 +16,14 @@
         top: 22px;
     }
 }
+
+.st-body-table {
+    vertical-align: top;
+}
+.st-tr-even {
+    background-color: #1d1d1d;
+}
+.st-tr-odd {
+    background-color: inherit;
+}
+

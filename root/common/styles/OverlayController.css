@@ -1,0 +1,68 @@
+.overlaySelector {
+    gap: 4px;
+}
+.overlaySelectorOption, .activeOverlaySelectorOption {
+    width: 150px;
+    padding: 16px 0;
+    font-size: 16px;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+.overlaySelectorOption {
+    color: #dedede;
+    background-color: #414141;
+}
+.overlaySelectorOption:hover {
+    color: white;
+    font-weight: bold;
+}
+.activeOverlaySelectorOption {
+    color: white;
+    background-color: #336699;
+    font-weight: bolder;
+}
+
+.overlayPanel {
+    display: none;
+    flex-direction: row;
+    flex: 1;
+}
+.overlaySection {
+    flex: 1;
+}
+.overlayContent {
+    flex: 1;
+    margin: 0 32px;
+    display: flex;
+    flex-direction: column;
+}
+.overlayCommands, .overlayCommandGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 200px;
+}
+
+.overlayCommandGroup {
+    margin-bottom: 28px;
+}
+.overlayCommandInput {
+    padding: 10px 10px;
+    background-color: inherit;
+    color: lightgray;
+    font-family: inherit;
+    box-sizing: border-box;
+    border: 1px solid #555;
+}
+.overlayCommandButton {
+    width: 100%;
+}
+
+.overlayCommandSelectOption {
+    background-color: inherit;
+    color: lightgray;
+    font-family: inherit;    
+    padding: 8px 0px;
+}
+
+

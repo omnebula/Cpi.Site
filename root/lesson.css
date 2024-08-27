@@ -1,46 +1,99 @@
-#viewWeek {
-    margin-left: 10px;
-}
-
-#lessonPanel {
+main {
     display: flex;
-    flex: 1;
-    flex-direction: column;
+    flex-direction: column;    
 }
 
 
-.lessonTitleSection {
+.navigationPanel {
+    margin-bottom: 24px;
+    align-items: center;
+}
+
+.lessonNavigationButton {
+    color: steelblue;
+    background-color: transparent;
+    margin-right: 1px;
+    border: 1px solid steelblue;
+    padding: 3px 8px;
+    font-size: 12px;
+}
+.lessonNavigationButton:hover {
+    color: lightsteelblue;
+    background-color: #202020;
+    border: 1px solid lightsteelblue;
+}
+.lessonNavigationButton:active {
+    color: black;
+    background-color: lightblue;
+    border: 1px solid lightblue;
+}
+.lessonNavigationButton:disabled {
+    color: #555;
+    background-color: #202020;
+    border: 1px solid #555;
+}
+
+.lessonViewButton {
+    width: 160px;
+}
+
+.navigationGroup {
     display: flex;
     justify-content: space-between;
+}
+
+.navigationTitleGroup {
     font-size: 15px;
+    align-items: center;    
+}
+
+.lessonTitle {
+    text-align: left;
+    font-weight: normal;
+    font-size: 16px;
 }
 
 .lessonName {
-    width: 200px;
-    font-size: inherit;
-    color: inherit;
-    background-color: inherit;
-    border: 0;
-    box-sizing: border-box;    
-    outline: none;
-    padding: 0;
+    margin-right: 8px;
 }
+
+.lessonDate {
+    margin-left: 24px;
+    margin-right: 8px;
+}
+
 
 .lessonDateControls {
     display: flex;
     flex-direction: row;
-    align-items: center;;
-}
-.lessonDate {
-    margin-right: 12px;
-}
-.lessonDateButton {
-    height: 28px;
+    align-items: center;
 }
 
+.lessonBody {
+    position: relative;
+    overflow-y: scroll;
+    flex: 1;
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scheduleBody::-webkit-scrollbar {
+    display: none;
+}
+
+.lessonPanel {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+}
 
 .lessonSection {
-    margin-top: 32px;
+    margin-bottom: 32px;
 }
 
 .lessonHeader {
@@ -49,30 +102,60 @@
     margin-bottom: 3px;
 }
 
-.lessonBenchmarkContainer {
-    flex: 1;
-    background-color: #333;
-    padding: 8px;
-    min-height: 40px;
-    border-radius: 8px;
+.lessonBenchmarkTable {
+    width: 100%;
 }
 
-#lessonAddBenchmarkButton {
-    padding: 4px 10px;
+.lessonBenchmarkSection {
+    background-color: #202020;
+    padding: 8px 16px;
+    min-height: 30px;
+    border-radius: 8px;
+    border: 1px solid #333;
+}
+.lessonBenchmarkSection:hover {
+    border-color: #336699;
 }
 
 .lessonBenchmarkRow {
-    display: flex;
-    flex-direction: row;
-    margin-top: 8px;
-    margin-bottom: 10px;
 }
 
-.lessonBenchmarkCode {
-    width: 150px;
+.lessonBenchmarkCodeColumn, .lessonBenchmarkSynopsisColumn, .lessonBenchmarkCommandsColumn {
+    padding: 5px 0;
+    vertical-align: top;
 }
-.lessonBenchmarkDescription {
-    flex: 1;
+
+.lessonBenchmarkCodeColumn {
+    color: lightsteelBlue;
+}
+
+.lessonBenchmarkSynopsisColumn {
+    width: 100%;
+    padding-left: 18px;
+    color: #ddd;
+}
+.lessonBenchmarkCommandsColumn {
+    padding-left: 18px;
+    text-align: right;
+}
+.lessonBenchmarkCommandButton {
+    font-size: 10px;
+    font-family: inherit;
+    outline: 0;
+    border: 1px solid #336699;
+    background-color: transparent;
+    color: #336699;
+    padding: 2px 4px;
+    margin: 0;
+}
+.lessonBenchmarkCommandButton:hover {
+    color: lightsteelBlue;
+    border-color: lightsteelBlue;
+}
+.lessonBenchmarkCommandButton:active {
+    color: black;
+    border-color: lightsteelBlue;
+    background-color: lightsteelBlue;
 }
 
 .lessonDetailSection {
@@ -87,10 +170,110 @@
     padding: 16px;
     font-size: 14px;
     height: 52px;
-    background-color: #333;
-    color: white;
+    background-color: #202020;
+    color: #eee;
+}
+.lessonDetailText:hover {
+    border-color: #336699;
 }
 .lessonDetailText:focus {
-    border-color: white;
+    border-color: steelblue;
+    color: white;
+}
+
+
+
+.pickerInput, .pickerSelect {
+    color: #ddd;
+    background-color: transparent;
+    outline: none;
+    border-radius: 8px;
+    box-sizing: border-box;
+    border: 1px solid #777;    
+    font-size: inherit;
+    font-family: inherit;    
+}
+
+
+.popupRow {
+    margin: 0 18px 18px 18px;
+}
+
+.pickerInput {
+    padding: 4px 8px;
+    border: 1px solid steelblue;
+}
+.pickerSelect {
+    padding: 2px 4px;
+    border: 1px solid steelblue;
+}
+.pickerSelect:active {
+    border-color: lightsteelblue;
     background-color: #272727;
 }
+.pickerSelect:focus {
+    border-color: lightsteelblue;
+    background-color: #272727;
+}
+.pickerButton {
+    padding: 5px 0;
+    width: 150px;
+}
+
+
+.benchmarkPicker {
+    width: 800px;
+    height: 420px;
+    margin-top: 10%;
+}
+.benchmarkPickerSearch {
+    margin-bottom: 18px;
+}
+.benchmarkPickerSearchBar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;    
+}
+.benchmarkPickerSearchSubject {
+    margin-right: 24px;
+}
+.benchmarkPickerSearchGrade {
+    margin-right: 24px;
+}
+.benchmarkPickerSearchKeyword {
+    width: 150px;
+    margin-right: 24px;
+}
+.benchmarkPickerResults {
+    overflow-y: auto;
+    margin-bottom: 32px;    
+}
+.benchmarkPickerTable {
+    width: 100%;
+}
+.benchmarkPickerTableBody {
+
+}
+.benchmarkPickerRow {
+}
+.benchmarkPickerColumn {
+    padding: 4px 0;
+    vertical-align: top;
+}
+.benchmarkPickerCheckboxColumn {
+    padding-right: 12px;
+}
+.benchmarkPickerCheckbox {
+}
+.benchmarkPickerCodeColumn {
+    padding-right: 12px;
+    color: lightsteelBlue;
+}
+.benchmarkPickerCode {
+}
+.benchmarkPickerSynopsisColumn {
+    width: 100%;
+    padding-right: 6px;
+    color: #eee;
+}
+    

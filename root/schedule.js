@@ -2,7 +2,7 @@
 
 class SchedulePage extends CpiPage {
     #lessonTemplate = $(".scheduleLesson").detach();
-    #coursePicker = new CoursePicker(this.accountData.courses);
+    #coursePicker;
     #weekDates;
 
     constructor() {
@@ -87,6 +87,8 @@ class SchedulePage extends CpiPage {
             containerDate = Cpi.DateAdd(containerDate, 1);
         }
 
+        this.#coursePicker = new CoursePicker(this.accountData.courses);
+
         $(".appFrame").on("mousedown", () => {
             this.#selectLesson(undefined);
         });
@@ -109,6 +111,8 @@ class SchedulePage extends CpiPage {
                         this.#selectLesson($(`#${lessonId}`));
                     }
                 }
+
+                Cpi.ShowAppFrame();
             }
         });
     }

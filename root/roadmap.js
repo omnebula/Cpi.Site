@@ -17,6 +17,7 @@ class RoadmapPage extends CpiPage
             url: "/@/lesson/coverage?subject=Mathematics&grade=3",
             success: (data, status, xhr) => {
                 this.#init(data);
+                Cpi.ShowAppFrame();
             }
         });
     }

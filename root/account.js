@@ -14,6 +14,7 @@ class AccountPage extends CpiPage {
             url: "/@/account/",
             success: (data, status, xhr) => {
                 this.#init(data);
+                Cpi.ShowAppFrame();
             }
         });
     }

@@ -6,7 +6,7 @@ html, body {
 body {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     color: white;
-    background-color: #202020;
+    background-color: #1a1a1a;
     margin: 0;
     padding: 0;
     font-size: 13px;
@@ -16,6 +16,7 @@ a {
     text-decoration: none;
     color: inherit;
     cursor: pointer;
+    white-space: nowrap;    
 }
 a:hover {
     text-decoration: underline;
@@ -68,7 +69,7 @@ input[type=submit] {
     box-sizing: border-box;
     color: white;
     border: 1px solid #333;
-    background-color: #333;
+    background-color: #202020;
     font-size: inherit;
     font-family: inherit;
 }
@@ -249,7 +250,7 @@ header {
 
 .siteLogo {
     color: #336699;
-    font-size: 42px;
+    font-size: 40px;
     font-weight: bold;
 }
 
@@ -261,12 +262,13 @@ header {
 .pageTitle {
     color: lightblue;
     text-align: right;
-    font-size: 19px;
+    font-size: 18px;
     font-weight: bold;
     margin-bottom: 6px;
 }
 
 .siteMenu {
+    text-align: right;
 }
 .siteMenuOption, .siteLastMenuOption {
     margin-right: 3px;
@@ -310,7 +312,7 @@ main {
     display: inline-block;
     padding: 4px 16px;
     margin-right: 12px;
-    border: 1px solid #777;
+    border: 1px solid steelblue;
 }
 .navigationSelect:active {
     border: 1px solid #777;

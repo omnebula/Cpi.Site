@@ -1,4 +1,6 @@
 class Cpi {
+    static #DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
     /*
     * Utilities
     */
@@ -14,11 +16,17 @@ class Cpi {
     static FormatIsoDateString(date) {
         return date.toISOString().substring(0, 10);
     }
-    static FormatShortDateString(date) {
+    static FormatShortDateString(date, includeDay) {
         if (typeof date === "string") {
             date = Cpi.ParseLocalDate(date);
         }
-        return date.toLocaleString(undefined, { dateStyle: "medium" });
+        var dateString = date.toLocaleString(undefined, { dateStyle: "medium" });
+
+        if (includeDay) {
+            dateString = `${this.#DAY_NAMES[date.getDay()]} ${dateString}`;
+        }
+
+        return dateString;
     }
 
     static ShortDateToIsoString(shortDateString) {
@@ -166,6 +174,10 @@ class Cpi {
     }
 
 
+    static ShowAppFrame() {
+        $(".appFrame").css("display", "flex");
+    }
+
     static IsLoggedIn(autoLogin) {
         return window.cpidata !== undefined;
     }
@@ -283,9 +295,6 @@ class CpiPage {
             if (this.#accountData && this.#accountData.accessType === "organization") {
                 $("#siteViewManager").css("display", "inline");
             }
-
-            // Show the app frame.
-            $(".appFrame").css("display", "flex");
         }
     }
 

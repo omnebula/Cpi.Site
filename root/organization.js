@@ -22,6 +22,8 @@ class OrganizationPage extends CpiPage {
         // Show initial overlay.
         const lastOverlayName = localStorage.getItem("organizationOverlayName");
         this.#overlayController.showOverlay(lastOverlayName || overlays[0].name);
+
+        Cpi.ShowAppFrame();
     }
 
     /* Brokers */

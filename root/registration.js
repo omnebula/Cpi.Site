@@ -16,6 +16,7 @@ class RegistrationPage extends CpiPage {
             url: `/@/account/invitation/${invitationId}`,
             success: (data) => {
                 this.#init(data);
+                Cpi.ShowAppFrame();
             },
             error: (xhr, status, message) => {
                 if (xhr.status === 404) {
