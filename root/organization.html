@@ -117,8 +117,8 @@
                             </div>
                             <div id="holidayActionCommands" class="overlayCommands holidayActionCommands">
                                 <input id="addHoliday" value="Add Holiday..." type="button" class="inputButton overlayCommandButton"/>
-                                <input id="editHoliday" value="Edit Holiday..." type="button" class="inputButton overlayCommandButton"/>
-                                <input id="deleteHoliday" value="Delete Holiday" type="button" class="inputButton overlayCommandButton"/>
+                                <input id="editHoliday" value="Edit Holiday..." type="button" class="inputButton overlayCommandButton" disabled/>
+                                <input id="deleteHoliday" value="Delete Holiday" type="button" class="inputButton overlayCommandButton" disabled/>
                             </div>
                         </div>
                     </div>
@@ -137,10 +137,10 @@
                                 </thead>
                                 <tbody>
                                     <tr id="studentRow" class="listRow">
-                                        <td id="studentNameColumn" class="listColumn studentNameColumn">Bell, Oliver</td>
-                                        <td id="studentNumberColumn" class="listColumn studentNumberColumn">1234</td>
-                                        <td id="studentGradeColumn" class="listColumn studentGradeColumn">3</td>
-                                        <td id="studentLocationColumn" class="listColumn studentLocationColumn">Boca Raton</td>
+                                        <td id="studentNameColumn" class="listColumn studentNameColumn"></td>
+                                        <td id="studentNumberColumn" class="listColumn studentNumberColumn"></td>
+                                        <td id="studentGradeColumn" class="listColumn studentGradeColumn"></td>
+                                        <td id="studentLocationColumn" class="listColumn studentLocationColumn"></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -160,11 +160,11 @@
                             </div-->
                             <div class="overlayCommandGroup">
                                 <input id="addStudent" type="button" class="inputButton overlayCommandButton" value="Add Student..."/>
-                                <input id="editStudent" type="button" class="inputButton overlayCommandButton" value="Edit Student..."/>
-                                <input id="deleteStudent" type="button" class="inputButton overlayCommandButton" value="Delete Student"/>
+                                <input id="editStudent" type="button" class="inputButton overlayCommandButton" value="Edit Student..." disabled/>
+                                <input id="deleteStudent" type="button" class="inputButton overlayCommandButton" value="Delete Student" disabled/>
                             </div>
                             <div class="overlayCommandGroup">
-                                <input id="assignStudentClasses" type="button" class="inputButton overlayCommandButton" value="Assign Classes..."/>
+                                <input id="assignStudentClasses" type="button" class="inputButton overlayCommandButton" value="Assign Classes..." disabled/>
                             </div>
                             <div class="overlayCommandGroup">
                                 <input id="uploadStudents" type="button" class="inputButton overlayCommandButton" value="Upload Students..." disabled/>
@@ -204,14 +204,14 @@
                             </div-->
                             <div class="overlayCommandGroup">
                                 <input id="addAccount" type="button" class="inputButton overlayCommandButton" value="Add Account..."/>
-                                <input id="editAccount" type="button" class="inputButton overlayCommandButton" value="Edit Account..."/>
-                                <input id="deleteAccount" type="button" class="inputButton overlayCommandButton" value="Delete Account"/>
+                                <input id="editAccount" type="button" class="inputButton overlayCommandButton" value="Edit Account..." disabled/>
+                                <input id="deleteAccount" type="button" class="inputButton overlayCommandButton" value="Delete Account" disabled/>
                             </div>
                             <div class="overlayCommandGroup">
                                 <input id="sendAccountInvite" type="button" class="inputButton overlayCommandButton" value="Send Invite"/>
                             </div>
                             <div class="overlayCommandGroup">
-                                <input id="assignAccountClasses" type="button" class="inputButton overlayCommandButton" value="Assign Classes..."/>
+                                <input id="assignAccountClasses" type="button" class="inputButton overlayCommandButton" value="Assign Classes..." disabled/>
                             </div>
                             <div class="overlayCommandGroup">
                                 <input id="uploadAccounts" type="button" class="inputButton overlayCommandButton" value="Upload Accounts..." disabled/>
@@ -248,12 +248,12 @@
                             </div-->
                             <div class="overlayCommandGroup">
                                 <input id="addClass" type="button" class="inputButton overlayCommandButton" value="Add Class..."/>
-                                <input id="editClass" type="button" class="inputButton overlayCommandButton" value="Edit Class..."/>
-                                <input id="deleteClass" type="button" class="inputButton overlayCommandButton" value="Delete Class"/>
+                                <input id="editClass" type="button" class="inputButton overlayCommandButton" value="Edit Class..." disabled/>
+                                <input id="deleteClass" type="button" class="inputButton overlayCommandButton" value="Delete Class" disabled/>
                             </div>
                             <div class="overlayCommandGroup">
-                                <input id="assignClassStudents" type="button" class="inputButton overlayCommandButton" value="Assign Students..."/>
-                                <input id="assignClassCourses" type="button" class="inputButton overlayCommandButton" value="Assign Courses..."/>
+                                <input id="assignClassStudents" type="button" class="inputButton overlayCommandButton" value="Assign Students..." disabled/>
+                                <input id="assignClassCourses" type="button" class="inputButton overlayCommandButton" value="Assign Courses..." disabled/>
                             </div>
                             <div class="overlayCommandGroup">
                                 <input id="uploadClasses" type="button" class="inputButton overlayCommandButton" value="Upload Classes..." disabled/>
@@ -287,11 +287,11 @@
                             </div-->
                             <div class="overlayCommandGroup">
                                 <input id="addCourse" type="button" class="inputButton overlayCommandButton" value="Add Course..."/>
-                                <input id="editCourse" type="button" class="inputButton overlayCommandButton" value="Edit Course..."/>
-                                <input id="deleteCourse" type="button" class="inputButton overlayCommandButton" value="Delete Course"/>
+                                <input id="editCourse" type="button" class="inputButton overlayCommandButton" value="Edit Course..." disabled/>
+                                <input id="deleteCourse" type="button" class="inputButton overlayCommandButton" value="Delete Course" disabled/>
                             </div>
                             <div class="overlayCommandGroup">
-                                <input id="assignCourseClasses" type="button" class="inputButton overlayCommandButton" value="Assign Classes..."/>
+                                <input id="assignCourseClasses" type="button" class="inputButton overlayCommandButton" value="Assign Classes..." disabled/>
                             </div>
                             <div class="overlayCommandGroup">
                                 <input id="uploadCourses" type="button" class="inputButton overlayCommandButton" value="Upload Courses..." disabled/>
@@ -321,8 +321,8 @@
                             </div-->
                             <div class="overlayCommandGroup">
                                 <input id="addLocation" type="button" class="inputButton overlayCommandButton" value="Add Location..."/>
-                                <input id="editLocation" type="button" class="inputButton overlayCommandButton" value="Edit Location..."/>
-                                <input id="deleteLocation" type="button" class="inputButton overlayCommandButton" value="Delete Location"/>
+                                <input id="editLocation" type="button" class="inputButton overlayCommandButton" value="Edit Location..." disabled/>
+                                <input id="deleteLocation" type="button" class="inputButton overlayCommandButton" value="Delete Location" disabled/>
                             </div>
                             <div class="overlayCommandGroup">
                                 <input id="uploadLocations" type="button" class="inputButton overlayCommandButton" value="Upload Locations..." disabled/>
