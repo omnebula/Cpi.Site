@@ -313,7 +313,7 @@ class CpiPage {
     }
 
     isLoggedIn() {
-        return window.cpidata && this.#accountData !== undefined;
+        return window.cpidata && this.#accountData;
     }
     validateLogin() {
         if (this.isLoggedIn()) {
