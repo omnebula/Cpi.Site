@@ -9,7 +9,7 @@ class LessonPage extends CpiPage {
     constructor() {
         super();
 
-        if (!Cpi.ValidateLogin()) {
+        if (!this.validateLogin()) {
             return;
         }
 

@@ -69,7 +69,9 @@ class EntityBroker {
                 method: "PATCH",
                 url: updateUrl || this.#formatDetailUrl(id),
                 data: JSON.stringify(data),
-                success: success
+                success: (result, status, xhr) => {
+                    success(row, result);
+                }
             });
         }
     }

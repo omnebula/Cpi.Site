@@ -1,10 +1,12 @@
+
+
 class OrganizationPage extends CpiPage {
     #overlayController;
 
     constructor() {
         super();
         
-        if (!Cpi.ValidateLogin()) {
+        if (!this.validateLogin()) {
             return;
         }
 
@@ -47,6 +49,88 @@ class OrganizationPage extends CpiPage {
         }
     });
 
+    /* Selectors */
+    static #LocationOptions = [];
+    static #TeacherOptions = [];
+
+    // Location Options
+    static PopulateLocationOptions(selector, next) {
+        if (!OrganizationPage.#LocationOptions.length) {
+            Cpi.SendApiRequest({
+                method: "GET",
+                url: "/@/locations",
+                success: (data, status, xhr) => {
+                    for (const current of data) {
+                        OrganizationPage.#LocationOptions.push({
+                            id: current.locationId,
+                            name: current.locationName
+                        });
+                    }
+                    OrganizationPage.#PopulateSelector(selector, OrganizationPage.#LocationOptions);
+                    if (next) {
+                        next();
+                    }
+                }
+            });
+        }
+        else {
+            OrganizationPage.#PopulateSelector(selector, OrganizationPage.#LocationOptions);
+            if (next) {
+                next();
+            }
+        }
+    }
+    static ClearLocationOptions() {
+        OrganizationPage.#LocationOptions = [];
+    }
+
+    // Teacher Options
+    static PopulateTeacherOptions(selector, next) {
+        if (!OrganizationPage.#TeacherOptions.length) {
+            Cpi.SendApiRequest({
+                method: "GET",
+                url: "/@/accounts?accessType=teacher",
+                success: (data, status, xhr) => {
+                    for (const current of data) {
+                        OrganizationPage.#TeacherOptions.push({
+                            id: current.accountId,
+                            name: `${current.lastName}, ${current.firstName}`
+                        });
+                    }
+                    OrganizationPage.#PopulateSelector(selector, OrganizationPage.#TeacherOptions);
+                    if (next) {
+                        next();
+                    }
+                }
+            });
+        }
+        else {
+            OrganizationPage.#PopulateSelector(selector, OrganizationPage.#TeacherOptions);
+            if (next) {
+                next();
+            }
+        }
+    }
+    static ClearTeacherOptions() {
+        OrganizationPage.#TeacherOptions = [];
+    }
+
+
+    static #PopulateSelector(selector, options) {
+        selector.empty();
+
+        selector.append(OrganizationPage.#CreateOption(undefined, ""));
+
+        for (const current of options) {
+            selector.append(OrganizationPage.#CreateOption(current.id, current.name));
+        }
+    }
+    static #CreateOption(value, text) {
+        const option = $(document.createElement("option"));
+        option.val(value);
+        option.text(text);
+        return option;
+    }
 }
 
 
@@ -81,6 +165,7 @@ class SettingsOverlay extends OverlayContext {
             success: (data, status, xhr) => {
                 this.#currentData = data;
                 this.#setOverlayData(this.#currentData);
+                super._activateOverlay();
             }
         });
     }
@@ -177,8 +262,6 @@ class CalendarOverlay extends OverlayContext {
     * Overlay overrides
     */
     _activateOverlay() {
-        super._activateOverlay();
-
         this.#calendarEditController.enableEditMode(false);
 
         Cpi.SendApiRequest({
@@ -187,6 +270,7 @@ class CalendarOverlay extends OverlayContext {
             success: (data, status, xhr) => {
                 this.#currentData = data;
                 this.#setOverlayData(this.#currentData);
+                super._activateOverlay();
             }
         });
     }
@@ -364,8 +448,8 @@ class TableOverlay extends OverlayContext {
     }
 
     _activateOverlay() {
-        super._activateOverlay();
         this.#tableController.refreshRows();
+        super._activateOverlay();
     }
 }
 
@@ -508,6 +592,17 @@ class ClassOverlay extends TableOverlay {
         });
     }
 
+    _activateOverlay() {
+        const locationSelector = this.tableController.editor.find("#classLocation");
+        const teacherSelector = this.tableController.editor.find("#classTeacher");
+
+        OrganizationPage.PopulateLocationOptions(locationSelector, () => {
+            OrganizationPage.PopulateTeacherOptions(teacherSelector, () => {
+                super._activateOverlay();
+            });
+        });
+    }
+
     _formatRow(row, classData) {
         row.attr("id", classData.classId);
         row.find("#classNameColumn").text(classData.className);
@@ -522,9 +617,24 @@ class ClassOverlay extends TableOverlay {
     }
 
     _getEditorData(editor) {
+        return {
+            className: editor.find("#className").val(),
+            locationId: editor.find("#classLocation").val(),
+            teacherId: editor.find("#classTeacher").val()
+        };
     }
 
     _setEditorData(editor, data) {
+        if (data) {
+            editor.find("#className").val(data.className);
+            editor.find("#classLocation").val(data.locationId);
+            editor.find("#classTeacher").val(data.teacherId);
+        }
+        else {
+            editor.find("#className").val("");
+            editor.find("#classLocation").val("");
+            editor.find("#classTeacher").val("");
+        }
     }
 
     #showCourseOptions() {

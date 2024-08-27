@@ -153,10 +153,21 @@ class Cpi {
 
     static SendApiRequest(params)
     {
+        Cpi.ShowSpinner();
+
+        const prevSuccessHandler = params.success;
+        params.success = (data, status, xhr) => {
+            Cpi.HideSpinner();
+            if (prevSuccessHandler) {
+                prevSuccessHandler(data, status, xhr);
+            }
+        };
+
         const prevErrorHandler = params.error;
         params.error = (xhr, status, error) => {
             switch (xhr.status) {
                 case 401:  // denied
+                    Cpi.HideSpinner();
                     Cpi.ShowLogin();
                     break;
                 default:
@@ -174,23 +185,20 @@ class Cpi {
     }
 
 
+    static ShowSpinner() {
+        $(".spinnerFrame").css("display", "flex");
+    }
+    static HideSpinner() {
+        $(".spinnerFrame").css("display", "none");
+    }
+
     static ShowAppFrame() {
+        Cpi.HideSpinner();
         $(".appFrame").css("display", "flex");
     }
 
-    static IsLoggedIn(autoLogin) {
-        return window.cpidata !== undefined;
-    }
-    static ValidateLogin() {
-        if (Cpi.IsLoggedIn()) {
-            return true;
-        }
-        else {
-            Cpi.ShowLogin();
-            return false;
-        }
-    }
     static ShowLogin() {
+        Cpi.HideSpinner();
         $("#loginFrame").css("display", "flex");
     }
 
@@ -258,9 +266,11 @@ class CpiPage {
     #accountData;
 
     constructor() {
+        // DYnamically insert the spinner panel.
+        $("body").append($.parseHTML(this.#spinnerHtml)[1]);
+
         // Dynamically insert the login panel.
-        const output = $.parseHTML(this.#loginHtml);
-        $("body").append(output[1]);
+        $("body").append($.parseHTML(this.#loginHtml)[1]);
 
         $("#loginForm").on("submit", (event) => {
             event.preventDefault();
@@ -284,13 +294,13 @@ class CpiPage {
             });
         });
 
-        if (Cpi.IsLoggedIn()) {
+        this.#accountData = JSON.parse(localStorage.getItem("accountData"));
+
+        if (this.isLoggedIn()) {
             // Initialize Site Menu
             $("#siteLogout").on("click", () => {
                 this.#onLogout();
             });
-
-            this.#accountData = JSON.parse(localStorage.getItem("accountData"));
 
             if (this.#accountData && this.#accountData.accessType === "organization") {
                 $("#siteViewManager").css("display", "inline");
@@ -300,6 +310,19 @@ class CpiPage {
 
     get accountData() {
         return this.#accountData;
+    }
+
+    isLoggedIn() {
+        return window.cpidata && this.#accountData !== undefined;
+    }
+    validateLogin() {
+        if (this.isLoggedIn()) {
+            return true;
+        }
+        else {
+            Cpi.ShowLogin();
+            return false;
+        }
     }
 
     /*
@@ -318,13 +341,10 @@ class CpiPage {
         });
     }
 
-    #siteMenuHtml = String.raw`
-        <div>
-            <a class="siteMenuOption" id="viewManager" href="/manager">manager</a>
-            <span id="customCommands"></span>
-            <a class="siteMenuOption" id="viewAccount" href="/account">account</a>
-            <a class="lastSiteMenuOption" id="logout" href="">logout</a>
-        </div>`;
+    #spinnerHtml = String.raw`
+                <div id="spinnerFrame" class="spinnerFrame">
+                    <img src="/common/images/spinner.svg" class="spinnerImage" width="240" height="240">
+                </div>`;
 
     #loginHtml = String.raw`
                 <div id="loginFrame" class="loginFrame">
@@ -347,5 +367,13 @@ class CpiPage {
                             </div>
                         </form>
                     </div>
+                </div>`;
+
+    #siteMenuHtml = String.raw`
+                <div>
+                    <a class="siteMenuOption" id="viewManager" href="/manager">manager</a>
+                    <span id="customCommands"></span>
+                    <a class="siteMenuOption" id="viewAccount" href="/account">account</a>
+                    <a class="lastSiteMenuOption" id="logout" href="">logout</a>
                 </div>`;
 }

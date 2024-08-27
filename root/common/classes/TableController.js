@@ -35,6 +35,10 @@ class TableController {
         return this.#entityBroker;
     }
 
+    get editor() {
+        return this.#editor;
+    }
+
     getRows() {
         return this.#dataTable.rows;
     }

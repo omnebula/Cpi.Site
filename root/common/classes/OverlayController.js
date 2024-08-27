@@ -65,11 +65,9 @@ class OverlayContext {
 
     showOverlay() {
         this._activateOverlay();
-        this.#overlayElement.css("display", "flex");
     }
 
     hideOverlay() {
-        this.#overlayElement.css("display", "none");
         this._deactivateOverlay();
     }
 
@@ -77,8 +75,10 @@ class OverlayContext {
     * Protected
     */
     _activateOverlay() {
+        this.#overlayElement.css("display", "flex");
     }
 
     _deactivateOverlay() {
+        this.#overlayElement.css("display", "none");
     }
 }
