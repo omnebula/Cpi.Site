@@ -361,7 +361,7 @@ class CpiPage {
     /*
     * Private Data
     */
-    #siteVersion = "2";
+    #siteVersion = "0";
 
     #accountData;
 
