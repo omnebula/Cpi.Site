@@ -353,7 +353,7 @@ class CpiPage {
             method: "POST",
             url: "/@/account/logout",
             success: () => {
-                window.location = "/";
+                window.location = "/detail";
             }
         });
     }
