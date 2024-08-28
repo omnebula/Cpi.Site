@@ -331,7 +331,7 @@ class CpiPage {
     }
     validateLogin() {
         if (this.isLoggedIn()) {
-            if (location.pathname !== "/") {
+            if (location.pathname !== "/" && location.pathname !== "/default") {
                 localStorage.setItem("lastVisitedPage", location.pathname);
             }
             return true;
