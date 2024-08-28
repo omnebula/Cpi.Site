@@ -331,7 +331,7 @@ class CpiPage {
     }
     validateLogin() {
         if (this.isLoggedIn()) {
-            if (location.pathname !== "/" && location.pathname !== "/default") {
+            if (location.pathname !== "/" && location.pathname !== "/login") {
                 localStorage.setItem("lastVisitedPage", location.pathname);
             }
             return true;
@@ -353,7 +353,7 @@ class CpiPage {
             method: "POST",
             url: "/@/account/logout",
             success: () => {
-                window.location = "/detail";
+                window.location = "/login";
             }
         });
     }
@@ -361,7 +361,7 @@ class CpiPage {
     /*
     * Private Data
     */
-    #siteVersion = "0";
+    #siteVersion = "1";
 
     #accountData;
 
