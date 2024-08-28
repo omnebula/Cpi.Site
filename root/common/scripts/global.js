@@ -165,9 +165,9 @@ class Cpi {
 
         const prevErrorHandler = params.error;
         params.error = (xhr, status, error) => {
+            Cpi.HideSpinner();
             switch (xhr.status) {
                 case 401:  // denied
-                    Cpi.HideSpinner();
                     Cpi.ShowLogin();
                     break;
                 default:
@@ -175,7 +175,7 @@ class Cpi {
                         prevErrorHandler(xhr, status, error);
                     }
                     else {
-                        alert(`${xhr.status} - ${error}`);
+                        Cpi.ShowAlert(`${xhr.status} - ${error}`);
                     }
                     break;
             }

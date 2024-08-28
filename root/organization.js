@@ -118,9 +118,6 @@ class OrganizationPage extends CpiPage {
 
     static #PopulateSelector(selector, options) {
         selector.empty();
-
-        selector.append(OrganizationPage.#CreateOption(undefined, ""));
-
         for (const current of options) {
             selector.append(OrganizationPage.#CreateOption(current.id, current.name));
         }
@@ -549,6 +546,7 @@ class AccountOverlay extends TableOverlay {
     _getEditorData(editor) {
         return {
             email: editor.find("#email").val(),
+            authName: editor.find("#email").val(),
             accessType: editor.find("#accessType").val(),
             statusType: editor.find("#statusType").val()
         };
