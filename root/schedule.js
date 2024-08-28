@@ -87,6 +87,8 @@ class SchedulePage extends CpiPage {
             containerDate = Cpi.DateAdd(containerDate, 1);
         }
 
+        Cpi.ShowAppFrame();
+        
         this.#coursePicker = new CoursePicker(this.accountData.courses);
 
         $(".appFrame").on("mousedown", () => {
@@ -111,8 +113,6 @@ class SchedulePage extends CpiPage {
                         this.#selectLesson($(`#${lessonId}`));
                     }
                 }
-
-                Cpi.ShowAppFrame();
             }
         });
     }
