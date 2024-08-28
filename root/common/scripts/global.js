@@ -199,7 +199,7 @@ class Cpi {
 
     static ShowLogin() {
         Cpi.HideSpinner();
-        $("#loginFrame").css("display", "flex");
+        $("#loginFrame").css("display", "block");
     }
 
     static ShowAlert(message) {
@@ -368,25 +368,27 @@ class CpiPage {
         </div>`;
 
     #loginHtml = String.raw`
-        <div id="loginFrame" class="loginFrame">
-            <div class="loginBox">
-                <form id="loginForm">
-                    <div class="inputRow">
-                        <div class="inputCell">
-                            <label class="inputLabel" for="loginUsername">Username</label>
-                            <input class="inputTextBox loginUsername" id="loginUsername" name="username" type="text"/>
-                        </div>
+    <div id="loginFrame" class="loginFrame">
+        <div class="loginBox">
+            <div class="loginLogo"><img src="/common/images/logo-graphic.svg" class="loginLogoGraphic"><img src="/common/images/logo-text.svg" class="loginLogoText"></div>
+            <form id="loginForm">
+                <div class="inputRow">
+                    <div class="inputCell">
+                        <label class="inputLabel" for="loginUsername">Username</label>
+                        <input class="inputTextBox loginUsername" id="loginUsername" name="username" type="text"/>
                     </div>
-                    <div class="inputRow">
-                        <div class="inputCell">
-                            <label class="inputLabel" for="loginPassword">Pasword</label>
-                            <input class="inputTextBox loginPassword" id="loginPassword" name="password" type="password"/>
-                        </div>
+                </div>
+                <div class="inputRow">
+                    <div class="inputCell">
+                        <label class="inputLabel" for="loginPassword">Pasword</label>
+                        <input class="inputTextBox loginPassword" id="loginPassword" name="password" type="password"/>
                     </div>
-                    <div class="inputRow loginSubmitRow">
-                        <input class="inputButton loginSubmit" type="submit" value="Log In"/>
-                    </div>
-                </form>
-            </div>
-        </div>`;
+                </div>
+                <div class="inputRow loginSubmitRow">
+                    <input class="inputButton loginSubmit" type="submit" value="Log In"/>
+                </div>
+            </form>
+        </div>
+    </div>
+`;
 }

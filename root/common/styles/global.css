@@ -230,6 +230,8 @@ input[type=submit] {
 /*
 * Login
 */
+
+
 .loginFrame {
     display: none;
     justify-content: center;
@@ -243,8 +245,19 @@ input[type=submit] {
 }
 
 .loginBox {
-    margin-top: 15%;
+    margin-top: 5%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
+.loginLogo {
+    margin-bottom: 38px;
+}
+.loginLogoGraphic, .loginLogoText {
+    height: 46px;
+    opacity: 1;
+}
+
 
 .loginUsername, .loginPassword, .loginSubmit {
     width: 300px;
@@ -253,7 +266,7 @@ input[type=submit] {
 .loginSubmit {
     padding: 16px 0;
     color: white;
-    background-color: green;;
+    background-color: green;
 }
 .loginSubmitRow {
     margin-top: 36px;
@@ -271,6 +284,12 @@ header {
 }
 
 .siteLogo {
+}
+.siteLogoGraphic, .siteLogoText {
+    height: 32px;
+}
+.siteLogoGraphic {
+    opacity: 0.9;
 }
 
 .siteNavigation {
