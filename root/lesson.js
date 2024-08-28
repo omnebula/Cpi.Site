@@ -17,13 +17,14 @@ class LessonPage extends CpiPage {
         this.#benchmarkRowContainer = $("#lessonBenchmarkRowContainer");
         this.#benchmarkRowTemplate = this.#benchmarkRowContainer.find(".lessonBenchmarkRow").detach();
 
+        Cpi.ShowAppFrame();
+
         const searchParams = new URLSearchParams(window.location.search);
         Cpi.SendApiRequest({
             method: "GET",
             url: `/@/lesson/${searchParams.get("id")}`,
             success: (data, status, xhr) => {
                 this.#init(data);
-                Cpi.ShowAppFrame();
             }
         });
     }
