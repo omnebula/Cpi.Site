@@ -9,12 +9,13 @@ class AccountPage extends CpiPage {
             return;
         }
 
+        Cpi.ShowAppFrame();
+        
         Cpi.SendApiRequest({
             method: "GET",
             url: "/@/account/",
             success: (data, status, xhr) => {
                 this.#init(data);
-                Cpi.ShowAppFrame();
             }
         });
     }

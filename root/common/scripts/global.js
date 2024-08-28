@@ -331,6 +331,9 @@ class CpiPage {
     }
     validateLogin() {
         if (this.isLoggedIn()) {
+            if (location.pathname !== "/") {
+                localStorage.setItem("lastVisitedPage", location.pathname);
+            }
             return true;
         }
         else {
@@ -350,7 +353,7 @@ class CpiPage {
             method: "POST",
             url: "/@/account/logout",
             success: () => {
-                Cpi.ShowLogin();
+                window.location = "/";
             }
         });
     }
