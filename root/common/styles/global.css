@@ -196,6 +196,7 @@ input[type=submit] {
     z-index: 3;
     margin: 0px auto;
     margin-top: 13%;
+    width: max-content;
 }
 
 .popupCaption {
@@ -223,7 +224,7 @@ input[type=submit] {
     display: flex;
     flex-direction: row;
     gap: 16px;
-    margin: 0 36px 36px 36px;
+    margin: 0 24px 24px 24px;
 }
 
 /*
@@ -263,16 +264,13 @@ input[type=submit] {
 * Header Section
 */
 header {
-    height: 42px;
     display: flex;
     justify-content: space-between;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
+    align-items: center;
 }
 
 .siteLogo {
-    color: #336699;
-    font-size: 40px;
-    font-weight: bold;
 }
 
 .siteNavigation {
@@ -285,7 +283,7 @@ header {
     text-align: right;
     font-size: 18px;
     font-weight: bold;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 
 .siteMenu {

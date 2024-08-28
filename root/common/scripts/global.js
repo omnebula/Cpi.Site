@@ -263,10 +263,18 @@ class Cpi {
 
 
 class CpiPage {
-    #accountData;
-
     constructor() {
-        // DYnamically insert the spinner panel.
+        // Detect version change.
+        const currentVersion = localStorage.getItem("siteVersion");
+        if (!currentVersion) {
+            localStorage.setItem("siteVersion", this.#siteVersion);
+        } 
+        else if (currentVersion !== this.#siteVersion) {
+            localStorage.setItem("siteVersion", this.#siteVersion);
+            location.reload(true);
+        }
+
+        // Dynamically insert the spinner panel.
         $("body").append($.parseHTML(this.#spinnerHtml)[1]);
 
         // Dynamically insert the login panel.
@@ -274,11 +282,17 @@ class CpiPage {
 
         $("#loginForm").on("submit", (event) => {
             event.preventDefault();
+
+            const loginUsername = $("#loginUsername");
+            const loginPassword = $("#loginPassword");
         
             const params = {
-                username: $("#loginUsername").val(),
-                password: $("#loginPassword").val()
+                username: loginUsername.val(),
+                password: loginPassword.val()
             };
+
+            loginUsername.val("");
+            loginPassword.val("");
         
             $.ajax({
                 method: "POST",
@@ -326,7 +340,7 @@ class CpiPage {
     }
 
     /*
-    * Private
+    * Private Functions
     */
     
     #onLogout() {
@@ -341,39 +355,38 @@ class CpiPage {
         });
     }
 
+    /*
+    * Private Data
+    */
+    #siteVersion = "2";
+
+    #accountData;
+
     #spinnerHtml = String.raw`
-                <div id="spinnerFrame" class="spinnerFrame">
-                    <img src="/common/images/spinner.svg" class="spinnerImage" width="240" height="240">
-                </div>`;
+        <div id="spinnerFrame" class="spinnerFrame">
+            <img src="/common/images/spinner.svg" class="spinnerImage" width="240" height="240">
+        </div>`;
 
     #loginHtml = String.raw`
-                <div id="loginFrame" class="loginFrame">
-                    <div class="loginBox">
-                        <form id="loginForm">
-                            <div class="inputRow">
-                                <div class="inputCell">
-                                    <label class="inputLabel" for="loginUsername">Username</label>
-                                    <input class="inputTextBox loginUsername" id="loginUsername" name="username" type="text"/>
-                                </div>
-                            </div>
-                            <div class="inputRow">
-                                <div class="inputCell">
-                                    <label class="inputLabel" for="loginPassword">Pasword</label>
-                                    <input class="inputTextBox loginPassword" id="loginPassword" name="password" type="password"/>
-                                </div>
-                            </div>
-                            <div class="inputRow loginSubmitRow">
-                                <input class="inputButton loginSubmit" type="submit" value="Log In"/>
-                            </div>
-                        </form>
+        <div id="loginFrame" class="loginFrame">
+            <div class="loginBox">
+                <form id="loginForm">
+                    <div class="inputRow">
+                        <div class="inputCell">
+                            <label class="inputLabel" for="loginUsername">Username</label>
+                            <input class="inputTextBox loginUsername" id="loginUsername" name="username" type="text"/>
+                        </div>
                     </div>
-                </div>`;
-
-    #siteMenuHtml = String.raw`
-                <div>
-                    <a class="siteMenuOption" id="viewManager" href="/manager">manager</a>
-                    <span id="customCommands"></span>
-                    <a class="siteMenuOption" id="viewAccount" href="/account">account</a>
-                    <a class="lastSiteMenuOption" id="logout" href="">logout</a>
-                </div>`;
+                    <div class="inputRow">
+                        <div class="inputCell">
+                            <label class="inputLabel" for="loginPassword">Pasword</label>
+                            <input class="inputTextBox loginPassword" id="loginPassword" name="password" type="password"/>
+                        </div>
+                    </div>
+                    <div class="inputRow loginSubmitRow">
+                        <input class="inputButton loginSubmit" type="submit" value="Log In"/>
+                    </div>
+                </form>
+            </div>
+        </div>`;
 }

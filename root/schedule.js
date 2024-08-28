@@ -182,6 +182,9 @@ class SchedulePage extends CpiPage {
 
                     // Repopulate the column.
                     this.#populateSchedule(data.lessons);
+
+                    // Update insert-lesson button visibility.
+                    this.#syncInsertButtons(containerId);
                 }
             }
         })
@@ -209,7 +212,7 @@ class SchedulePage extends CpiPage {
             // Init name.
             lesson.find("#scheduleLessonName").text(current.lessonName);
     
-            // Init command bar.'
+            // Init command bar.
             const commandBar = lesson.find(".scheduleLessonCommandBar");
             commandBar.on("mouseup", (event) => {
                 if (event.which === 1) {    // Left-click only

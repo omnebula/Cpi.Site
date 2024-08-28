@@ -510,31 +510,19 @@ class AccountOverlay extends TableOverlay {
         });
 
         $("#sendAccountInvite").on("click", () => {
-            const row = this.getSelectedRow();
-            if (row) {
-                const params = {
-                    accountId: row.attr("id")
-                };
-                Cpi.SendApiRequest({
-                    method: "POST",
-                    url: "/@/account/invitation",
-                    data: JSON.stringify(params),
-                    success: (data) => {
-                        const registrationUrl = `${window.location.protocol}//${window.location.host}/`
-                        Cpi.ShowAlert()
-                    }
-                });
-    
-            }
-
+            this.#sendInvite();
         });
     }
 
     _formatRow(row, account) {
         row.attr("id", account.accountId);
-        row.find("#accountNameColumn").text(`${account.lastName}, ${account.firstName}`);
+        row.find("#accountEmailColumn").text(account.email);
         row.find("#accountAccessColumn").text(account.accessType);
         row.find("#accountStatusColumn").text(account.statusType);
+
+        if (account.lastName && account.firstName) {
+            row.find("#accountNameColumn").text(`${account.lastName}, ${account.firstName}`);
+        }
     }
 
     _compareRows(lhs, rhs) {
@@ -545,6 +533,8 @@ class AccountOverlay extends TableOverlay {
 
     _getEditorData(editor) {
         return {
+            firstName: editor.find("#firstName").val(),
+            lastName: editor.find("#lastName").val(),
             email: editor.find("#email").val(),
             authName: editor.find("#email").val(),
             accessType: editor.find("#accessType").val(),
@@ -554,14 +544,36 @@ class AccountOverlay extends TableOverlay {
 
     _setEditorData(editor, data) {
         if (data) {
+            editor.find("#firstName").val(data.firstName);
+            editor.find("#lastName").val(data.lastName);
             editor.find("#email").val(data.email);
             editor.find("#accessType").val(data.accessType);
             editor.find("#statusType").val(data.statusType);
         }
         else {
+            editor.find("firstName").val("");
+            editor.find("lastName").val("");
             editor.find("#email").val("");
             editor.find("#accessType").val("");
             editor.find("#statusType").val("");
+        }
+    }
+
+    #sendInvite() {
+        const row = this.tableController.getSelectedRow();
+        if (row) {
+            const params = {
+                accountId: row.attr("id")
+            };
+            Cpi.SendApiRequest({
+                method: "POST",
+                url: "/@/account/invitation",
+                data: JSON.stringify(params),
+                success: (data) => {
+                    const registrationUrl = `${window.location.protocol}//${window.location.host}/registration?id=${data.invitationId}`
+                    Cpi.ShowAlert(registrationUrl);
+                }
+            });
         }
     }
 }
