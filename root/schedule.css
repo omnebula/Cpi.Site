@@ -121,7 +121,7 @@ main {
     position: relative;
     border: 1px solid #274965;
     cursor: default;
-    padding: 18px 24px;
+    padding: 20px 24px;
 }
 .scheduleLesson:hover {
     border: 1px solid steelblue;
