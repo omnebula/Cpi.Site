@@ -2,10 +2,18 @@
 class OverlayController {
     #currentOverlayName;
     #overlayContexts = {};
+    #restoreOverlayPropertyName;
 
-    constructor(contexts) {
+    constructor(contexts, restoreOverlayPropertyName) {
         for (const current of contexts) {
             this.addOverlay(current);
+        }
+
+        this.#restoreOverlayPropertyName = restoreOverlayPropertyName;
+
+        if (this.#restoreOverlayPropertyName) {
+            const lastOverlayName = localStorage.getItem(this.#restoreOverlayPropertyName);
+            this.showOverlay(lastOverlayName || contexts[0].name);                
         }
     }
 
@@ -35,7 +43,10 @@ class OverlayController {
         }
 
         this.#currentOverlayName = overlayName;
-        localStorage.setItem("organizationOverlayName", this.#currentOverlayName);
+
+        if (this.#restoreOverlayPropertyName) {
+            localStorage.setItem(this.#restoreOverlayPropertyName, this.#currentOverlayName);
+        }
 
         const context = this.#overlayContexts[this.#currentOverlayName];
         if (context) {

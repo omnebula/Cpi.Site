@@ -3,14 +3,15 @@
 class EditController {
     #editButton;
     #inputElements;
-    #viewElements;
-    #editElements;
+    #inactiveButtons;
+    #activeButtons;
 
     constructor(settings) {
-        this.#editButton = settings.editButton;
+        const parent = settings.parent || $("main");
+        this.#editButton = settings.editButton || parent.find("#enableEdit");
         this.#inputElements = settings.inputElements;
-        this.#viewElements = settings.viewElements;
-        this.#editElements = settings.editElements;
+        this.#inactiveButtons = settings.inactiveButtons || parent.find("#editInactiveButtons");
+        this.#activeButtons = settings.activeButtons || parent.find("#editActiveButtons");
 
         if (this.#editButton) {
             this.#editButton.on("click", () => {
@@ -18,8 +19,9 @@ class EditController {
             });
         }
 
-        if (settings.acceptButton) {
-            settings.acceptButton.on("click", () => {
+        const acceptButton = settings.acceptButton || parent.find("#acceptChanges");
+        if (acceptButton.length) {
+            acceptButton.on("click", () => {
                 var disableEdit = true;
                 if (settings.acceptChanges) {
                     disableEdit = settings.acceptChanges() || true;
@@ -32,8 +34,10 @@ class EditController {
                 }
             });
         }
-        if (settings.cancelButton) {
-            settings.cancelButton.on("click", () => {
+
+        const cancelButton = settings.cancelButton || parent.find("#cancelChanges");
+        if (cancelButton.length) {
+            cancelButton.on("click", () => {
                 var disableEdit = true;
                 if (settings.cancelChanges) {
                     disableEdit = settings.cancelChanges() || true;
@@ -55,14 +59,14 @@ class EditController {
             }
         }
 
-        if (this.#viewElements) {
-            for (const current of this.#viewElements) {
-                current.css("display", enable ? "none" : "flex");
+        if (this.#inactiveButtons) {
+            for (const current of this.#inactiveButtons) {
+                $(current).css("display", enable ? "none" : "flex");
             }
         }
-        if (this.#editElements) {
-            for (const current of this.#editElements) {
-                current.css("display", enable ? "flex" : "none");
+        if (this.#activeButtons) {
+            for (const current of this.#activeButtons) {
+                $(current).css("display", enable ? "flex" : "none");
             }
         }
     }

@@ -19,11 +19,7 @@ class OrganizationPage extends CpiPage {
             new CourseOverlay(),
             new LocationOverlay()
         ];
-        this.#overlayController = new OverlayController(overlays);
-
-        // Show initial overlay.
-        const lastOverlayName = localStorage.getItem("organizationOverlayName");
-        this.#overlayController.showOverlay(lastOverlayName || overlays[0].name);
+        this.#overlayController = new OverlayController(overlays, "organizationOverlayName");
 
         Cpi.ShowAppFrame();
     }
@@ -142,14 +138,10 @@ class SettingsOverlay extends OverlayContext {
         });
 
         this.#editController = new EditController({
-            editButton: $("#editSettings"),
-            inputElements: $("#Settings input[type=text]"),
-            acceptButton: $("#acceptSettingsChanges"),
+            parent: this.element,
+            inputElements: this.element.find("input[type=text]"),
             acceptChanges: () => { this.#acceptSettingsChanges(); },
-            cancelButton: $("#cancelSettingsChanges"),
             cancelChanges: () => { this.#cancelSettingsChanges(); },
-            viewElements: [ $("#settingsViewButtons") ],
-            editElements: [ $("#settingsEditButtons") ]
         });
     }
 
@@ -297,14 +289,12 @@ class CalendarEditController extends EditController {
 
     constructor(calendarOverlay) {
         super({
-            editButton: $("#editCalendar"),
-            inputElements: $("#Calendar input[type=text]"),
-            acceptButton: $("#acceptCalendarChanges"),
+            parent: calendarOverlay.element,
+            inputElements: calendarOverlay.element.find("input[type=text]"),
             acceptChanges: () => { this.#calendarOverlay.acceptChanges(); },
-            cancelButton: $("#cancelCalendarChanges"),
             cancelChanges: () => { this.#calendarOverlay.cancelChanges(); },
-            viewElements: [ $("#calendarViewButtons") ],
-            editElements: [ $("#calendarEditButtons"), $("#holidayActionCommands") ],
+            inactiveButtons: [ $("#calendarViewButtons") ],
+            activeButtons: [ $("#calendarEditButtons"), $("#holidayActionCommands") ],
         });
 
         this.#calendarOverlay = calendarOverlay;

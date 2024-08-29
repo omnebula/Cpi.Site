@@ -55,12 +55,12 @@
                             </div>
                         </div>
                         <div class="overlayCommands">
-                            <div id="settingsViewButtons" class="overlayCommands">
-                                <input id="editSettings" value="Edit Settings" type="button" class="inputButton overlayCommandButton"/>
+                            <div id="editInactiveButtons" class="overlayCommands editInactiveButtons">
+                                <input id="enableEdit" value="Edit Settings" type="button" class="inputButton overlayCommandButton"/>
                             </div>
-                            <div id="settingsEditButtons" class="overlayCommands">
-                                <input id="acceptSettingsChanges" value="Accept Changes" type="button" class="inputButton inputAcceptButton"/>
-                                <input id="cancelSettingsChanges" value="Cancel Changes" type="button" class="inputButton inputCancelButton"/>
+                            <div id="editActiveButtons" class="overlayCommands editActiveButtons">
+                                <input id="acceptChanges" value="Accept Changes" type="button" class="inputButton inputAcceptButton"/>
+                                <input id="cancelChanges" value="Cancel Changes" type="button" class="inputButton inputCancelButton"/>
                             </div>
                         </div>
                     </div>
@@ -108,14 +108,14 @@
                         </div>
                         <div class="overlayCommands">
                             <div id="calendarViewButtons" class="overlayCommands">
-                                <input id="editCalendar" value="Edit Calendar" type="button" class="inputButton overlayCommandButton"/>
+                                <input id="enableEdit" value="Edit Calendar" type="button" class="inputButton overlayCommandButton"/>
                                 <input id="addCalendar" value="New Calendar" type="button" class="inputButton overlayCommandButton"/>
                             </div>
-                            <div id="calendarEditButtons" class="overlayCommands">
-                                <input id="acceptCalendarChanges" value="Accept Changes" type="button" class="inputButton inputAcceptButton"/>
-                                <input id="cancelCalendarChanges" value="Cancel Changes" type="button" class="inputButton inputCancelButton"/>
+                            <div id="calendarEditButtons" class="overlayCommands editInactiveButtons">
+                                <input id="acceptChanges" value="Accept Changes" type="button" class="inputButton inputAcceptButton"/>
+                                <input id="cancelChanges" value="Cancel Changes" type="button" class="inputButton inputCancelButton"/>
                             </div>
-                            <div id="holidayActionCommands" class="overlayCommands holidayActionCommands">
+                            <div id="holidayActionCommands" class="overlayCommands editActiveButtons holidayActionCommands">
                                 <input id="addHoliday" value="Add Holiday..." type="button" class="inputButton overlayCommandButton"/>
                                 <input id="editHoliday" value="Edit Holiday..." type="button" class="inputButton overlayCommandButton" disabled/>
                                 <input id="deleteHoliday" value="Delete Holiday" type="button" class="inputButton overlayCommandButton" disabled/>

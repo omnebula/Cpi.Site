@@ -60,6 +60,9 @@ input[type=submit] {
     font-size: 14px;
     color: orange;
 }
+.inputLabel_disabled {
+    opacity: 0.9;
+}
 
 .inputTextBox, .inputSelect {
     outline: none;
@@ -75,10 +78,10 @@ input[type=submit] {
 }
 .inputTextBox:disabled {
     background-color: inherit;
-    color: #ddd;
+    color: #ccc;
 }
 .inputTextBox:focus, .inputSelect:focus {
-    border-color: white;
+    border-color: #ddd;
     background-color: #272727;
 }
 

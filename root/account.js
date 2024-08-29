@@ -1,6 +1,6 @@
 
 class AccountPage extends CpiPage {
-    #authCodeChanged;
+    #overlayController;
 
     constructor() {
         super();
@@ -9,74 +9,50 @@ class AccountPage extends CpiPage {
             return;
         }
 
+        const overlays = [
+            new ProfileOverlay()
+        ];
+        this.#overlayController = new OverlayController(overlays, "accountOverlayName");
+
         Cpi.ShowAppFrame();
-        
+    }
+}
+
+
+class ProfileOverlay extends OverlayContext {
+    #editController;
+    #currentData;
+    #authCodeChanged;
+
+    constructor() {
+        super({
+            overlayName: "Profile",
+            overlayElement: $("#Profile")
+        });
+
+        this.#editController = new EditController({
+            parent: this.element,
+            inputElements: this.element.find("input[type=text], input[type=password]").not("#email"),
+            acceptChanges: () => { this.#acceptChanges(); },
+            cancelChanges: () => { this.#cancelChanges(); },
+        });
+    }
+
+    _activateOverlay() {
+        this.#editController.enableEditMode(false);
+
         Cpi.SendApiRequest({
             method: "GET",
             url: "/@/account/",
             success: (data, status, xhr) => {
-                this.#init(data);
+                this.#currentData = data;
+                this.#setOverlayData(data);
+                super._activateOverlay();
             }
         });
     }
 
-    #init(data) {
-        $("#firstName").val(data.firstName);
-        $("#lastName").val(data.lastName);
-        $("#email").val(data.email);
-
-        $("#authCode").on("change", () => {
-            this.#authCodeChanged = true;
-        });
-        this.#initAuthCode();
-
-        $("#editButton").on("click", () => {
-            Cpi.EnableEditMode();
-        });
-
-        $("#acceptButton").on("click", () => {
-            this.#saveAccount();
-        });
-
-        $("#cancelButton").on("click", () => {
-            Cpi.DisableEditMode();
-        });
-
-        Cpi.DisableEditMode();
-    }
-
-    #initAuthCode() {
-        $("#authCode").val("          ");
-        $("#confirmAuthCode").val("**********");
-        this.#authCodeChanged = false;
-    }
-
-    #enableEditMode() {
-        $("#editButton").css("display", "none");
-        $("#acceptButton").css("display", "inline-block");
-        $("#cancelButton").css("display", "inline-block");
-
-        $(".inputTextBox").each((key, element) => {
-            const textBox = $(element);
-            textBox.attr("disabled", false);
-        });
-    }
-
-    #disableEditMode() {
-        $(".inputTextBox").each((key, element) => {
-            const textBox = $(element);
-            textBox.attr("disabled", true);
-        });
-
-        $("#acceptButton").css("display", "inline-block");
-        $("#cancelButton").css("display", "inline-block");
-
-        $("#editButton").css("display", "inline-block");
-        $("#acceptButton").css("display", "none");
-        $("#cancelButton").css("display", "none");
-    }
-
-    #saveAccount() {
+    #acceptChanges() {
         const params = {
             firstName: $("#firstName").val(),
             lastName: $("#lastName").val(),
@@ -102,10 +78,31 @@ class AccountPage extends CpiPage {
             url: "/@/account",
             data: JSON.stringify(params),
             success: (data, status, xhr) => {
-                this.#initAuthCode();
-                Cpi.DisableEditMode();
+                this.#currentData = data;
+                this.#setOverlayData(data);
             }
         });
+    }
+
+    #cancelChanges() {
+        this.#setOverlayData(this.#currentData);
+    }
+
+    #setOverlayData(data) {
+        $("#firstName").val(this.#currentData.firstName);
+        $("#lastName").val(this.#currentData.lastName);
+        $("#email").val(this.#currentData.email);
+
+        $("#authCode").on("change", () => {
+            this.#authCodeChanged = true;
+        });
+        this.#initAuthCode();
+    }
+
+    #initAuthCode() {
+        $("#authCode").val("          ");
+        $("#confirmAuthCode").val("**********");
+        this.#authCodeChanged = false;
     }
 }
 

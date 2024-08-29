@@ -3,6 +3,12 @@ label {
     margin-bottom: 2px;
 }
 
+main {
+    display: flex;
+    flex-direction: row;
+}
+
+
 .accountTextInput {
     display: block;
     padding: 16px;
@@ -15,11 +21,6 @@ label {
 }
 .accountTextInput:focus {
     border-color: white;
-}
-
-.inputButton {
-    margin: 0;
-    width: 90px;
 }
 
 #cancelButton {
