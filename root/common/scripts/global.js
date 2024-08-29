@@ -307,14 +307,8 @@ class Cpi {
 
 class CpiPage {
     constructor() {
-        // Detect version change.
-        const currentVersion = localStorage.getItem("siteVersion");
-        if (!currentVersion) {
-            localStorage.setItem("siteVersion", this.#siteVersion);
-        } 
-        else if (currentVersion !== this.#siteVersion) {
-            localStorage.setItem("siteVersion", this.#siteVersion);
-            location.reload(true);
+        if (this.#detectVersionChange()) {
+            return;
         }
 
         // Dynamically insert the spinner panel.
@@ -399,6 +393,27 @@ class CpiPage {
                 window.location = "/login";
             }
         });
+    }
+
+    /*
+    * Versioning
+    */
+    #detectVersionChange() {
+        const pathname = location.pathname;
+        if (pathname) {
+            const key = `${pathname.replace(/\//g, "_")}_version`;
+
+            // Detect version change.
+            const currentVersion = localStorage.getItem(key);
+            if (!currentVersion) {
+                localStorage.setItem(key, this.#siteVersion);
+                location.reload(true);
+            } 
+            else if (currentVersion !== this.#siteVersion) {
+                localStorage.setItem(key, this.#siteVersion);
+                location.reload(true);
+            }
+        }
     }
 
     /*
