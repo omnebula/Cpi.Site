@@ -224,10 +224,17 @@ class LessonPage extends CpiPage {
 
 
 class BenchmarkPicker {
+    #pickerResults;
     #rowContainer;
     #rowTemplate;
+    #exclusions;
 
     constructor(initialSubject, initialGrade) {
+        // Extract pick list elements.
+        this.#pickerResults = $("#benchmarkPickerResults");
+        this.#rowContainer = this.#pickerResults.find("#benchmarkPickerRowContainer");
+        this.#rowTemplate = this.#rowContainer.find("#benchmarkPickerRow").detach();
+
         // Initialize subject dropdown.
         const subjects = $("#benchmarkPickerSearchSubject");
 
@@ -275,15 +282,11 @@ class BenchmarkPicker {
             }
             this.#searchBenchmarks();
         });
-        
-
-        // Extract the pick list table.
-        this.#rowContainer = $("#benchmarkPickerRowContainer");
-        this.#rowTemplate = this.#rowContainer.find("#benchmarkPickerRow").detach();
     }
 
     show(exclusions, success) {
-        this.#searchBenchmarks(exclusions, success);
+        this.#exclusions = exclusions;
+        this.#searchBenchmarks(success);
     }
 
     #showPopup(success) {
@@ -293,7 +296,7 @@ class BenchmarkPicker {
         );                    
     }
 
-    #searchBenchmarks(exclusions, success) {
+    #searchBenchmarks(success) {
         const subject = $("#benchmarkPickerSearchSubject").val();
         const grade = $("#benchmarkPickerSearchGrade").val();
         const keyword = $("#benchmarkPickerSearchKeyword").val() || "";
@@ -305,7 +308,7 @@ class BenchmarkPicker {
             method: "GET",
             url: `/@/curriculum/search?subject=${subject}&grade=${grade}&keyword=${keyword}&mode=${showMode}`,
             success: (data) => {
-                this.#populateResults(data, exclusions);
+                this.#populateResults(data);
 
                 // Show popup if a success handler was specified, i.e., called from show().
                 if (success) {
@@ -315,11 +318,11 @@ class BenchmarkPicker {
         });
     }
 
-    #populateResults(data, exclusions) {
+    #populateResults(data) {
         this.#rowContainer.empty();
 
         for (const current of data) {
-            if (exclusions && exclusions[current.benchmarkId]) {
+            if (this.#exclusions && this.#exclusions[current.benchmarkId]) {
                 continue;
             }
 
@@ -346,6 +349,8 @@ class BenchmarkPicker {
 
             this.#rowContainer.append(row);
         }
+
+        this.#pickerResults.scrollTop(0);
     }
 
     #acceptSelection(success) {
