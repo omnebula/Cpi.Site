@@ -74,6 +74,8 @@ class LessonPage extends CpiPage {
                 .prop("disabled", false);
         }
 
+        $(".navigationTitleGroup").css("visibility", "visible");
+
         // Schedule link.
         $("#viewSchedule").on("click", () => {
             window.open(`/schedule?week=${Cpi.CalculateWeekNumber(data.lessonDate)}`, "_self");
@@ -215,16 +217,6 @@ class LessonPage extends CpiPage {
             data: JSON.stringify(params),
             success: (data, status, xhr) => {
                 this.#detailChanged = false;
-            }
-        });
-    }
-
-    #seekLesson(lessonId, direction) {
-        Cpi.SendApiRequest({
-            method: "GET",
-            url: `/@/lesson/${lessonId}?seek=${direction}`,
-            success: (data) => {
-                window.location.href = `/lesson?id=${data.lessonId}`;
             }
         });
     }
