@@ -110,7 +110,6 @@ main {
 }
 
 .scheduleLesson {
-    height: 60px;
     color: #c7c7c7;
     background-color: #171717;
     font-size: 13px;
@@ -122,6 +121,7 @@ main {
     position: relative;
     border: 1px solid #274965;
     cursor: default;
+    padding: 18px 24px;
 }
 .scheduleLesson:hover {
     border: 1px solid steelblue;
