@@ -1,16 +1,16 @@
-main {
-    align-items: center;
+.inputTextBox {
+    width: 300px;
 }
 
-#registrationPanel {
-    width: 600px;
+.registrationFrame {
+    display: block;
 }
 
-.passwordInfo {
-    margin-top:48px;
+.loginBox {
+    margin-top: 30px;
 }
 
-#username {
-    border-color: #222;
-    background-color: #222;
+.invalidRegistration {
+    display: none;
+    font-size: 24px;
 }

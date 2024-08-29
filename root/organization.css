@@ -19,8 +19,11 @@ main {
 
 
 .listTable {
-    flex: 1;
+    height: 100%;
+    width: 100%
 }
+
+
 .listTableHeader {
     text-align: left;
     font-size: 14px;

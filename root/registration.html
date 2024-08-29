@@ -10,57 +10,40 @@
     <script type="text/javascript" src="/common/scripts/global.js" defer></script>
     <script type="text/javascript" src="./registration.js" defer></script>
 
-    <style>
-
-    </style>
-
 </head>
 
 <body>
-    <div class="appFrame">
-	    <div class="pageFrame">
-			<main>
-                <div id="registrationPanel">
-                    <div class="inputRow">
-                        <div class="inputCell">
-                            <label class="inputLabel" for="firstName">First Name*</label>
-                            <input class="inputTextBox" id="firstName" type="text"/>
-                        </div>
-                    </div>
-                    <div class="inputRow">
-                        <div class="inputCell">
-                            <label class="inputLabel" for="lastName">Last Name*</label>
-                            <input class="inputTextBox" id="lastName" type="text"/>
-                        </div>
-                    </div>
-                    <div class="inputRow">
-                        <div class="inputCell">
-                            <label class="inputLabel" for="username">Email</label>
-                            <input class="inputTextBox" id="username" type="text" readonly/>
-                        </div>
-                    </div>
-                    <div class="passwordInfo">
-                        <div class="inputRow">
-                            <div class="inputCell">
-                                <label class="inputLabel" for="password">Password*</label>
-                                <input class="inputTextBox" id="password" type="password" autocomplete="new-password"/>
-                            </div>
-                        </div>
-                        <div class="inputRow">
-                            <div class="inputCell">
-                                <label class="inputLabel" for="confirm">Confirm Password*</label>
-                                <input class="inputTextBox" id="confirm" type="password" autocomplete="new-password"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="inputRow">
-                        <div>
-                            <input id="registerButton" class="inputButton" type="button" value="Register" disabled/>
-                        </div>
+    <div class="loginFrame registrationFrame">
+        <div class="loginBox">
+            <div class="loginLogo"><img src="/common/images/logo-graphic.svg" class="loginLogoGraphic"><img src="/common/images/logo-text.svg" class="loginLogoText"></div>
+            <form id="registrationForm">
+                <div class="inputRow">
+                    <div class="inputCell">
+                        <label class="inputLabel" for="username">Username</label>
+                        <input class="inputTextBox" id="username" type="text" readonly disabled/>
                     </div>
                 </div>
-            </main>
-        
+                <div class="inputRow">
+                    <div class="inputCell">
+                        <label class="inputLabel" for="password">Password*</label>
+                        <input class="inputTextBox" id="password" type="password" autocomplete="new-password"/>
+                    </div>
+                </div>
+                <div class="inputRow">
+                    <div class="inputCell">
+                        <label class="inputLabel" for="confirm">Confirm Password*</label>
+                        <input class="inputTextBox" id="confirm" type="password" autocomplete="new-password"/>
+                    </div>
+                </div>
+                <div class="inputRow loginSubmitRow">
+                    <input  id="registerButton" class="inputButton loginSubmit" type="submit" value="Register" disabled/>
+                </div>
+            </form>
+
+            <div id="invalidRegistration" class="invalidRegistration">
+                This invitation is no longer valid.
+            </div>
+
         </div>
     </div>
 </body>

@@ -89,7 +89,7 @@ class AccountPage extends CpiPage {
                 const confirmAuthCode = $("#confirmAuthCode").val();
 
                 if (authCode !== confirmAuthCode) {
-                    alert("Passwords do not match");
+                    Cpi.ShowAlert("Passwords do not match");
                     return;
                 }
             }

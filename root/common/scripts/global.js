@@ -202,8 +202,37 @@ class Cpi {
         $("#loginFrame").css("display", "block");
     }
 
-    static ShowAlert(message) {
-        window.alert(message);
+    static ShowAlert(params) {
+        var message, caption, close;
+        if (typeof params === "string") {
+            message = params;
+        }
+        else {
+            message = params.message;
+            caption = params.caption;
+            close = params.close;
+        }
+
+        var alertFrame = $("#alertFrame");
+        if (!alertFrame.length) {
+            // Dynamically insert the alert panel.
+            $("body").append($.parseHTML(Cpi.#alertHtml)[1]);
+            alertFrame = $("#alertFrame");
+        }
+
+        alertFrame.find("#alertCaption").html(caption);
+        alertFrame.find("#alertMessage").html(message);
+
+        alertFrame.find("#popupCancel").off("click").on("click", () => {
+            alertFrame.css("display", "none");
+            $("body").children(":not(#alertFrame)").css("opacity", "");
+            if (close) {
+                close();
+            }
+        });
+
+        $("body").children(":not(#alertFrame)").css("opacity", "0.5");
+        alertFrame.css("display", "flex");
     }
 
     static ShowPopup(popup, accept, cancel) {
@@ -259,6 +288,20 @@ class Cpi {
         $("#acceptButton").css("display", "none");
         $("#cancelButton").css("display", "none");
     }
+
+    static #alertHtml = String.raw`
+        <div id="alertFrame" class="alertFrame">
+            <div id="alertBox" class="alertBox">
+                <div class="alertTitle">
+                    <div id="alertCaption" class="alertCaption">Alert</div>
+                    <div>
+                        <input id="popupCancel" class="inputCancelButton popupCaptionButton" type="button" value="close"/>
+                    </div>
+                </div>
+                <div id="alertMessage" class="alertMessage"></div>
+            </div>
+        </div>
+    `;
 }
 
 
@@ -332,7 +375,7 @@ class CpiPage {
     validateLogin() {
         if (this.isLoggedIn()) {
             if (location.pathname !== "/" && location.pathname !== "/login") {
-                localStorage.setItem("lastVisitedPage", location.pathname);
+                localStorage.setItem("lastVisitedPage", location.toString());
             }
             return true;
         }
@@ -361,14 +404,15 @@ class CpiPage {
     /*
     * Private Data
     */
-    #siteVersion = "1";
-
     #accountData;
+
+    #siteVersion = "1";
 
     #spinnerHtml = String.raw`
         <div id="spinnerFrame" class="spinnerFrame">
             <img src="/common/images/spinner.svg" class="spinnerImage" width="240" height="240">
-        </div>`;
+        </div>
+    `;
 
     #loginHtml = String.raw`
     <div id="loginFrame" class="loginFrame">

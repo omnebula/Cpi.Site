@@ -1,10 +1,8 @@
 
 
-class RegistrationPage extends CpiPage {
+class RegistrationPage {
 
     constructor() {
-        super();
-
         const searchParams = new URLSearchParams(window.location.search);
         const invitationId = searchParams.get("id");
         if (!invitationId) {
@@ -20,8 +18,8 @@ class RegistrationPage extends CpiPage {
             },
             error: (xhr, status, message) => {
                 if (xhr.status === 404) {
-                    Cpi.ShowAlert("This registration request is invalid");
-                    window.location.href = "/";
+                    $("#registrationForm").hide();
+                    $("#invalidRegistration").show();
                 }
             }
         });
@@ -39,49 +37,41 @@ class RegistrationPage extends CpiPage {
             $("#password").focus();
         }
 
-        $("#registerButton").on("click", () => {
-            $("#registerButton").prop("disabled", true);
-            this.#submitRegistration(data.invitationId);
+        $("#registerButton").on("click", (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            if (!this.#submitRegistration(data.invitationId)) {
+                $("#registerButton").prop("disabled", false);
+            }
         })
         .prop("disabled", false);
     }
 
     #submitRegistration(invitationId) {
+        $("#registerButton").prop("disabled", true);
+
         var params = {};
 
         params.invitationId = invitationId;
-
-        params.firstName = $("#firstName").val().trim();
-        if (!params.firstName.length) {
-            Cpi.ShowAlert("Missing first name");
-            $("#firstName").focus();
-            return;
-        }
-
-        params.lastName = $("#lastName").val().trim();
-        if (!params.lastName.length) {
-            Cpi.ShowAlert("Missing last name");
-            $("#lastName").focus();
-            return;
-        }
+        params.authName = $("#username").val();
 
         params.authCode = $("#password").val().trim();
         if (!params.authCode.length) {
             Cpi.ShowAlert("Missing password");
             $("#password").focus();
-            return;
+            return false;
         }
 
         const confirmAuthCode = $("#confirm").val().trim();
         if (!confirmAuthCode.length) {
             Cpi.ShowAlert("Missing password confirmation");
             $("#confirm").focus();
-            return;
+            return false;
         }
 
         if (params.authCode !== confirmAuthCode) {
-            alert("Passwords do not match");
-            return;
+            Cpi.ShowAlert("Passwords do not match");
+            return false;
         }
 
         Cpi.SendApiRequest({
@@ -89,17 +79,25 @@ class RegistrationPage extends CpiPage {
             url: "/@/account/registration",
             data: JSON.stringify(params),
             success: (data) => {
-                window.location.href = "/";
+                localStorage.setItem("accountData", JSON.stringify(data));
+                window.location.href = "/account";
             },
             error: (xhr, status, message) => {
                 if (xhr.status === 404) {
                     window.location.href = "/";
                 }
                 else {
-                    Cpi.ShowAlert(message);
+                    Cpi.ShowAlert({
+                        message: message,
+                        close: () => {
+                            $("#registerButton").prop("disabled", false);
+                        }
+                    });
                 }
             }
         });
+
+        return true;
 
     }
 }

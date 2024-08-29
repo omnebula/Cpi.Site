@@ -43,7 +43,7 @@ input[type=submit] {
     display: flex;
     flex-direction: row;
     gap: 16px;
-    margin-bottom: 30px;
+    margin-bottom: 24px;
 }
 
 .inputColumn, .inputCell {
@@ -142,10 +142,57 @@ input[type=submit] {
     align-items: stretch;
     overflow: hidden;
     z-index: 10;
+    background-color: transparent;
 }
 .spinnerImage {
     margin: auto;
 }
+
+
+/*
+* Alert
+*/
+
+.alertFrame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: none;
+    justify-content: center;
+    align-items: stretch;
+    overflow: hidden;
+    z-index: 20;
+    background-color: transparent;
+}
+.alertBox {
+    border: 2px solid #336699;
+    display: block;
+    flex-direction: column;
+    background-color: #414141;
+    margin: 0px auto;
+    margin-top: 13%;
+    width: max-content;
+    height: max-content;
+}
+.alertTitle {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 8px 16px;
+    background-color: #1f1f1f;
+}
+.alertCaption {
+    font-size: 18px;
+}
+.alertMessage {
+    padding: 24px 32px;
+    min-width: 300px;
+    max-width: 400px;
+    font-size: 14px;
+}
+
 
 /*
 * Framing Elements
@@ -215,7 +262,7 @@ input[type=submit] {
     min-width: 64px;
     width: 64px;
     height: 100%;
-    padding: 0;
+    padding: 4px 0;
     border-radius: 4px;
     font-family: inherit;
 }
