@@ -551,8 +551,8 @@ class AccountOverlay extends TableOverlay {
             editor.find("#statusType").val(data.statusType);
         }
         else {
-            editor.find("firstName").val("");
-            editor.find("lastName").val("");
+            editor.find("#firstName").val("");
+            editor.find("#lastName").val("");
             editor.find("#email").val("");
             editor.find("#accessType").val("");
             editor.find("#statusType").val("");
