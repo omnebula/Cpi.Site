@@ -11,9 +11,8 @@
 }
 
 @-moz-document url-prefix() {
-    .st-body-scroll {
-        position: absolute;
-        top: 22px;
+    .st-head {
+        height: 0.1px;
     }
 }
 
