@@ -34,6 +34,14 @@ class DataTable {
 
         this.#rowContainer = this.#table.find(".st-body-table tbody");
         this.#rowContainer.css("vertical-align", "top");
+
+        const headTable = table.find(".st-head-table");
+        const bodyTable = table.find(".st-body-table");
+        new ResizeObserver(() => {
+            if (bodyTable.width() != headTable.width()) {
+                headTable.width(bodyTable.width());
+            }
+        }).observe(bodyTable[0]);
     }
 
     get table() {
