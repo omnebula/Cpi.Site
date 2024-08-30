@@ -153,7 +153,9 @@ class Cpi {
 
     static SendApiRequest(params)
     {
-        Cpi.ShowSpinner();
+        if (!params.hideSpinner) {
+            Cpi.ShowSpinner();
+        }
 
         const prevSuccessHandler = params.success;
         params.success = (data, status, xhr) => {
@@ -436,13 +438,13 @@ class CpiPage {
             <form id="loginForm">
                 <div class="inputRow">
                     <div class="inputCell">
-                        <label class="inputLabel" for="loginUsername">Username</label>
+                        <label class="inputLabel" for="loginUsername">Email</label>
                         <input class="inputTextBox loginUsername" id="loginUsername" name="username" type="text"/>
                     </div>
                 </div>
                 <div class="inputRow">
                     <div class="inputCell">
-                        <label class="inputLabel" for="loginPassword">Pasword</label>
+                        <label class="inputLabel" for="loginPassword">Password</label>
                         <input class="inputTextBox loginPassword" id="loginPassword" name="password" type="password"/>
                     </div>
                 </div>

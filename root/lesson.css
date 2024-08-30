@@ -257,6 +257,9 @@ main {
 }
 .benchmarkPickerRow {
 }
+.benchmarkPickerRow:hover {
+    background-color: #336699;
+}
 .benchmarkPickerColumn {
     padding: 4px 0;
     vertical-align: top;

@@ -217,7 +217,8 @@ class LessonPage extends CpiPage {
             data: JSON.stringify(params),
             success: (data, status, xhr) => {
                 this.#detailChanged = false;
-            }
+            },
+            hideSpinner: true
         });
     }
 }

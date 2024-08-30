@@ -56,7 +56,8 @@ class ProfileOverlay extends OverlayContext {
         const params = {
             firstName: $("#firstName").val(),
             lastName: $("#lastName").val(),
-            email: $("#email").val()
+            email: $("#email").val(),
+            phone: $("#phone").val()
         };
 
         if (this.#authCodeChanged) {
@@ -92,6 +93,7 @@ class ProfileOverlay extends OverlayContext {
         $("#firstName").val(this.#currentData.firstName);
         $("#lastName").val(this.#currentData.lastName);
         $("#email").val(this.#currentData.email);
+        $("#phone").val(this.#currentData.phone);
 
         $("#authCode").on("change", () => {
             this.#authCodeChanged = true;
