@@ -4,11 +4,13 @@
 
 .theme-light {
     --body-background-color: #777;
+    --input-label-color: lightblue;
     --input-text-background-disabled: #606060;
     --site-menu-color: #ddd;
 }
 .theme-dark {
     --body-background-color: #1a1a1a;
+    --input-label-color: orange;
     --input-text-background-disabled: inherit;
     --site-menu-color: #afafaf;
 
@@ -79,7 +81,7 @@ input[type=submit] {
     display: inline-block;
     margin-bottom: 4px;
     font-size: 14px;
-    color: orange;
+    color: var(--input-label-color);
 }
 .inputLabel_disabled {
     opacity: 0.9;
@@ -351,7 +353,7 @@ input[type=submit] {
 header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     align-items: center;
 }
 
@@ -411,6 +413,7 @@ main {
 .navigationPanel {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 20px;
 }
 .navigationButton {
     width:80px;

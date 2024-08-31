@@ -1,5 +1,5 @@
 .theme-light {
-    --st-tr-even-background-color: #6a6a6a;
+    --st-tr-even-background-color: #6f6f6f;
 }
 .theme-dark {
     --st-tr-even-background-color: #1f1f1f;
@@ -40,7 +40,8 @@ main {
 .listTableHeader {
     text-align: left;
     font-size: 14px;
-    color: orange;
+    color: var(--input-label-color);
+    font-weight: normal;
 }
 .listCommandsColumn {
     width: 50px;
@@ -96,7 +97,6 @@ main {
     justify-content: space-between;
 }
 .holidayTableHeader {
-    color: lightblue;
 }
 .holidayListRow_active {
     color: white;

@@ -27,10 +27,6 @@ main {
     gap: 2px;
 }
 
-.scheduleHeader {
-    margin-top: 24px;
-}
-
 .scheduleColumn {
     flex: 1; /* Each column takes up an equal amount of space */
     box-sizing: border-box;
