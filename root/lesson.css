@@ -2,11 +2,19 @@
     --navigation-button-color: #eee;
     --navigation-button-background-color: #336699;
     --navigation-button-border-color: #336699;
+    --input-background-color: #474747;
+    --input-border-color: #999;
+    --input-border-color-hover: #ddd;
+    --input-border-color-focus: white;
 }
 .theme-dark {
     --navigation-button-color: steelblue;
     --navigation-button-background-color: transparent;
     --navigation-button-border-color: steelblue;
+    --input-background-color: #202020;
+    --input-border-color: #333;
+    --input-border-color-hover: steelblue;
+    --input-border-color-focus: lightsteelblue;
 }
 
 
@@ -120,14 +128,14 @@ main {
 }
 
 .lessonBenchmarkSection {
-    background-color: #202020;
+    background-color: var(--input-background-color);
     padding: 8px 16px;
     min-height: 30px;
     border-radius: 8px;
-    border: 1px solid #333;
+    border: 1px solid var(--input-border-color);
 }
 .lessonBenchmarkSection:hover {
-    border-color: #336699;
+    border-color: var(--input-border-color-hover);
 }
 
 .lessonBenchmarkRow {
@@ -177,20 +185,21 @@ main {
 }
 .lessonDetailText {
     outline: none;
-    border: 1px solid #333;
+    border: 1px solid var(--input-border-color);
     border-radius: 8px;
     resize: none;
     padding: 16px;
-    font-size: 14px;
+    font-size: 13px;
     height: 52px;
-    background-color: #202020;
-    color: #eee;
+    background-color: var(--input-background-color);
+    color: #ddd;
+    font-family: inherit;
 }
 .lessonDetailText:hover {
-    border-color: #336699;
+    border-color: var(--input-border-color-hover);
 }
 .lessonDetailText:focus {
-    border-color: steelblue;
+    border-color: var(--input-border-color-focus);
     color: white;
 }
 

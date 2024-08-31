@@ -294,7 +294,7 @@ class Cpi {
                 <div id="alertMessage" class="alertMessage"></div>
             </div>
         </div>
-    `;
+`;
 }
 
 Cpi.InitSiteTheme();
@@ -420,13 +420,13 @@ class CpiPage {
     */
     #accountData;
 
-    #siteVersion = "6";
+    #siteVersion = "7";
 
     #spinnerHtml = String.raw`
         <div id="spinnerFrame" class="spinnerFrame">
             <img src="/common/images/spinner.svg" class="spinnerImage" width="240" height="240">
         </div>
-    `;
+`;
 
     #loginHtml = String.raw`
     <div id="loginFrame" class="loginFrame">
