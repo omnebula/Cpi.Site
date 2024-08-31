@@ -2,6 +2,8 @@
     --navigation-button-color: #eee;
     --navigation-button-background-color: #336699;
     --navigation-button-border-color: #336699;
+    --navigation-button-color-disabled: #555;
+    --navigation-button-background-color-disabled: transparent;
     --input-background-color: #474747;
     --input-border-color: #999;
     --input-border-color-hover: #ddd;
@@ -11,6 +13,8 @@
     --navigation-button-color: steelblue;
     --navigation-button-background-color: transparent;
     --navigation-button-border-color: steelblue;
+    --navigation-button-color-disabled: #555;
+    --navigation-button-background-color-disabled: #202020;
     --input-background-color: #202020;
     --input-border-color: #333;
     --input-border-color-hover: steelblue;
@@ -47,8 +51,8 @@ main {
     border: 1px solid lightblue;
 }
 .lessonNavigationButton:disabled {
-    color: #555;
-    background-color: #202020;
+    color: var(--navigation-button-color-disabled);
+    background-color: var(--navigation-button-background-color-disabled);
     border: 1px solid #555;
 }
 
