@@ -1,3 +1,24 @@
+/*
+* Themes
+*/
+
+.theme-light {
+    --body-background-color: #777;
+    --input-text-background-disabled: #606060;
+    --site-menu-color: #ddd;
+}
+.theme-dark {
+    --body-background-color: #1a1a1a;
+    --input-text-background-disabled: inherit;
+    --site-menu-color: #afafaf;
+
+}
+
+
+
+/*
+* HTML
+*/
 html, body {
     width: 100%;
     height: 100%;
@@ -6,7 +27,7 @@ html, body {
 body {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     color: white;
-    background-color: #1a1a1a;
+    background-color: var(--body-background-color);
     margin: 0;
     padding: 0;
     font-size: 13px;
@@ -77,7 +98,7 @@ input[type=submit] {
     font-family: inherit;
 }
 .inputTextBox:disabled {
-    background-color: inherit;
+    background-color: var(--input-text-background-disabled);
     color: #ccc;
 }
 .inputTextBox:focus, .inputSelect:focus {
@@ -336,7 +357,7 @@ header {
 .siteLogo {
 }
 .siteLogoGraphic, .siteLogoText {
-    height: 34px;
+    height: 36px;
 }
 .siteLogoGraphic {
     opacity: 0.9;
@@ -362,7 +383,7 @@ header {
     margin-right: 3px;
     padding-right: 9px;
     border-right: 1px solid white;
-    color: #afafaf;
+    color: var(--site-menu-color);
 }
 a.siteMenuOption:hover, a.siteLastMenuOption:hover {
     color: white;
@@ -393,20 +414,30 @@ main {
 .navigationButton {
     width:80px;
     padding: 5px 0;
+    color: #ddd;
 }
+.navigationButton:hover :not(:disabled) {
+    color: white;
+}
+
 .navigationSelect {
     color: #ddd;
-    background-color: transparent;
+    background-color: #336699;
     display: inline-block;
     padding: 4px 16px;
     margin-right: 12px;
-    border: 1px solid steelblue;
+    border: 1px solid #336699;
+    border: none;
 }
-.navigationSelect:active {
-    border: 1px solid #777;
+.navigationSelect:hover {
+    color:white;
+}
+.navigationSelect:active{
+    color:white;
 }
 .navigationSelect:focus {
-    border: 1px solid #777;
+    color: white;
+    background-color: steelblue;
 }
 
 

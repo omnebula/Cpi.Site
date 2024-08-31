@@ -64,7 +64,7 @@ class OverlayContext {
 
     constructor(settings) {
         this.#overlayName = settings.overlayName;
-        this.#overlayElement = settings.overlayElement;
+        this.#overlayElement = settings.overlayElement || $(`#${this.#overlayName}`);
     }
 
     get name() {

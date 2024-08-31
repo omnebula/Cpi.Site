@@ -265,31 +265,22 @@ class Cpi {
         $(".popupFrame").css("display", "none");
         $(".appFrame").css("opacity", "");
     }
-
-    static EnableEditMode() {
-        $("#editButton").css("display", "none");
-        $("#acceptButton").css("display", "inline-block");
-        $("#cancelButton").css("display", "inline-block");
-
-        $(".inputTextBox").each((key, element) => {
-            const textBox = $(element);
-            textBox.prop("disabled", false);
-        });
+    
+    static GetSiteTheme() {
+        return localStorage.getItem("siteTheme");
+    }
+    static SetSiteTheme(themeName) {
+        localStorage.setItem('siteTheme', themeName);
+        document.documentElement.className = themeName;
+    }
+    static InitSiteTheme() {
+        const themeName = Cpi.GetSiteTheme();
+        Cpi.SetSiteTheme(themeName || "theme-dark");
     }
 
-    static DisableEditMode() {
-        $(".inputTextBox").each((key, element) => {
-            const textBox = $(element);
-            textBox.attr("disabled", true);
-        });
-
-        $("#acceptButton").css("display", "inline-block");
-        $("#cancelButton").css("display", "inline-block");
-
-        $("#editButton").css("display", "inline-block");
-        $("#acceptButton").css("display", "none");
-        $("#cancelButton").css("display", "none");
-    }
+    /*
+    * Private Data
+    */
 
     static #alertHtml = String.raw`
         <div id="alertFrame" class="alertFrame">
@@ -305,6 +296,8 @@ class Cpi {
         </div>
     `;
 }
+
+Cpi.InitSiteTheme();
 
 
 class CpiPage {
@@ -410,12 +403,16 @@ class CpiPage {
             if (!currentVersion) {
                 localStorage.setItem(key, this.#siteVersion);
                 location.reload(true);
+                return true;
             } 
             else if (currentVersion !== this.#siteVersion) {
                 localStorage.setItem(key, this.#siteVersion);
                 location.reload(true);
+                return true;
             }
         }
+
+        return false;
     }
 
     /*
@@ -423,7 +420,7 @@ class CpiPage {
     */
     #accountData;
 
-    #siteVersion = "5";
+    #siteVersion = "6";
 
     #spinnerHtml = String.raw`
         <div id="spinnerFrame" class="spinnerFrame">

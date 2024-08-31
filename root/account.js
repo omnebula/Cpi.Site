@@ -10,7 +10,8 @@ class AccountPage extends CpiPage {
         }
 
         const overlays = [
-            new ProfileOverlay()
+            new ProfileOverlay(),
+            new PreferencesOverlay()
         ];
         this.#overlayController = new OverlayController(overlays, "accountOverlayName");
 
@@ -27,7 +28,6 @@ class ProfileOverlay extends OverlayContext {
     constructor() {
         super({
             overlayName: "Profile",
-            overlayElement: $("#Profile")
         });
 
         this.#editController = new EditController({
@@ -105,6 +105,27 @@ class ProfileOverlay extends OverlayContext {
         $("#authCode").val("          ");
         $("#confirmAuthCode").val("**********");
         this.#authCodeChanged = false;
+    }
+}
+
+
+class PreferencesOverlay extends OverlayContext {
+    constructor() {
+        super({
+            overlayName: "Preferences",
+            overlayElement: $("#Preferences")
+        });
+
+        const siteTheme = this.element.find("#siteTheme");
+        siteTheme
+            .val(Cpi.GetSiteTheme())
+            .on("change", () => {
+                Cpi.SetSiteTheme(siteTheme.val());
+            });
+    }
+
+    _activateOverlay() {
+        super._activateOverlay();
     }
 }
 

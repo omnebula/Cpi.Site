@@ -225,6 +225,7 @@ class LessonPage extends CpiPage {
 
 
 class BenchmarkPicker {
+    #benchmarkPicker = $("#benchmarkPicker");
     #pickerResults;
     #rowContainer;
     #rowTemplate;
@@ -290,13 +291,6 @@ class BenchmarkPicker {
         this.#searchBenchmarks(success);
     }
 
-    #showPopup(success) {
-        Cpi.ShowPopup(
-            $("#benchmarkPicker"),
-            () => { this.#acceptSelection(success); }
-        );                    
-    }
-
     #searchBenchmarks(success) {
         const subject = $("#benchmarkPickerSearchSubject").val();
         const grade = $("#benchmarkPickerSearchGrade").val();
@@ -309,7 +303,7 @@ class BenchmarkPicker {
             method: "GET",
             url: `/@/curriculum/search?subject=${subject}&grade=${grade}&keyword=${keyword}&mode=${showMode}`,
             success: (data) => {
-                this.#populateResults(data);
+                this.#populateResults(data, success);
 
                 // Show popup if a success handler was specified, i.e., called from show().
                 if (success) {
@@ -319,7 +313,14 @@ class BenchmarkPicker {
         });
     }
 
-    #populateResults(data) {
+    #showPopup(success) {
+        Cpi.ShowPopup(
+            this.#benchmarkPicker,
+            () => { this.#acceptSelection(success); }
+        );                    
+    }
+
+    #populateResults(data, success) {
         this.#rowContainer.empty();
 
         for (const current of data) {
@@ -330,8 +331,8 @@ class BenchmarkPicker {
             const row = this.#rowTemplate.clone(true);
             row.attr("referenceUrl", current.referenceUrl)
                 .on("dblclick", () => {
-                    rowCheck.prop("checked", true);
-                    this.#acceptSelection();
+                    row.find("input[type=checkbox]").prop("checked", true);
+                    this.#benchmarkPicker.find("#popupAccept").trigger("click");
                 });
 
             row.find("#benchmarkPickerCheckbox").attr("id", current.benchmarkId);
@@ -377,7 +378,9 @@ class BenchmarkPicker {
                 row.remove();
             }
 
-            success(results);
+            if (success) {
+                success(results);
+            }
         }
     }
 }

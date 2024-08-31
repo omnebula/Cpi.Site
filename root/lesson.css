@@ -1,3 +1,15 @@
+.theme-light {
+    --navigation-button-color: #eee;
+    --navigation-button-background-color: #336699;
+    --navigation-button-border-color: #336699;
+}
+.theme-dark {
+    --navigation-button-color: steelblue;
+    --navigation-button-background-color: transparent;
+    --navigation-button-border-color: steelblue;
+}
+
+
 main {
     display: flex;
     flex-direction: column;    
@@ -10,10 +22,10 @@ main {
 }
 
 .lessonNavigationButton {
-    color: steelblue;
-    background-color: transparent;
+    color: var(--navigation-button-color);
+    background-color: var(--navigation-button-background-color);
     margin-right: 1px;
-    border: 1px solid steelblue;
+    border: 1px solid var(--navigation-button-border-color);
     padding: 3px 8px;
     font-size: 12px;
 }

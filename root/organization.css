@@ -1,3 +1,16 @@
+.theme-light {
+    --st-tr-even-background-color: #6a6a6a;
+}
+.theme-dark {
+    --st-tr-even-background-color: #1f1f1f;
+}
+
+.st-tr-even {
+    background-color: var(--st-tr-even-background-color);
+}
+
+
+
 main {
     display: flex;
     flex-direction: row;

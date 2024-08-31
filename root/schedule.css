@@ -1,3 +1,10 @@
+.theme-light {
+    --schedule-lesson-background-color: #474747;
+}
+.theme-dark {
+    --schedule-lesson-background-color: #101010;
+}
+
 main {
     display: flex;
     flex-direction: column;    
@@ -110,8 +117,8 @@ main {
 }
 
 .scheduleLesson {
-    color: #c7c7c7;
-    background-color: #171717;
+    color: #ddd;
+    background-color: var(--schedule-lesson-background-color);
     font-size: 13px;
     margin-top: 10px;
     border-radius: 24px;
