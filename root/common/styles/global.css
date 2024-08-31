@@ -277,9 +277,10 @@ input[type=submit] {
     padding: 12px;
     background-color: #272727;
     margin-bottom: 24px;
+    align-items: center;    
 }
 .popupCaptionTitle {
-    font-size: 17px;
+    font-size: 16px;
     color: lightyellow;
 }
 .popupCaptionButton {
