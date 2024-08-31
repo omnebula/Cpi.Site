@@ -83,6 +83,11 @@ class OrganizationPage extends CpiPage {
     // Teacher Options
     static PopulateTeacherOptions(selector, next) {
         if (!OrganizationPage.#TeacherOptions.length) {
+            OrganizationPage.#TeacherOptions.push({
+                id: null,
+                name: ""
+            });
+
             Cpi.SendApiRequest({
                 method: "GET",
                 url: "/@/accounts?accessType=teacher",
