@@ -11,6 +11,10 @@ main {
 }
 
 
+.navigationButton {
+    margin-right: 2px;
+}
+
 .listRow:hover {
     background-color: #336699;
 }
