@@ -400,11 +400,13 @@ class CpiPage {
 
             // Detect version change.
             const currentVersion = localStorage.getItem(key);
+
+            // If no currentVersion, this is initial run...
             if (!currentVersion) {
+                // ... just set the version.
                 localStorage.setItem(key, this.#siteVersion);
-                location.reload(true);
-                return true;
             } 
+            // Otherwise, compare with value in local storage.
             else if (currentVersion !== this.#siteVersion) {
                 localStorage.setItem(key, this.#siteVersion);
                 location.reload(true);

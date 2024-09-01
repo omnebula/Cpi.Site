@@ -203,6 +203,9 @@ main {
 .pickerRow {
     margin: 0 12px 12px 12px;
 }
+.pickerSelectColumn {
+    width: 40px;
+}
 .classNameColumn {
     color: #ddd;
 }

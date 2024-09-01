@@ -3,17 +3,28 @@
 */
 
 .theme-light {
-    --body-background-color: #777;
-    --input-label-color: lightblue;
-    --input-text-background-disabled: #606060;
-    --site-menu-color: #ddd;
+    --body-background-color: #eee;
+    --page-title-color: #336699;
+    --input-label-color: #336699;
+    --input-label-font-weight: bold;
+    --input-text-background-color-disabled: #ccc;
+    --input-text-color-disabled: #444;
+    --site-menu-color: #777;
+    --site-menu-color-hover: black;
+    --site-menu-border-color: black;
+    --popup-box-background-color: #414141;;
 }
 .theme-dark {
     --body-background-color: #1a1a1a;
+    --page-title-color: lightblue;
     --input-label-color: orange;
-    --input-text-background-disabled: inherit;
+    --input-label-font-weight: normal;
+    --input-text-background-color-disabled: inherit;
+    --input-text-color-disabled: #ddd;
     --site-menu-color: #afafaf;
-
+    --site-menu-color-hover: white;
+    --site-menu-border-color: white;
+    --popup-box-background-color: #414141;
 }
 
 
@@ -82,6 +93,7 @@ input[type=submit] {
     margin-bottom: 4px;
     font-size: 14px;
     color: var(--input-label-color);
+    font-weight: var(--input-label-font-weight);
 }
 .inputLabel_disabled {
     opacity: 0.9;
@@ -100,8 +112,8 @@ input[type=submit] {
     font-family: inherit;
 }
 .inputTextBox:disabled {
-    background-color: var(--input-text-background-disabled);
-    color: #ccc;
+    background-color: var(--input-text-background-color-disabled);
+    color: var(--input-text-color-disabled);
 }
 .inputTextBox:focus, .inputSelect:focus {
     border-color: #ddd;
@@ -265,10 +277,10 @@ input[type=submit] {
     border: 2px solid #336699;
     display: none;
     flex-direction: column;
-    background-color: #414141;
+    background-color: var(--popup-box-background-color);
     z-index: 3;
     margin: 0px auto;
-    margin-top: 13%;
+    margin-top: 60px;
     width: max-content;
 }
 
@@ -299,6 +311,13 @@ input[type=submit] {
     flex-direction: row;
     gap: 16px;
     margin: 0 24px 24px 24px;
+}
+
+.popupLabel {
+    display: inline-block;
+    margin-bottom: 4px;
+    font-size: 14px;
+    color: orange;
 }
 
 /*
@@ -372,7 +391,7 @@ header {
 }
 
 .pageTitle {
-    color: lightblue;
+    color: var(--page-title-color);
     text-align: right;
     font-size: 18px;
     font-weight: bold;
@@ -385,11 +404,11 @@ header {
 .siteMenuOption, .siteLastMenuOption {
     margin-right: 3px;
     padding-right: 9px;
-    border-right: 1px solid white;
+    border-right: 2px solid var(--site-menu-border-color);
     color: var(--site-menu-color);
 }
 a.siteMenuOption:hover, a.siteLastMenuOption:hover {
-    color: white;
+    color: var(--site-menu-color-hover);
 }
 .siteLastMenuOption {
     margin-right: 0;

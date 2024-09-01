@@ -1,4 +1,6 @@
 .theme-light {
+    --navigation-label-color: black;
+    --navigation-label-font-weight: bold;
     --navigation-button-color: #eee;
     --navigation-button-background-color: #336699;
     --navigation-button-border-color: #336699;
@@ -10,6 +12,8 @@
     --input-border-color-focus: white;
 }
 .theme-dark {
+    --navigation-label-color: white;
+    --navigation-label-font-weight: normal;
     --navigation-button-color: steelblue;
     --navigation-button-background-color: transparent;
     --navigation-button-border-color: steelblue;
@@ -77,10 +81,13 @@ main {
     font-size: 16px;
 }
 
+.lessonName, .lessonDate {
+    color: var(--navigation-label-color);
+    font-weight: var(--navigation-label-font-weight);
+}
 .lessonName {
     margin-right: 8px;
 }
-
 .lessonDate {
     margin-left: 24px;
     margin-right: 8px;
@@ -249,7 +256,6 @@ main {
 .benchmarkPicker {
     width: 800px;
     height: 420px;
-    margin-top: 120px;
 }
 .benchmarkPickerSearch {
     margin-bottom: 18px;

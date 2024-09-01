@@ -1,3 +1,13 @@
+.theme-light {
+    --overlay-selector-option-color: #336699;
+    --overlay-selector-option-background-color: lightsteelblue;
+}
+.theme-dark {
+    --overlay-selector-option-color: #eee;
+    --overlay-selector-option-background-color: #414141;
+}
+
+
 .overlaySelector {
     gap: 4px;
 }
@@ -9,8 +19,8 @@
     border-top-left-radius: 0;
 }
 .overlaySelectorOption {
-    color: #dedede;
-    background-color: #414141;
+    color: var(--overlay-selector-option-color);
+    background-color: var(--overlay-selector-option-background-color);
 }
 .overlaySelectorOption:hover {
     color: white;
