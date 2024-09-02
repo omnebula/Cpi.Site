@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Core Plan IT - Roadmap</title>
+    <title>Core Plan IT - Progress</title>
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/common/styles/jquery-ui.min.css" type="text/css" />
+    <link rel="stylesheet" href="/common/styles/jquery.scrolltable.css" type="text/css" />
     <link rel="stylesheet" href="/common/styles/global.css" type="text/css" />
     <link rel="stylesheet" href="./roadmap.css" type="text/css" />
     <script type="text/javascript" src="/common/data/static.js"></script>
     <script type="text/javascript" src="/common/scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="/common/scripts/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/common/scripts/jquery.scrolltable.js"></script>
     <script type="text/javascript" src="/common/scripts/global.js"></script>
+    <script type="text/javascript" src="/common/classes/DataTable.js"></script>
     <script type="text/javascript" src="./roadmap.js" defer></script>
 
 </head>
@@ -21,7 +26,7 @@
             <header>
                 <div class="siteLogo"><img src="/common/images/logo-graphic.svg" class="siteLogoGraphic"><img src="/common/images/logo-text.svg" class="siteLogoText"></div>
                 <div class="siteNavigation">
-                    <div id="pageTitle" class="pageTitle">Roadmap</div>
+                    <div id="pageTitle" class="pageTitle">Lesson Roadmap</div>
                     <div id="siteMenu" class="siteMenu">
                         <a class="siteMenuOption" id="siteViewManager" href="/organization">manager</a>
                         <a class="siteMenuOption" href="/schedule">schedule</a>
@@ -31,27 +36,45 @@
                 </div>
             </header>
 			<main>
-                <div>
-                    <div class="benchmarkHeaderContainer">
-                        <div class="benchmarkRow">
-                            <div class="benchmarkStandard">Standard</div>
-                            <div class="benchmarkCoverage">Coverage</div>
-                        </div>
+                <div class="navigationPanel">
+                    <div id="navigationSelectors">
+                        <select id="subjectSelector" class="inputSelect navigationSelect" title="Select Subject">
+                        </select>
+                        <select id="gradeSelector" class="inputSelect navigationSelect" title="Select Grade">
+                        </select>
+                        <select id="scopeSelector" class="inputSelect navigationSelect" title="Select Scope">
+                            <option value="all">View All</option>
+                            <option value="unassigned">View Unassigned</option>
+                            <option value="assigned">View Assigned</option>
+                        </select>
+                    </div>
+                    <div>
                     </div>
                 </div>
-                <div id="benchmarkRowContainer" class="benchmarkRowContainer">
-                    <div id="benchmarkRow" class="benchmarkRow">
-                        <div class="benchmarkStandard">
-                            <div id="standardCode" class="benchmarkStandardCode"></div>
-                            <div id="standardDescription" class="benchmarkStandardDescription"></div>
-                        </div>
-                        <div id="benchmarkCoverageContainer" class="benchmarkCoverageContainer">
-                            <div id="benchmarkCoverage" class="benchmarkCoverage">
-                                <div id="coverageDate" class="benchmarkCoverageDate"></div>
-                                <div id="coverageSubject" class="benchmarkCoverageSubject"></div>
-                            </div>                            
-                        </div>
-                    </div>
+                <div class="roadmapPanel">
+                    <table id="roadmapTable" class="scrollTable listTable roadmapTable" cellpadding="0" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th class="listTableHeader">Benchmark</th>
+                                <th class="listTableHeader lessonColumn">Lesson</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="listRow roadmapRow">
+                                <td class="listColumn">
+                                    <div class="benchmarkInfo">
+                                        <a id="benchmarkCode" class="benchmarkCode" target="_blank"></a>
+                                        <div id="benchmarkSynopsis" class="benchmarkSynopsis"></div>
+                                    </div>
+                                </td>
+                                <td id="benchmarkLesson" class="listColumn lessonColumn">
+                                    <div id="lessonBubble" class="lessonBubble">
+                                        <a id="lessonLink" class="lessonLink"><span id="lessonName" class="lessonName"></span>&nbsp;&bull;&nbsp;<span id="lessonDate" class="lessonNDate"></span></a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </main>
 		</div>

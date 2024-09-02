@@ -57,8 +57,14 @@ class DataTable {
     findRows(predicate) {
         return this.#table.find(predicate);
     }
+    find(predicate) {
+        return this.#table.find(predicate);
+    }
 
     clearRows() {
+        this.#rowContainer.empty();
+    }
+    empty() {
         this.#rowContainer.empty();
     }
 

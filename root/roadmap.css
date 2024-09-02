@@ -1,39 +1,97 @@
-.benchmarkHeaderContainer {
+.theme-light {
+    --st-tr-even-background-color: #e7e7e7;
+    --benchmark-code-color: #336699;
+    --benchmark-synopsis-color: #333;
+    --benchmark-synopsis-color-assigned: #00910c;
+    --lesson-bubble-background-color: steelblue;
+    --lesson-bubble-border-color: #336699;
+}
+.theme-dark {
+    --st-tr-even-background-color: #1f2328;
+    --benchmark-code-color: lightsteelblue;
+    --benchmark-synopsis-color: #eee;
+    --benchmark-synopsis-color-assigned: #3ee34c;
+    --lesson-bubble-background-color: black;
+    --lesson-bubble-border-color: #444;
 }
 
-.benchmarkRowContainer {
+/*
+*/
+.st-tr-even {
+    background-color: var(--st-tr-even-background-color);
 }
 
-.benchmarkRow {
+
+.listTableHeader {
+    text-align: left;
+    font-size: 14px;
+    color: var(--input-label-color);
+}
+.listColumn {
+    padding: 16px 0;
+}
+
+
+main{
     display: flex;
-    margin: 8px 0;
+    flex-direction: column;    
 }
 
-.benchmarkStandard {
+#navigationSelectors {
+    visibility: hidden;
+}
+
+.roadmapPanel {
+    flex: 1;
     display: flex;
+    flex-direction: column;
+}
+
+.roadmapTable {
     flex: 1;
 }
 
-.benchmarkStandardCode {
-    margin-right: 24px;
+.roadmapRow {
 }
 
-.benchmarkStandardDescription {
-    padding-right: 16px;
+.benchmarkInfo {
+    display: flex;
+    flex-direction: row;
 }
 
-.benchmarkCoverageContainer {
-    width: 300px;
-}
-
-.benchmarkCoverage {
-    width: 300px;
-}
-
-.benchmarkCoverageDate {
+.benchmarkCode {
     display: inline-block;
+    margin-right: 10px;
+    color: var(--benchmark-code-color);
 }
 
-.benchmarkCoverageSubject {
+.benchmarkSynopsis {
     display: inline-block;
+    color: var(--benchmark-synopsis-color);
+    padding-right: 12px;
+}
+.benchmarkSynopsis_assigned {
+    color: var(--benchmark-synopsis-color-assigned);
+}
+
+.lessonColumn {
+    width: 240px;
+    text-align: center;
+}
+
+.lessonBubble {
+    padding: 5px 10px;
+    border-radius: 12px;
+    border: 1px solid var(--lesson-bubble-border-color);
+    white-space: nowrap;
+    width: fit-content;
+    background-color: var(--lesson-bubble-background-color);
+}
+.lessonLink {
+    color: #ddd;
+}
+.lessonLink:hover {
+    color: white;
+}
+.lessonName {
 }
