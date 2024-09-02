@@ -79,10 +79,18 @@ class EntityBroker {
     deleteEntity(row, success, deleteUrl) {
         const id = row.attr("id");
         if (id) {
-            Cpi.SendApiRequest({
-                method: "DELETE",
-                url: deleteUrl || this.#formatDetailUrl(id),
-                success: success
+            Cpi.ShowAlert({
+                caption: "Confirm Delete",
+                message: `Are you sure you want to delete this ${this.#entityName}?`,
+                accept: () => {
+                    Cpi.SendApiRequest({
+                        method: "DELETE",
+                        url: deleteUrl || this.#formatDetailUrl(id),
+                        success: success
+                    });
+                },
+                acceptLabel: "delete",
+                closeLabel: "cancel"
             });
         }
     }

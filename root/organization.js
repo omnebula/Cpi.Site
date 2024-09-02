@@ -769,9 +769,18 @@ class LocationOverlay extends TableOverlay {
     }
 
     _getEditorData(editor) {
+        return {
+            locationName: editor.find("#locationName").val()
+        };
     }
 
     _setEditorData(editor, data) {
+        if (data) {
+            editor.find("#locationName").val(data.locationName);
+        }
+        else {
+            editor.find("#locationName").val("");
+        }
     }
 }
 

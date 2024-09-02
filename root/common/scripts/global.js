@@ -225,16 +225,34 @@ class Cpi {
         alertFrame.find("#alertCaption").html(caption);
         alertFrame.find("#alertMessage").html(message);
 
-        alertFrame.find("#popupCancel").off("click").on("click", () => {
-            alertFrame.css("display", "none");
-            $("body").children(":not(#alertFrame)").css("opacity", "");
-            if (close) {
-                close();
-            }
-        });
+        alertFrame.find("#popupCancel")
+            .val(params.closeLabel || "close")
+            .off("click").on("click", () => {
+                Cpi.#HideAlert(alertFrame);
+                if (close) {
+                    close();
+                }
+            });
+
+        if (params.accept) {
+            alertFrame.find("#popupAccept")
+                .val(params.acceptLabel || "accept")
+                .css("display", "inline-block")
+                .off("click").on("click", () => {
+                    Cpi.#HideAlert(alertFrame);
+                    params.accept();
+                });
+        }
+        else {
+            alertFrame.find("#popupAccept").css("display", "none");
+        }
 
         $("body").children(":not(#alertFrame)").css("opacity", "0.5");
         alertFrame.css("display", "flex");
+    }
+    static #HideAlert(alertFrame) {
+        alertFrame.css("display", "none");
+        $("body").children(":not(#alertFrame)").css("opacity", "");
     }
 
     static ShowPopup(popup, accept, cancel) {
@@ -288,6 +306,7 @@ class Cpi {
                 <div class="alertTitle">
                     <div id="alertCaption" class="alertCaption">Alert</div>
                     <div>
+                        <input id="popupAccept" class="inputAcceptButton popupCaptionButton" type="button" value="OK"/>
                         <input id="popupCancel" class="inputCancelButton popupCaptionButton" type="button" value="close"/>
                     </div>
                 </div>
