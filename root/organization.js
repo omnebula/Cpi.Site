@@ -13,7 +13,7 @@ class OrganizationPage extends CpiPage {
         const overlays = [
             new SettingsOverlay(),
             new CalendarOverlay(),
-            new StudentOverlay(),
+            //new StudentOverlay(),
             new AccountOverlay(),
             new ClassOverlay(),
             new CourseOverlay(),
