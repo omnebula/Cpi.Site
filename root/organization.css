@@ -3,12 +3,14 @@
     --list-row-color: black;
     --holiday-list-row-color: #333;
     --holiday-list-row-color-active: black;
+    --list-table-header-font-weight: bold;
 }
 .theme-dark {
     --st-tr-even-background-color: #1f1f1f;
     --list-row-color: #eee;
     --holiday-list-row-color: #ddd;
     --holiday-list-row-color-active: white;
+    --list-table-header-font-weight: normal;
 }
 
 .st-tr-even {
@@ -46,6 +48,7 @@ main {
 .listTableHeader {
     text-align: left;
     font-size: 14px;
+    font-weight: var(--list-table-header-font-weight);
     color: var(--input-label-color);
 }
 .listCommandsColumn {

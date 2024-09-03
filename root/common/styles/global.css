@@ -306,6 +306,7 @@ input[type=submit] {
     padding: 4px 0;
     border-radius: 4px;
     font-family: inherit;
+    font-size: 13px;    
 }
 
 .popupRow {
