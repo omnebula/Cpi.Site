@@ -624,10 +624,14 @@ class ClassOverlay extends TableOverlay {
     }
 
     _getEditorData(editor) {
+        const className = editor.find("#className").val();
+        const locationId = editor.find("#classLocation").val();
+        const teacherId = editor.find("#classTeacher").val();
+
         return {
-            className: editor.find("#className").val(),
-            locationId: editor.find("#classLocation").val(),
-            teacherId: editor.find("#classTeacher").val()
+            className: className,
+            locationId: locationId === "" ? null : locationId,
+            teacherId: teacherId === "" ? null : teacherId
         };
     }
 
