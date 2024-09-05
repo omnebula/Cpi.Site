@@ -212,8 +212,13 @@
                                 <input id="deleteAccount" type="button" class="inputButton overlayCommandButton" value="Delete Account" disabled/>
                             </div>
                             <div class="overlayCommandGroup">
+                                <input id="viewAccountSchedule" type="button" class="inputButton overlayCommandButton" value="View Schedule"/>
+                                <input id="viewAccountRoadmap" type="button" class="inputButton overlayCommandButton" value="View Roadmap"/>
+                            </div>
+                            <div class="overlayCommandGroup">
                                 <input id="sendAccountInvite" type="button" class="inputButton overlayCommandButton" value="Send Invite"/>
                             </div>
+
                             <!--div class="overlayCommandGroup">
                                 <input id="assignAccountClasses" type="button" class="inputButton overlayCommandButton" value="Assign Classes..." disabled/>
                             </div-->
@@ -417,6 +422,8 @@
                     <label for="accessType" class="popupLabel">Access</label>
                     <select id="accessType" class="inputSelect">
                         <option class="inputOption" value="teacher">Teacher</option>
+                        <option class="inputOption" value="team">Team</option>
+                        <option class="inputOption" value="location">Location</option>
                         <option class="inputOption" value="organization">Organization</option>
                     </select>
                 </div>

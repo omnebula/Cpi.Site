@@ -4,6 +4,7 @@ class SchedulePage extends CpiPage {
     #lessonTemplate = $(".scheduleLesson").detach();
     #coursePicker;
     #weekDates;
+    #extraParams = "";
 
     constructor() {
         super();
@@ -12,8 +13,30 @@ class SchedulePage extends CpiPage {
             return;
         }
 
-        // Compute the start and end dates.
         const searchParams = new URLSearchParams(window.location.search);
+
+        // Detect administrative access, i.e., from Organization Manager.
+        const referrerUrl = new URL(document.referrer);
+        const teacherId = searchParams.get("tid");
+        const teacherName = searchParams.get("tname");
+        if (teacherId && teacherName) {
+            this.#extraParams = `&tid=${teacherId}&tname=${teacherName}`;
+
+            const pageTitleName = $("#pageTitleName");
+            pageTitleName.text(`View ${pageTitleName.text()}:`);
+
+            const pageSubTitle = $("#pageSubTitle");
+            pageSubTitle.text(teacherName);
+            pageSubTitle.css("display", "inline-block");
+
+            $("#mySchedule").css("display", "inline-block");
+            $(".siteCurrentMenuOption").css("display", "none");
+        }
+        else {
+            $("#mySchedule").css("display", "none");
+        }
+
+        // Compute the start and end dates.
         const weekNumber = parseInt(searchParams.get("week")) || Cpi.GetCurrentWeekNumber();
 
         this.#weekDates = Cpi.CalculateWeekDates(weekNumber);
@@ -96,9 +119,14 @@ class SchedulePage extends CpiPage {
         });
 
         // Query lessons.
+        var queryUrl = `/@/lessons?start=${Cpi.FormatIsoDateString(this.#weekDates.start)}&end=${Cpi.FormatIsoDateString(this.#weekDates.end)}`;
+        if (teacherId) {
+            queryUrl += `&teacherId=${teacherId}`;
+        }
+
         Cpi.SendApiRequest({
             method: "GET",
-            url: `/@/lessons?start=${Cpi.FormatIsoDateString(this.#weekDates.start)}&end=${Cpi.FormatIsoDateString(this.#weekDates.end)}`,
+            url: queryUrl,
             success: (data, status, xhr) => {
                 this.#populateSchedule(data);
 
@@ -259,7 +287,7 @@ class SchedulePage extends CpiPage {
             weekNumber = Cpi.GetCurrentWeekNumber();
         }
 
-        window.location.href = `/schedule?week=${weekNumber}`;
+        window.location.href = `/schedule?week=${weekNumber}${this.#extraParams}`;
     }
 
     #deleteLesson(lesson, containerId) {

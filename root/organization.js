@@ -500,12 +500,19 @@ class AccountOverlay extends TableOverlay {
             addButton: $("#addAccount"),
             editButton: $("#editAccount"),
             deleteButton: $("#deleteAccount"),
-            toggleButtons: [ $("#sendAccountInvite"), $("#assignAccountClasses") ],
+            toggleButtons: [ $("#sendAccountInvite"), $("#viewAccountSchedule"), $("#viewAccountRoadmap"), $("#assignAccountClasses") ],
             editor: $("#accountEditor")
         });
 
         $("#sendAccountInvite").on("click", () => {
             this.#sendInvite();
+        });
+
+        $("#viewAccountSchedule").on("click", (event) => {
+            this.#viewAccountDetail("schedule", event.ctrlKey);
+        });
+        $("#viewAccountRoadmap").on("click", (event) => {
+            this.#viewAccountDetail("roadmap", event.ctrlKey);
         });
     }
 
@@ -572,6 +579,13 @@ class AccountOverlay extends TableOverlay {
                 }
             });
         }
+    }
+
+    #viewAccountDetail(pathname, openNewTab) {
+        const row = this.tableController.getSelectedRow();
+        const teacherId = row.attr("id");
+        const teacherName = row.find("#accountNameColumn").text();
+        window.open(`/${pathname}?tid=${teacherId}&tname=${teacherName}`, openNewTab ? "_blank" : "_self");
     }
 }
 
