@@ -59,6 +59,7 @@ class RoadmapPage extends CpiPage
 
             this.#pageData.lastSubject = "";
             this.#pageData.lastGrade = "";
+            this.#pageData.lastScope = "all";
         }
         else {
             $("#myRoadmap").css("display", "none");
