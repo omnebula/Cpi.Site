@@ -25,6 +25,18 @@ main {
     flex-direction: column;    
 }
 
+.navigationSelect {
+    background-color: var(--input-button-background-color);
+}
+.navigationSelect:hover {
+    background-color: var(--input-button-background-color-hover);
+}
+.navigationSelect:active {
+    background-color: var(--input-button-background-color-hover);
+}
+.navigationSelect:focus {
+    background-color: var(--input-button-background-color-hover);
+}
 .navigationButton {
     margin-right: 2px;
 }
