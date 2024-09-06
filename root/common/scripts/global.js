@@ -441,7 +441,7 @@ class CpiPage {
     */
     #accountData;
 
-    #siteVersion = "10";
+    #siteVersion = "0.0.1";
 
     #spinnerHtml = String.raw`
         <div id="spinnerFrame" class="spinnerFrame">
