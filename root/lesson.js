@@ -5,6 +5,8 @@ class LessonPage extends CpiPage {
     #benchmarkPicker;
     #lessonId;
     #detailChanged;
+    #readOnly;
+    #extraParams = "";
 
     constructor() {
         super();
@@ -13,16 +15,40 @@ class LessonPage extends CpiPage {
             return;
         }
 
+        const searchParams = new URLSearchParams(window.location.search);
+
+        this.#lessonId = searchParams.get("id");
+
+        // Detect administrative access, i.e., from Organization Manager.
+        const referrerUrl = new URL(document.referrer);
+        const teacherId = searchParams.get("tid");
+        const teacherName = searchParams.get("tname");
+        if (teacherId && teacherName) {
+            this.#extraParams = `&tid=${teacherId}&tname=${teacherName}`;
+
+            const pageTitleName = $("#pageTitleName");
+            pageTitleName.text(`View ${pageTitleName.text()}:`);
+
+            const pageSubTitle = $("#pageSubTitle");
+            pageSubTitle.text(teacherName);
+            pageSubTitle.css("display", "inline-block");
+
+            this.#readOnly = true;
+        }
+        else {
+            $("#mySchedule").css("display", "none");
+        }
+
+        // Initialize Benchmark section.
         this.#benchmarkTable = $("#lessonBenchmarkTable");
         this.#benchmarkRowContainer = $("#lessonBenchmarkRowContainer");
         this.#benchmarkRowTemplate = this.#benchmarkRowContainer.find(".lessonBenchmarkRow").detach();
 
         Cpi.ShowAppFrame();
 
-        const searchParams = new URLSearchParams(window.location.search);
         Cpi.SendApiRequest({
             method: "GET",
-            url: `/@/lesson/${searchParams.get("id")}`,
+            url: `/@/lesson/${this.#lessonId}`,
             success: (data, status, xhr) => {
                 this.#init(data);
             }
@@ -30,8 +56,7 @@ class LessonPage extends CpiPage {
     }
 
     #init(data) {
-        const searchParams = new URLSearchParams(window.location.search);
-        this.#lessonId = searchParams.get("id");
+        this.#readOnly = this.#readOnly || data.readOnly;
 
         // Name
         const lessonName = $("#lessonName");
@@ -41,7 +66,7 @@ class LessonPage extends CpiPage {
             $("#viewPreviousLesson")
                 .prop("title", data.siblings.lessons.previousName)
                 .on("click", () => {
-                    window.location.href = `/lesson?id=${data.siblings.lessons.previousId}`;
+                    window.location.href = `/lesson?id=${data.siblings.lessons.previousId}${this.#extraParams}`;
                 })
                 .prop("disabled", false);
         }
@@ -49,7 +74,7 @@ class LessonPage extends CpiPage {
             $("#viewNextLesson")
                 .prop("title", data.siblings.lessons.nextName)
                 .on("click", () => {
-                    window.location.href = `/lesson?id=${data.siblings.lessons.nextId}`;
+                    window.location.href = `/lesson?id=${data.siblings.lessons.nextId}${this.#extraParams}`;
                 })
                 .prop("disabled", false);
         }
@@ -61,7 +86,7 @@ class LessonPage extends CpiPage {
             $("#viewPreviousDay")
                 .prop("title", Cpi.FormatShortDateString(data.siblings.dates.previousDate))
                 .on("click", () => {
-                    window.location.href = `/lesson?id=${data.siblings.dates.previousId}`;
+                    window.location.href = `/lesson?id=${data.siblings.dates.previousId}${this.#extraParams}`;
                 })
                 .prop("disabled", false);
         }
@@ -69,7 +94,7 @@ class LessonPage extends CpiPage {
             $("#viewNextDay")
                 .prop("title", Cpi.FormatShortDateString(data.siblings.dates.nextDate))
                 .on("click", () => {
-                    window.location.href = `/lesson?id=${data.siblings.dates.nextId}`;
+                    window.location.href = `/lesson?id=${data.siblings.dates.nextId}${this.#extraParams}`;
                 })
                 .prop("disabled", false);
         }
@@ -78,45 +103,58 @@ class LessonPage extends CpiPage {
 
         // Schedule link.
         $("#viewSchedule").on("click", () => {
-            window.open(`/schedule?week=${Cpi.CalculateWeekNumber(data.lessonDate)}`, "_self");
+            window.open(`/schedule?week=${Cpi.CalculateWeekNumber(data.lessonDate)}${this.#extraParams}`, "_self");
         });
 
-        // Benchmark
-        $("#lessonBenchmarkSection").on("mouseup", (event) => {
-            if (event.which === 1) {
-                this.#showBenchmarkPicker();
-            }
-        });
-
-        this.#benchmarkRowContainer.on("mouseup", (event) => {
-            event.stopPropagation();
-        });
-
+        // Benchmarks
         this.#addBenchmarks(data.benchmarks);
 
+        if (this.#readOnly) {
+            $("#lessonBenchmarkSection").addClass("lessonBenchmarkSection_readonly");
+        }
+        else {
+            $("#lessonBenchmarkSection").on("mouseup", (event) => {
+                if (event.which === 1) {
+                    this.#showBenchmarkPicker();
+                }
+            });
+    
+            this.#benchmarkRowContainer.on("mouseup", (event) => {
+                event.stopPropagation();
+            });
+
+            // Benchmark picker
+            this.#benchmarkPicker = new BenchmarkPicker(data.subjectName, data.gradeName);
+        }
+    
         // Details
         if (data.details) {
             const texts = $(".lessonDetailText");
             texts.each((key, element) => {
                 const detailName = element.id;
 
-                $(element).on("change", () => {
-                    this.#detailChanged = true;
-                })
-                .on("blur", () => {
-                    this.#sendUpdatedDetails();
-                })
-                .on("keydown", (event) => {
-                    if (event.ctrlKey && (event.keyCode === 13)) {
-                        this.#sendUpdatedDetails();
-                    }
-                })
-                .val(data.details[detailName]);
+                element = $(element);
+                if (this.#readOnly) {
+                    element.val(data.details[detailName])
+                        .prop("readonly", true);
+                }
+                else {
+                    element
+                        .val(data.details[detailName])
+                        .on("change", () => {
+                            this.#detailChanged = true;
+                        })
+                        .on("blur", () => {
+                            this.#sendUpdatedDetails();
+                        })
+                        .on("keydown", (event) => {
+                            if (event.ctrlKey && (event.keyCode === 13)) {
+                                this.#sendUpdatedDetails();
+                            }
+                        });
+                }
             });
         }
-
-        // Benchmark picker
-        this.#benchmarkPicker = new BenchmarkPicker(data.subjectName, data.gradeName);
     }
 
     #showBenchmarkPicker() {
@@ -133,16 +171,25 @@ class LessonPage extends CpiPage {
     #addBenchmarks(benchmarks) {
         for (const current of benchmarks) {
             const row = this.#benchmarkRowTemplate.clone(true);
+            const lessonBenchmarkCode = row.find("#lessonBenchmarkCode");
+            const lessonBenchmarkSynopsis = row.find("#lessonBenchmarkSynopsis");
+            const lessonBenchmarkDelete = row.find("#lessonBenchmarkDelete");
+
             row.prop("id", current.benchmarkId);
 
-            row.find("#lessonBenchmarkCode")
+            lessonBenchmarkCode
                 .attr("href", current.referenceUrl)
                 .attr("target", "_blank")
                 .text(current.standardCode);
 
-            row.find("#lessonBenchmarkSynopsis")
-                .html(current.synopsis)
-                .on("mouseup", (event) => {
+            lessonBenchmarkSynopsis.html(current.synopsis);
+
+            if (this.#readOnly) {
+                row.find("#lessonBenchmarkDelete").css("visibility", "hidden");
+                row.find(".lessonBenchmarkCodeColumn").addClass("lessonBenchmarkCodeColumn_readonly");
+            }
+            else {
+                lessonBenchmarkSynopsis.on("mouseup", (event) => {
                     // If left-button clicked and no selection, propagate to parent, i.e. open picker.
                     if (event.which === 1) {
                         const selection = document.getSelection();
@@ -152,11 +199,11 @@ class LessonPage extends CpiPage {
                     }
                 });
 
-
-            row.find("#lessonBenchmarkDelete").on("click", (event) => {
-                event.stopPropagation();
-                this.#removeBenchmark(current.benchmarkId);
-            });
+                row.find("#lessonBenchmarkDelete").on("click", (event) => {
+                    event.stopPropagation();
+                    this.#removeBenchmark(current.benchmarkId);
+                });
+            }
 
             this.#benchmarkRowContainer.append(row);
         }

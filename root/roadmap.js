@@ -9,6 +9,7 @@ class RoadmapPage extends CpiPage
     #scopeSelector;
     #pageData;
     #teacherId;
+    #extraParams = "";
 
     constructor() {
         super();
@@ -47,6 +48,8 @@ class RoadmapPage extends CpiPage
         this.#teacherId = searchParams.get("tid");
         const teacherName = searchParams.get("tname");
         if (this.#teacherId && teacherName) {
+            this.#extraParams = `&tid=${this.#teacherId}&tname=${teacherName}`;
+
             const pageTitleName = $("#pageTitleName");
             pageTitleName.text(`View ${pageTitleName.text()}:`);
 
@@ -97,42 +100,29 @@ class RoadmapPage extends CpiPage
 
         Cpi.ShowAppFrame();
 
-        //
-        var queryUrl = `/@/lesson/roadmap?wantMeta&subject=${this.#pageData.lastSubject}&grade=${this.#pageData.lastGrade}&scope=${this.#pageData.lastScope}`;
-        if (this.#teacherId) {
-            queryUrl += `&teacherId=${this.#teacherId}`;
-        }
-        Cpi.SendApiRequest({
-            method: "GET",
-            url: queryUrl,
-            success: (data, status, xhr) => {
-                this.#init(data,);
+        this.#queryRoadmap(true, (data) => {
+            var currentSubject = this.#pageData.lastSubject;
+            var currentGrade = this.#pageData.lastGrade;
+    
+            // Initialize subjects.
+            for (const subject of data.meta.subjects) {
+                const option = document.createElement("option");
+                option.value = option.text = subject.name;
+                option.grades = subject.grades;
+                this.#subjectSelector.append($(option));
             }
+    
+            if (!currentSubject || (this.#subjectSelector.val(currentSubject).val() != currentSubject)) {
+                currentSubject = this.#subjectSelector.find(":first").val();
+            }
+            this.#subjectSelector.val(currentSubject);
+    
+            this.#syncSubjectGrades(currentGrade);
+    
+            $("#navigationSelectors").css("visibility", "visible");
+    
+            this.#populateRoadmapTable(data.benchmarks);
         });
-    }
-
-    #init(data) {
-        var currentSubject = this.#pageData.lastSubject;
-        var currentGrade = this.#pageData.lastGrade;
-
-        // Initialize subjects.
-        for (const subject of data.meta.subjects) {
-            const option = document.createElement("option");
-            option.value = option.text = subject.name;
-            option.grades = subject.grades;
-            this.#subjectSelector.append($(option));
-        }
-
-        if (!currentSubject || (this.#subjectSelector.val(currentSubject).val() != currentSubject)) {
-            currentSubject = this.#subjectSelector.find(":first").val();
-        }
-        this.#subjectSelector.val(currentSubject);
-
-        this.#syncSubjectGrades(currentGrade);
-
-        $("#navigationSelectors").css("visibility", "visible");
-
-        this.#populateRoadmapTable(data.benchmarks);
     }
 
     #syncSubjectGrades(currentGrade) {
@@ -157,8 +147,11 @@ class RoadmapPage extends CpiPage
         }    
     }
 
-    #queryRoadmap() {
+    #queryRoadmap(wantMeta, successHandler) {
         var queryUrl = `/@/lesson/roadmap?subject=${this.#pageData.lastSubject}&grade=${this.#pageData.lastGrade}&scope=${this.#pageData.lastScope}`;
+        if (wantMeta) {
+            queryUrl += "&wantMeta";
+        }
         if (this.#teacherId) {
             queryUrl += `&teacherId=${this.#teacherId}`;
         }
@@ -167,7 +160,12 @@ class RoadmapPage extends CpiPage
             method: "GET",
             url: queryUrl,
             success: (data, status, xhr) => {
-                this.#populateRoadmapTable(data.benchmarks);
+                if (successHandler) {
+                    successHandler(data);
+                }
+                else {
+                    this.#populateRoadmapTable(data.benchmarks);
+                }
             }
         });
     }
@@ -195,7 +193,7 @@ class RoadmapPage extends CpiPage
     
                         lessonBubble.find("#lessonDate").text(Cpi.FormatShortDateString(lesson.date));
     
-                        lessonBubble.find("#lessonLink").attr("href", `/lesson?id=${lesson.id}`);
+                        lessonBubble.find("#lessonLink").attr("href", `/lesson?id=${lesson.id}${this.#extraParams}`);
     
                         lessonColumn.append(lessonBubble);
                     }

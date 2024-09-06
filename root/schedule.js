@@ -4,6 +4,7 @@ class SchedulePage extends CpiPage {
     #lessonTemplate = $(".scheduleLesson").detach();
     #coursePicker;
     #weekDates;
+    #teacherId;
     #extraParams = "";
 
     constructor() {
@@ -17,10 +18,10 @@ class SchedulePage extends CpiPage {
 
         // Detect administrative access, i.e., from Organization Manager.
         const referrerUrl = new URL(document.referrer);
-        const teacherId = searchParams.get("tid");
+        this.#teacherId = searchParams.get("tid");
         const teacherName = searchParams.get("tname");
-        if (teacherId && teacherName) {
-            this.#extraParams = `&tid=${teacherId}&tname=${teacherName}`;
+        if (this.#teacherId && teacherName) {
+            this.#extraParams = `&tid=${this.#teacherId}&tname=${teacherName}`;
 
             const pageTitleName = $("#pageTitleName");
             pageTitleName.text(`View ${pageTitleName.text()}:`);
@@ -97,10 +98,16 @@ class SchedulePage extends CpiPage {
                 column.find("#addLesson").css("visibility", "hidden").prop("holiday", true);
                 column.find("#repeatColumn").css("visibility", "hidden");
             }
-            // Else, do regular school day/
+            // Else, do regular school day.
             else {
-                column.find("#addLesson").on("click", () => { this.#onAddLesson(lessonDate); });
-                column.find("#repeatColumn").on("click", () => { this.#onRepeatColumn(lessonDate); });
+                if (this.#teacherId) {
+                    column.find("#addLesson").css("display", "none");
+                    column.find("#repeatColumn").css("display", "none");    
+                }
+                else {
+                    column.find("#addLesson").on("click", () => { this.#onAddLesson(lessonDate); });
+                    column.find("#repeatColumn").on("click", () => { this.#onRepeatColumn(lessonDate); });
+                }
             }
 
             if (lessonDate.getTime() === today.getTime()) {
@@ -120,8 +127,8 @@ class SchedulePage extends CpiPage {
 
         // Query lessons.
         var queryUrl = `/@/lessons?start=${Cpi.FormatIsoDateString(this.#weekDates.start)}&end=${Cpi.FormatIsoDateString(this.#weekDates.end)}`;
-        if (teacherId) {
-            queryUrl += `&teacherId=${teacherId}`;
+        if (this.#teacherId) {
+            queryUrl += `&teacherId=${this.#teacherId}`;
         }
 
         Cpi.SendApiRequest({
@@ -241,41 +248,46 @@ class SchedulePage extends CpiPage {
             lesson.find("#scheduleLessonName").text(current.lessonName);
     
             // Init command bar.
-            const commandBar = lesson.find(".scheduleLessonCommandBar");
-            commandBar.on("mouseup", (event) => {
-                if (event.which === 1) {    // Left-click only
+            if (!this.#teacherId) {
+                const commandBar = lesson.find(".scheduleLessonCommandBar");
+                commandBar.on("mouseup", (event) => {
+                    if (event.which === 1) {    // Left-click only
+                        event.stopPropagation();
+                    }
+                });
+                commandBar.find("#delete").on("click", (event) => {
                     event.stopPropagation();
-                }
-            });
-            commandBar.find("#delete").on("click", (event) => {
-                event.stopPropagation();
-                this.#deleteLesson(lesson, containerId);
-            });
-            commandBar.find("#moveUp").on("click", (event) => {
-                event.stopPropagation();
-                this.#moveLesson(lesson, true);
-            });
-            commandBar.find("#moveDown").on("click", (event) => {
-                event.stopPropagation();
-                this.#moveLesson(lesson, false);
-            });
+                    this.#deleteLesson(lesson, containerId);
+                });
+                commandBar.find("#moveUp").on("click", (event) => {
+                    event.stopPropagation();
+                    this.#moveLesson(lesson, true);
+                });
+                commandBar.find("#moveDown").on("click", (event) => {
+                    event.stopPropagation();
+                    this.#moveLesson(lesson, false);
+                });
+        
     
-            lesson.on("mouseenter", () => { // Show commmand bar on mouse-enter
-                commandBar.css("display", "flex");
-            })
-            .on("mouseleave", () => {       // Hide command bar on mouse-leave
-                commandBar.css("display", "none");
-            })
-            .on("mousedown", (event) => {
+                lesson.on("mouseenter", () => { // Show commmand bar on mouse-enter
+                    commandBar.css("display", "flex");
+                })
+                .on("mouseleave", () => {       // Hide command bar on mouse-leave
+                    commandBar.css("display", "none");
+                });
+            }
+
+            lesson.on("mousedown", (event) => {
                 event.stopPropagation();
                 this.#selectLesson(lesson);
             })
             .on("mouseup", (event) => {
                 if (event.which === 1) {  // Left click only
                     event.stopPropagation();
-                    window.open(`/lesson?id=${current.lessonId}`, event.ctrlKey ? "_blank" : "_self");
+                    window.open(`/lesson?id=${current.lessonId}${this.#extraParams}`, event.ctrlKey ? "_blank" : "_self");
                 }
             });
+
     
             // Add to container.
             $(containers[containerId]).append(lesson);

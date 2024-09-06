@@ -6,10 +6,7 @@
     --navigation-button-border-color: #336699;
     --navigation-button-color-disabled: #555;
     --navigation-button-background-color-disabled: transparent;
-    --input-background-color: #474747;
-    --input-border-color: #999;
-    --input-border-color-hover: #ddd;
-    --input-border-color-focus: white;
+    --lesson-benchmark-code-color-disabled: #336699;
 }
 .theme-dark {
     --navigation-label-color: white;
@@ -19,10 +16,7 @@
     --navigation-button-border-color: steelblue;
     --navigation-button-color-disabled: #555;
     --navigation-button-background-color-disabled: #202020;
-    --input-background-color: #202020;
-    --input-border-color: #333;
-    --input-border-color-hover: steelblue;
-    --input-border-color-focus: lightsteelblue;
+    --lesson-benchmark-code-color-disabled: lightsteelBlue;
 }
 
 
@@ -138,14 +132,25 @@ main {
 }
 
 .lessonBenchmarkSection {
-    background-color: var(--input-background-color);
+    background-color: var(--input-text-background-color);
     padding: 8px 16px;
     min-height: 30px;
     border-radius: 8px;
-    border: 1px solid var(--input-border-color);
+    border: 1px solid var(--input-text-border-color);
+    color: var(--input-text-color);
 }
 .lessonBenchmarkSection:hover {
-    border-color: var(--input-border-color-hover);
+    color: var(--input-text-color-focus);
+    border-color: var(--input-text-border-color-hover);
+}
+.lessonBenchmarkSection_readonly {
+    color: var(--input-text-color-disabled);
+    background-color: var(--input-text-background-color-disabled);
+}
+.lessonBenchmarkSection_readonly:hover {
+    color: var(--input-text-color-disabled);
+    background-color: var(--input-text-background-color-disabled);
+    border: 1px solid var(--input-text-border-color);
 }
 
 .lessonBenchmarkRow {
@@ -159,12 +164,20 @@ main {
 .lessonBenchmarkCodeColumn {
     color: lightsteelBlue;
 }
+.lessonBenchmarkCodeColumn_readonly {
+    color: var(--lesson-benchmark-code-color-disabled);
+}
 
 .lessonBenchmarkSynopsisColumn {
     width: 100%;
     padding-left: 18px;
-    color: #ddd;
 }
+.lessonBenchmarkSynopsisColumn:hover {
+    width: 100%;
+    padding-left: 18px;
+}
+
+
 .lessonBenchmarkCommandsColumn {
     padding-left: 18px;
     text-align: right;
@@ -193,26 +206,15 @@ main {
     display: flex;
     flex-direction: column;
 }
+
 .lessonDetailText {
     outline: none;
-    border: 1px solid var(--input-border-color);
-    border-radius: 8px;
     resize: none;
     padding: 16px;
     font-size: 13px;
-    height: 52px;
-    background-color: var(--input-background-color);
-    color: #ddd;
+    height: 100px;
     font-family: inherit;
 }
-.lessonDetailText:hover {
-    border-color: var(--input-border-color-hover);
-}
-.lessonDetailText:focus {
-    border-color: var(--input-border-color-focus);
-    color: white;
-}
-
 
 
 .pickerInput, .pickerSelect {
