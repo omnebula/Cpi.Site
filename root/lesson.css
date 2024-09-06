@@ -140,17 +140,18 @@ main {
     color: var(--input-text-color);
 }
 .lessonBenchmarkSection:hover {
-    color: var(--input-text-color-focus);
+    color: var(--input-text-color-hover);
     border-color: var(--input-text-border-color-hover);
 }
 .lessonBenchmarkSection_readonly {
     color: var(--input-text-color-disabled);
     background-color: var(--input-text-background-color-disabled);
+    border-color: var(--input-text-border-color-disabled);
 }
 .lessonBenchmarkSection_readonly:hover {
     color: var(--input-text-color-disabled);
     background-color: var(--input-text-background-color-disabled);
-    border: 1px solid var(--input-text-border-color);
+    border-color: var(--input-text-border-color-disabled);
 }
 
 .lessonBenchmarkRow {
