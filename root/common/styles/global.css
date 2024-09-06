@@ -5,6 +5,7 @@
 .theme-light {
     --body-background-color: #eee;
     --page-title-color: #336699;
+    --page-title-color-view-only: brown;
     --page-sub-title-color: #111;
     --input-label-color: #336699;
     --input-label-font-weight: bold;
@@ -29,6 +30,7 @@
 .theme-dark {
     --body-background-color: #1a1a1a;
     --page-title-color: lightblue;
+    --page-title-color-view-only: chocolate;
     --page-sub-title-color: #eee;
     --input-label-color: orange;
     --input-label-font-weight: normal;
@@ -51,6 +53,10 @@
     --popup-box-background-color: #414141;
 }
 
+
+.theme-view-only {
+    --page-title-color: var(--page-title-color-view-only);
+}
 
 
 /*
@@ -425,11 +431,13 @@ header {
 }
 
 .pageTitle, .pageSubTitle {
-    color: var(--page-title-color);
     text-align: right;
     font-size: 18px;
     font-weight: bold;
     margin-bottom: 3px;
+    color: var(--page-title-color);
+}
+.pageTitleName {
 }
 .pageSubTitle {
     color: var(--page-sub-title-color);

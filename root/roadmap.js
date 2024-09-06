@@ -48,6 +48,7 @@ class RoadmapPage extends CpiPage
         this.#teacherId = searchParams.get("tid");
         const teacherName = searchParams.get("tname");
         if (this.#teacherId && teacherName) {
+            $(document.documentElement).addClass("theme-view-only");
             this.#extraParams = `&tid=${this.#teacherId}&tname=${teacherName}`;
 
             const pageTitleName = $("#pageTitleName");

@@ -24,6 +24,7 @@ class LessonPage extends CpiPage {
         const teacherId = searchParams.get("tid");
         const teacherName = searchParams.get("tname");
         if (teacherId && teacherName) {
+            $(document.documentElement).addClass("theme-view-only");
             this.#extraParams = `&tid=${teacherId}&tname=${teacherName}`;
 
             const pageTitleName = $("#pageTitleName");

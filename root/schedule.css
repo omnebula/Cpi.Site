@@ -5,6 +5,21 @@
     --schedule-lesson-background-color: #101010;
 }
 
+
+.theme-normal {
+    --schedule-column-header-background-color: #274965;
+    --schedule-column-header-background-color-today: #3c6d95;
+    --schedule-lesson-background-color-selected: #336699;
+}
+
+.theme-view-only {
+    --schedule-column-header-background-color: #452712;
+    --schedule-column-header-background-color-today: #5f5f5f;
+    --schedule-lesson-background-color-selected: #753e18;
+}
+
+
+
 main {
     display: flex;
     flex-direction: column;    
@@ -37,7 +52,7 @@ main {
 
 .scheduleColumnHeader {
     color: #ddd;
-    background-color: #274965;
+    background-color: var(--schedule-column-header-background-color);
     font-size: 13px;
     padding: 8px 8px;
     border-top-left-radius: 10px;
@@ -48,7 +63,7 @@ main {
     line-height: 24px;
 }
 .scheduleColumnHeader_today {
-    background-color: #3c6d95;
+    background-color: var(--schedule-column-header-background-color-today);
 }
 .scheduleColumnHeader_holiday {
     background-color: #303030;
@@ -136,7 +151,7 @@ main {
 .scheduleLesson_selected {
     color: white;
     border: 1px solid steelblue;
-    background-color: #336699;
+    background-color: var(--schedule-lesson-background-color-selected);
 }
 
 .scheduleLessonCommandBar {

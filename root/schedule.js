@@ -21,6 +21,7 @@ class SchedulePage extends CpiPage {
         this.#teacherId = searchParams.get("tid");
         const teacherName = searchParams.get("tname");
         if (this.#teacherId && teacherName) {
+            $(document.documentElement).addClass("theme-view-only");
             this.#extraParams = `&tid=${this.#teacherId}&tname=${teacherName}`;
 
             const pageTitleName = $("#pageTitleName");
@@ -34,6 +35,7 @@ class SchedulePage extends CpiPage {
             $(".siteCurrentMenuOption").css("display", "none");
         }
         else {
+            $(document.documentElement).addClass("theme-normal");
             $("#mySchedule").css("display", "none");
         }
 
