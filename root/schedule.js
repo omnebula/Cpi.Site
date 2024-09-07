@@ -4,8 +4,7 @@ class SchedulePage extends CpiPage {
     #lessonTemplate = $(".scheduleLesson").detach();
     #coursePicker;
     #weekDates;
-    #teacherId;
-    #extraParams = "";
+    #viewTracker;
 
     constructor() {
         super();
@@ -14,23 +13,10 @@ class SchedulePage extends CpiPage {
             return;
         }
 
-        const searchParams = new URLSearchParams(window.location.search);
+        // Detect view-only mode.
+        this.#viewTracker = new ViewTracker();
 
-        // Detect administrative access, i.e., from Organization Manager.
-        const referrerUrl = new URL(document.referrer);
-        this.#teacherId = searchParams.get("tid");
-        const teacherName = searchParams.get("tname");
-        if (this.#teacherId && teacherName) {
-            $(document.documentElement).addClass("theme-view-only");
-            this.#extraParams = `&tid=${this.#teacherId}&tname=${teacherName}`;
-
-            const pageTitleName = $("#pageTitleName");
-            pageTitleName.text(`View ${pageTitleName.text()}:`);
-
-            const pageSubTitle = $("#pageSubTitle");
-            pageSubTitle.text(teacherName);
-            pageSubTitle.css("display", "inline-block");
-
+        if (this.#viewTracker.isActive) {
             $("#mySchedule").css("display", "inline-block");
             $(".siteCurrentMenuOption").css("display", "none");
         }
@@ -40,7 +26,7 @@ class SchedulePage extends CpiPage {
         }
 
         // Compute the start and end dates.
-        const weekNumber = parseInt(searchParams.get("week")) || Cpi.GetCurrentWeekNumber();
+        const weekNumber = parseInt(this.#viewTracker.searchParams.get("week")) || Cpi.GetCurrentWeekNumber();
 
         this.#weekDates = Cpi.CalculateWeekDates(weekNumber);
 
@@ -102,7 +88,7 @@ class SchedulePage extends CpiPage {
             }
             // Else, do regular school day.
             else {
-                if (this.#teacherId) {
+                if (this.#viewTracker.teacherId) {
                     column.find("#addLesson").css("display", "none");
                     column.find("#repeatColumn").css("display", "none");    
                 }
@@ -129,8 +115,8 @@ class SchedulePage extends CpiPage {
 
         // Query lessons.
         var queryUrl = `/@/lessons?start=${Cpi.FormatIsoDateString(this.#weekDates.start)}&end=${Cpi.FormatIsoDateString(this.#weekDates.end)}`;
-        if (this.#teacherId) {
-            queryUrl += `&teacherId=${this.#teacherId}`;
+        if (this.#viewTracker.isActive) {
+            queryUrl += `&teacherId=${this.#viewTracker.teacherId}`;
         }
 
         Cpi.SendApiRequest({
@@ -250,7 +236,7 @@ class SchedulePage extends CpiPage {
             lesson.find("#scheduleLessonName").text(current.lessonName);
     
             // Init command bar.
-            if (!this.#teacherId) {
+            if (!this.#viewTracker.isActive) {
                 const commandBar = lesson.find(".scheduleLessonCommandBar");
                 commandBar.on("mouseup", (event) => {
                     if (event.which === 1) {    // Left-click only
@@ -286,7 +272,7 @@ class SchedulePage extends CpiPage {
             .on("mouseup", (event) => {
                 if (event.which === 1) {  // Left click only
                     event.stopPropagation();
-                    window.open(`/lesson?id=${current.lessonId}${this.#extraParams}`, event.ctrlKey ? "_blank" : "_self");
+                    window.open(`/lesson?id=${current.lessonId}${this.#viewTracker.viewParams}`, event.ctrlKey ? "_blank" : "_self");
                 }
             });
 
@@ -301,7 +287,7 @@ class SchedulePage extends CpiPage {
             weekNumber = Cpi.GetCurrentWeekNumber();
         }
 
-        window.location.href = `/schedule?week=${weekNumber}${this.#extraParams}`;
+        window.location.href = `/schedule?week=${weekNumber}${this.#viewTracker.viewParams}`;
     }
 
     #deleteLesson(lesson, containerId) {

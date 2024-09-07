@@ -8,8 +8,7 @@ class RoadmapPage extends CpiPage
     #gradeSelector;
     #scopeSelector;
     #pageData;
-    #teacherId;
-    #extraParams = "";
+    #viewTracker;
 
     constructor() {
         super();
@@ -42,22 +41,10 @@ class RoadmapPage extends CpiPage
             this.#savePageData();
         }
 
-        // Detect administrative access, i.e., from Organization Manager.
-        const searchParams = new URLSearchParams(window.location.search);
-        const referrerUrl = new URL(document.referrer);
-        this.#teacherId = searchParams.get("tid");
-        const teacherName = searchParams.get("tname");
-        if (this.#teacherId && teacherName) {
-            $(document.documentElement).addClass("theme-view-only");
-            this.#extraParams = `&tid=${this.#teacherId}&tname=${teacherName}`;
+        // Detect view-only mode.
+        this.#viewTracker = new ViewTracker();
 
-            const pageTitleName = $("#pageTitleName");
-            pageTitleName.text(`View ${pageTitleName.text()}:`);
-
-            const pageSubTitle = $("#pageSubTitle");
-            pageSubTitle.text(teacherName);
-            pageSubTitle.css("display", "inline-block");
-
+        if (this.#viewTracker.isActive) {
             $("#myRoadmap").css("display", "inline-block");
             $(".siteCurrentMenuOption").css("display", "none");
 
@@ -153,8 +140,8 @@ class RoadmapPage extends CpiPage
         if (wantMeta) {
             queryUrl += "&wantMeta";
         }
-        if (this.#teacherId) {
-            queryUrl += `&teacherId=${this.#teacherId}`;
+        if (this.#viewTracker.teacherId) {
+            queryUrl += `&teacherId=${this.#viewTracker.teacherId}`;
         }
 
         Cpi.SendApiRequest({
@@ -194,7 +181,7 @@ class RoadmapPage extends CpiPage
     
                         lessonBubble.find("#lessonDate").text(Cpi.FormatShortDateString(lesson.date));
     
-                        lessonBubble.find("#lessonLink").attr("href", `/lesson?id=${lesson.id}${this.#extraParams}`);
+                        lessonBubble.find("#lessonLink").attr("href", `/lesson?id=${lesson.id}${this.#viewTracker.viewParams}`);
     
                         lessonColumn.append(lessonBubble);
                     }
@@ -206,7 +193,8 @@ class RoadmapPage extends CpiPage
     }
 
     #savePageData() {
-        if (!this.#teacherId) {
+        // Dave data only if we're not in view-only mode.
+        if (!this.#viewTracker.isActive) {
             localStorage.setItem("roadmapData", JSON.stringify(this.#pageData));
         }
     }

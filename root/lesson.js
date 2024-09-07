@@ -6,7 +6,7 @@ class LessonPage extends CpiPage {
     #lessonId;
     #detailChanged;
     #readOnly;
-    #extraParams = "";
+    #viewTracker;
 
     constructor() {
         super();
@@ -15,30 +15,17 @@ class LessonPage extends CpiPage {
             return;
         }
 
-        const searchParams = new URLSearchParams(window.location.search);
+        // Detect view-only mode.
+        this.#viewTracker = new ViewTracker();
 
-        this.#lessonId = searchParams.get("id");
-
-        // Detect administrative access, i.e., from Organization Manager.
-        const referrerUrl = new URL(document.referrer);
-        const teacherId = searchParams.get("tid");
-        const teacherName = searchParams.get("tname");
-        if (teacherId && teacherName) {
-            $(document.documentElement).addClass("theme-view-only");
-            this.#extraParams = `&tid=${teacherId}&tname=${teacherName}`;
-
-            const pageTitleName = $("#pageTitleName");
-            pageTitleName.text(`View ${pageTitleName.text()}:`);
-
-            const pageSubTitle = $("#pageSubTitle");
-            pageSubTitle.text(teacherName);
-            pageSubTitle.css("display", "inline-block");
-
+        if (this.#viewTracker.isActive) {
             this.#readOnly = true;
         }
         else {
             $("#mySchedule").css("display", "none");
         }
+
+        this.#lessonId = this.#viewTracker.searchParams.get("id");
 
         // Initialize Benchmark section.
         this.#benchmarkTable = $("#lessonBenchmarkTable");
@@ -67,7 +54,7 @@ class LessonPage extends CpiPage {
             $("#viewPreviousLesson")
                 .prop("title", data.siblings.lessons.previousName)
                 .on("click", () => {
-                    window.location.href = `/lesson?id=${data.siblings.lessons.previousId}${this.#extraParams}`;
+                    window.location.href = `/lesson?id=${data.siblings.lessons.previousId}${this.#viewTracker.viewParams}`;
                 })
                 .prop("disabled", false);
         }
@@ -75,7 +62,7 @@ class LessonPage extends CpiPage {
             $("#viewNextLesson")
                 .prop("title", data.siblings.lessons.nextName)
                 .on("click", () => {
-                    window.location.href = `/lesson?id=${data.siblings.lessons.nextId}${this.#extraParams}`;
+                    window.location.href = `/lesson?id=${data.siblings.lessons.nextId}${this.#viewTracker.viewParams}`;
                 })
                 .prop("disabled", false);
         }
@@ -87,7 +74,7 @@ class LessonPage extends CpiPage {
             $("#viewPreviousDay")
                 .prop("title", Cpi.FormatShortDateString(data.siblings.dates.previousDate))
                 .on("click", () => {
-                    window.location.href = `/lesson?id=${data.siblings.dates.previousId}${this.#extraParams}`;
+                    window.location.href = `/lesson?id=${data.siblings.dates.previousId}${this.#viewTracker.viewParams}`;
                 })
                 .prop("disabled", false);
         }
@@ -95,7 +82,7 @@ class LessonPage extends CpiPage {
             $("#viewNextDay")
                 .prop("title", Cpi.FormatShortDateString(data.siblings.dates.nextDate))
                 .on("click", () => {
-                    window.location.href = `/lesson?id=${data.siblings.dates.nextId}${this.#extraParams}`;
+                    window.location.href = `/lesson?id=${data.siblings.dates.nextId}${this.#viewTracker.viewParams}`;
                 })
                 .prop("disabled", false);
         }
@@ -104,7 +91,7 @@ class LessonPage extends CpiPage {
 
         // Schedule link.
         $("#viewSchedule").on("click", () => {
-            window.open(`/schedule?week=${Cpi.CalculateWeekNumber(data.lessonDate)}${this.#extraParams}`, "_self");
+            window.open(`/schedule?week=${Cpi.CalculateWeekNumber(data.lessonDate)}${this.#viewTracker.viewParams}`, "_self");
         });
 
         // Benchmarks

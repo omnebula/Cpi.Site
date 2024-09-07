@@ -22,6 +22,7 @@
     --input-text-background-color-disabled: #ddd;
     --input-text-border-color-disabled: #202020;
     
+    --input-button-color: white;
     --input-button-background-color: #336699;
     --input-button-background-color-hover: steelblue;
     --input-button-background-color-active: lightsteelblue;
@@ -52,9 +53,12 @@
     --input-text-background-color-disabled: inherit;
     --input-text-border-color-disabled: #333;
     
+    --input-button-color: white;
+    --input-button-color-disabled: darkgray;
     --input-button-background-color: #336699;
     --input-button-background-color-hover: steelblue;
     --input-button-background-color-active: lightsteelblue;
+    --input-button-background-color-disabled: #555;;
 
     --site-menu-color: #afafaf;
     --site-menu-color-hover: white;
@@ -175,7 +179,7 @@ input[type=submit], textarea {
 .inputButton, .inputAcceptButton, .inputCancelButton {
     border-radius: 8px;
     padding: 8px 16px;
-    color: white;
+    color: var(--input-button-color);
     background-color: var(--input-button-background-color);
     border: 0;
 }
@@ -188,8 +192,8 @@ input[type=submit], textarea {
     background-color: var(--input-button-background-color-active);
 }
 .inputButton:disabled {
-    color: darkgray;
-    background-color: #555;    
+    color: var(--input-button-color-disabled);
+    background-color: var(--input-button-background-color-disabled);
     font-weight: normal;
 }
 

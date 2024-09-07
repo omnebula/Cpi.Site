@@ -19,6 +19,12 @@
     --lesson-benchmark-code-color-disabled: lightsteelBlue;
 }
 
+.theme-view-only {
+    --navigation-button-color: var(--input-button-color);
+    --navigation-button-background-color: var(--input-button-background-color);
+    --navigation-button-border-color: var(--input-button-background-color);
+}
+
 
 main {
     display: flex;
@@ -31,27 +37,9 @@ main {
 }
 
 .lessonNavigationButton {
-    color: var(--navigation-button-color);
-    background-color: var(--navigation-button-background-color);
-    margin-right: 1px;
-    border: 1px solid var(--navigation-button-border-color);
-    padding: 3px 8px;
+    margin-right: 2px;
+    padding: 4px 10px;
     font-size: 12px;
-}
-.lessonNavigationButton:hover {
-    color: lightsteelblue;
-    background-color: #202020;
-    border: 1px solid lightsteelblue;
-}
-.lessonNavigationButton:active {
-    color: black;
-    background-color: lightblue;
-    border: 1px solid lightblue;
-}
-.lessonNavigationButton:disabled {
-    color: var(--navigation-button-color-disabled);
-    background-color: var(--navigation-button-background-color-disabled);
-    border: 1px solid #555;
 }
 
 .lessonViewButton {
@@ -65,7 +53,7 @@ main {
 
 .navigationTitleGroup {
     font-size: 15px;
-    align-items: center;
+    /*align-items: center;*/
     visibility: hidden;
 }
 
