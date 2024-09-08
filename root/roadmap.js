@@ -66,14 +66,14 @@ class RoadmapPage extends CpiPage
         this.#subjectSelector.on("change", () => {
             this.#pageData.lastSubject = this.#subjectSelector.val();
             this.#syncSubjectGrades(this.#pageData.lastGrade);
-            this.#queryRoadmap();
+            this.#queryBenchmarks();
             this.#savePageData();
         });
 
         // Grade selector
         this.#gradeSelector.on("change", () => {
             this.#pageData.lastGrade = this.#gradeSelector.val();
-            this.#queryRoadmap();
+            this.#queryBenchmarks();
             this.#savePageData();
         });
 
@@ -81,13 +81,13 @@ class RoadmapPage extends CpiPage
         this.#scopeSelector.val(this.#pageData.lastScope);
         this.#scopeSelector.on("change", () => {
             this.#pageData.lastScope = this.#scopeSelector.val();
-            this.#queryRoadmap();
+            this.#queryBenchmarks();
             this.#savePageData();
         })
 
         Cpi.ShowAppFrame();
 
-        this.#queryRoadmap(true, (data) => {
+        this.#queryBenchmarks(true, (data) => {
             var currentSubject = this.#pageData.lastSubject;
             var currentGrade = this.#pageData.lastGrade;
     
@@ -109,7 +109,7 @@ class RoadmapPage extends CpiPage
     
             $("#navigationSelectors").css("visibility", "visible");
     
-            this.#populateRoadmapTable(data.benchmarks);
+            this.#populateBenchmarkTable(data.benchmarks);
         });
     }
 
@@ -135,14 +135,14 @@ class RoadmapPage extends CpiPage
         }    
     }
 
-    #queryRoadmap(wantMeta, successHandler) {
+    #queryBenchmarks(wantMeta, successHandler) {
         var subject = this.#pageData.lastSubject;
         var grade = this.#pageData.lastGrade;
         if (!subject || !grade) {
             subject = "";
             grade = "";
         }
-        var queryUrl = `/@/lesson/roadmap?subject=${subject}&grade=${grade}&scope=${this.#pageData.lastScope}`;
+        var queryUrl = `/@/lesson/roadmap/benchmarks?subject=${subject}&grade=${grade}&scope=${this.#pageData.lastScope}`;
         if (wantMeta) {
             queryUrl += "&wantMeta";
         }
@@ -158,13 +158,13 @@ class RoadmapPage extends CpiPage
                     successHandler(data);
                 }
                 else {
-                    this.#populateRoadmapTable(data.benchmarks);
+                    this.#populateBenchmarkTable(data.benchmarks);
                 }
             }
         });
     }
 
-    #populateRoadmapTable(benchmarks) {
+    #populateBenchmarkTable(benchmarks) {
         this.#roadmapTable.empty();
 
         for (const benchmark of benchmarks) {
