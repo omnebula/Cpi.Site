@@ -67,7 +67,7 @@ main {
     color: #ddd;
     background-color: var(--schedule-column-header-background-color);
     font-size: 13px;
-    padding: 8px 8px;
+    padding: 4px 8px;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     display: flex;

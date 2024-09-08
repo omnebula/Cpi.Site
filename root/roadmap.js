@@ -99,8 +99,9 @@ class RoadmapPage extends CpiPage
                 this.#subjectSelector.append($(option));
             }
     
-            if (!currentSubject || (this.#subjectSelector.val(currentSubject).val() != currentSubject)) {
+            if (!currentSubject || (currentSubject === "") || (this.#subjectSelector.val(currentSubject).val() != currentSubject)) {
                 currentSubject = this.#subjectSelector.find(":first").val();
+                this.#pageData.lastSubject = currentSubject;                
             }
             this.#subjectSelector.val(currentSubject);
     
