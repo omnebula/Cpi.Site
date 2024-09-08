@@ -57,6 +57,10 @@ main {
     visibility: hidden;
 }
 
+#viewProgress {
+    margin-right: 2px;
+}
+
 .lessonTitle {
     text-align: left;
     font-weight: normal;

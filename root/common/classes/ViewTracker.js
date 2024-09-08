@@ -16,6 +16,14 @@ class ViewTracker {
             this.#origin = this.#searchParams.get("orig");
             if (this.#origin) {
                 this.#viewParams += `&orig=${this.#origin}`;
+
+                if (this.#origin === "progress") {
+                    $("#viewProgress")
+                        .css("display", "inline-block")
+                        .on("click", () => {
+                            window.open("/progress", "_self");
+                        });
+                }
             }
         }
         else {

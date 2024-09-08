@@ -1,3 +1,11 @@
+.theme-light {
+    --st-tr-even-background-color: #e7e7e7;
+}
+.theme-dark {
+    --st-tr-even-background-color: #1f1f1f;
+}
+
+
 .st-body {
     vertical-align: top;
     position: relative;
@@ -20,7 +28,7 @@
     vertical-align: top;
 }
 .st-tr-even {
-    background-color: #1f1f1f;
+    background-color: var(--st-tr-even-background-color);
 }
 .st-tr-odd {
     background-color: inherit;

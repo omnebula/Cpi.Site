@@ -367,8 +367,15 @@ class CpiPage {
                 this.#onLogout();
             });
 
-            if (this.#accountData && this.#accountData.accessType === "organization") {
-                $("#siteViewManager").css("display", "inline");
+            if (this.#accountData) {
+                switch(this.#accountData.accessType) {
+                    case "organization":
+                    case "location":
+                        $("#siteViewManager").css("display", "inline-block");
+
+                    case "team":
+                        $("#siteViewProgress").css("display", "inline-block");
+                }
             }
         }
     }

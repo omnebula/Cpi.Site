@@ -136,7 +136,13 @@ class RoadmapPage extends CpiPage
     }
 
     #queryRoadmap(wantMeta, successHandler) {
-        var queryUrl = `/@/lesson/roadmap?subject=${this.#pageData.lastSubject}&grade=${this.#pageData.lastGrade}&scope=${this.#pageData.lastScope}`;
+        var subject = this.#pageData.lastSubject;
+        var grade = this.#pageData.lastGrade;
+        if (!subject || !grade) {
+            subject = "";
+            grade = "";
+        }
+        var queryUrl = `/@/lesson/roadmap?subject=${subject}&grade=${grade}&scope=${this.#pageData.lastScope}`;
         if (wantMeta) {
             queryUrl += "&wantMeta";
         }

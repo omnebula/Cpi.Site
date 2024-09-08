@@ -419,33 +419,6 @@ class HolidayBroker extends EntityBroker {
 }
 
 
-class TableOverlay extends OverlayContext {
-    #tableController;
-
-    constructor(settings) {
-        super(settings);
-
-        this.#tableController = new TableController(settings);
-        this.#tableController._formatRow = this._formatRow || this.#tableController._formatRow;
-        this.#tableController._compareRows = this._compareRows || this.#tableController._compareRows;
-        this.#tableController.insertEntity = this.insertEntity || this.#tableController.insertEntity;
-        this.#tableController.updateEntity = this.updateEntity || this.#tableController.updateEntity;
-        this.#tableController.deleteEntity = this.deleteEntity || this.#tableController.deleteEntity;
-        this.#tableController._getEditorData = this._getEditorData || this.#tableController._getEditorData;
-        this.#tableController._setEditorData = this._setEditorData || this.#tableController._setEditorData;
-    }
-
-    get tableController() {
-        return this.#tableController;
-    }
-
-    _activateOverlay() {
-        this.#tableController.refreshRows();
-        super._activateOverlay();
-    }
-}
-
-
 class StudentOverlay extends TableOverlay {
     constructor() {
         super({
@@ -500,7 +473,7 @@ class AccountOverlay extends TableOverlay {
             addButton: $("#addAccount"),
             editButton: $("#editAccount"),
             deleteButton: $("#deleteAccount"),
-            toggleButtons: [ $("#sendAccountInvite"), $("#viewAccountSchedule"), $("#viewAccountRoadmap"), $("#assignAccountClasses") ],
+            toggleButtons: [ $("#sendAccountInvite"), $("#viewTeacherSchedule"), $("#viewTeacherRoadmap"), $("#assignAccountClasses") ],
             editor: $("#accountEditor")
         });
 
@@ -508,10 +481,10 @@ class AccountOverlay extends TableOverlay {
             this.#sendInvite();
         });
 
-        $("#viewAccountSchedule").on("click", (event) => {
+        $("#viewTeacherSchedule").on("click", (event) => {
             this.#viewAccountDetail("schedule", event.ctrlKey);
         });
-        $("#viewAccountRoadmap").on("click", (event) => {
+        $("#viewTeacherRoadmap").on("click", (event) => {
             this.#viewAccountDetail("roadmap", event.ctrlKey);
         });
     }

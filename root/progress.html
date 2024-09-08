@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Core Plan IT - Team Progress</title>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/common/styles/jquery-ui.min.css" type="text/css" />
+    <link rel="stylesheet" href="/common/styles/jquery.scrolltable.css" type="text/css" />
+    <link rel="stylesheet" href="/common/styles/global.css" type="text/css" />
+    <link rel="stylesheet" href="./common/styles/OverlayController.css" type="text/css" />
+    <link rel="stylesheet" href="./progress.css" type="text/css" />
+    <script type="text/javascript" src="/common/data/static.js"></script>
+    <script type="text/javascript" src="/common/scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="/common/scripts/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/common/scripts/jquery.scrolltable.js"></script>
+    <script type="text/javascript" src="/common/scripts/global.js"></script>
+    <script type="text/javascript" src="/common/classes/DataTable.js"></script>
+    <script type="text/javascript" src="/common/classes/TableController.js"></script>
+    <script type="text/javascript" src="/common/classes/OverlayController.js"></script>
+    <script type="text/javascript" src="./progress.js" defer></script>
+</head>
+
+<body>
+    <div class="appFrame">
+        <div class="pageFrame">
+            <header>
+                <div class="siteLogo"><img src="/common/images/logo-graphic.svg" class="siteLogoGraphic"><img src="/common/images/logo-text.svg" class="siteLogoText"></div>
+                <div class="siteNavigation">
+                    <div id="pageTitle" class="pageTitle">Team Progress</div>
+                    <div id="siteMenu" class="siteMenu">
+                        <a id="siteViewManager" class="siteMenuOption" href="/organization">manager</a>
+                        <div class="siteCurrentMenuOption">progress</div>
+                        <a class="siteMenuOption" href="/schedule">schedule</a>
+                        <a class="siteMenuOption" href="/roadmap">roadmap</a>
+                        <a class="siteMenuOption" href="/account">account</a>
+                        <a class="siteLastMenuOption" id="siteLogout">logout</a>
+                    </div>
+                </div>
+            </header>
+        
+            <main>
+                <!-- Selectors  -->
+                <div class="inputColumn overlaySelector">
+                </div>
+
+                <!-- Overlays -->
+                <div class="inputColumn overlaySection">
+
+                    <!-- Teachers Overlay -->
+                    <div id="Teachers" class="overlayPanel">
+                        <div class="overlayContent">
+                            <table id="teacherTable" class="scrollTable listTable" cellpadding="0" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th class="listTableHeader teacherNameColumn">Name</th>
+                                        <th class="listTableHeader benchmarkStatsColumn">Benchmark Progress</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr id="teacherRow" class="listRow">
+                                        <td id="teacherNameColumn" class="listColumn teacherNameColumn"></td>
+                                        <td id="benchmarkStatsColumn" class="listColumn benchmarkStatsColumn"><span id="statsPercentage"></span><span id="statsTotals"></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="overlayCommands">
+                            <div class="overlayCommandGroup">
+                                <input id="viewTeacherSchedule" type="button" class="inputButton overlayCommandButton" value="View Schedule"/>
+                                <input id="viewTeacherRoadmap" type="button" class="inputButton overlayCommandButton" value="View Roadmap"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        
+            <footer>
+        
+            </footer>
+    
+        </div>
+    
+    </div>
+    <div class="popupFrame">
+
+        <!-- Editors -->
+
+        <!-- Pickers -->
+
+    </div>
+</body>
+
+</html>

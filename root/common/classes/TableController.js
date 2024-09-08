@@ -16,19 +16,26 @@ class TableController {
         this.#dataTable = new DataTable(params.table);
 
         // Buttons
-        params.addButton.on("click", () => {
-            this.onAddEntity();
-        });
-        params.editButton.on("click", () => {
-            this.onEditEntity();
-        });
-        params.deleteButton.on("click", () => {
-            this.onDeleteEntity();
-        });
-
         this.#toggleButtons = params.toggleButtons || [];
-        this.#toggleButtons.push(params.editButton);
-        this.#toggleButtons.push(params.deleteButton);
+
+        if (params.addButton) {
+            params.addButton.on("click", () => {
+                this.onAddEntity();
+            });
+        }
+        if (params.editButton) {
+            params.editButton.on("click", () => {
+                this.onEditEntity();
+            });
+            this.#toggleButtons.push(params.editButton);
+        }
+        if (params.deleteButton) {
+            params.deleteButton.on("click", () => {
+                this.onDeleteEntity();
+            });
+            this.#toggleButtons.push(params.deleteButton);
+        }
+
     }
 
     get entityBroker() {
@@ -74,8 +81,13 @@ class TableController {
 
     setRows(dataSet) {
         this.#dataTable.setRows(dataSet, (row, data) => { this.#formatNewRow(row, data); });
-        this.#dataTable.sortRows((lhs, rhs) => { return this._compareRows(lhs, rhs)});
+
+        if (this._compareRows) {
+            this.#dataTable.sortRows((lhs, rhs) => { return this._compareRows(lhs, rhs)});
+        }
+
         this.#dataTable.stripeRows();
+
         this.#syncToggleButtons(false);
     }
 
@@ -133,9 +145,11 @@ class TableController {
     _formatRow(row, data) {
     }
 
+    /*
     _compareRows(lhs, rhs) {
         return false;
     }
+    */
 
     _onClickRow(row) {
         const current = this.getSelectedRow();

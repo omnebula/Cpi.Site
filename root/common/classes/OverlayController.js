@@ -93,3 +93,33 @@ class OverlayContext {
         this.#overlayElement.css("display", "none");
     }
 }
+
+
+class TableOverlay extends OverlayContext {
+    #tableController;
+
+    constructor(settings) {
+        super(settings);
+
+        this.#tableController = new TableController(settings);
+        this.#tableController._formatRow = this._formatRow || this.#tableController._formatRow;
+        this.#tableController._compareRows = this._compareRows || this.#tableController._compareRows;
+        this.#tableController.refreshRows = this.refreshRows || this.#tableController.refreshRows;
+        this.#tableController.insertEntity = this.insertEntity || this.#tableController.insertEntity;
+        this.#tableController.updateEntity = this.updateEntity || this.#tableController.updateEntity;
+        this.#tableController.deleteEntity = this.deleteEntity || this.#tableController.deleteEntity;
+        this.#tableController._getEditorData = this._getEditorData || this.#tableController._getEditorData;
+        this.#tableController._setEditorData = this._setEditorData || this.#tableController._setEditorData;
+    }
+
+    get tableController() {
+        return this.#tableController;
+    }
+
+    _activateOverlay() {
+        this.#tableController.refreshRows();
+        super._activateOverlay();
+    }
+}
+
+

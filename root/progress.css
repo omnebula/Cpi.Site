@@ -1,0 +1,56 @@
+.theme-light {
+    --stats-total-color: #888;
+}
+.theme-dark {
+    --stats-total-color: #ddd;
+}
+
+
+
+main {
+    display: flex;
+    flex-direction: row;
+}
+
+.listTable {
+    height: 100%;
+    width: 100%
+}
+
+.listTableHeader {
+    text-align: left;
+    font-size: 14px;
+    font-weight: var(--list-table-header-font-weight);
+    color: var(--input-label-color);
+}
+
+.listRow {
+    color: var(--list-row-color);
+}
+.listRow:hover {
+    color: white;
+    background-color: steelblue;
+}
+.listRow_selected {
+    color: white;
+    background-color: #336699;
+}
+
+.pickerListRow {
+    color: #eee;
+}
+
+.listColumn {
+    padding: 6px 0;
+}
+
+
+
+.benchmarkStatsColumn {
+    width: 200px;
+    text-align: center;
+}
+#statsTotals {
+    margin-left: 4px;
+    color: var(--stats-total-color);
+}
