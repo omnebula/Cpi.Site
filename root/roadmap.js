@@ -23,6 +23,20 @@ class RoadmapPage extends CpiPage
         // Initialize the roadmap table
         this.#roadmapTable = new DataTable($("#roadmapTable"));
 
+        // Detect view-only mode.
+        this.#viewTracker = new ViewTracker();
+
+        if (this.#viewTracker.isActive) {
+            $("#myRoadmap").css("display", "inline-block");
+            $(".siteCurrentMenuOption").css("display", "none");
+
+            this.#pageData.lastSubject = "";
+            this.#pageData.lastGrade = "";
+            this.#pageData.lastScope = "all";
+        }
+        else {
+            $("#myRoadmap").css("display", "none");
+        }
 
         const pageDataSetting = localStorage.getItem("roadmapData");
         if (pageDataSetting) {
@@ -39,21 +53,6 @@ class RoadmapPage extends CpiPage
             localStorage.removeItem("lastRoadmapScope");
 
             this.#savePageData();
-        }
-
-        // Detect view-only mode.
-        this.#viewTracker = new ViewTracker();
-
-        if (this.#viewTracker.isActive) {
-            $("#myRoadmap").css("display", "inline-block");
-            $(".siteCurrentMenuOption").css("display", "none");
-
-            this.#pageData.lastSubject = "";
-            this.#pageData.lastGrade = "";
-            this.#pageData.lastScope = "all";
-        }
-        else {
-            $("#myRoadmap").css("display", "none");
         }
 
         /*
