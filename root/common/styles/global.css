@@ -436,7 +436,7 @@ input[type=submit], textarea {
 header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
+    margin-bottom: 26px;
     align-items: center;
 }
 
