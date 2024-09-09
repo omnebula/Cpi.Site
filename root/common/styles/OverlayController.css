@@ -8,6 +8,12 @@
 }
 
 
+main {
+    display: flex;
+    flex-direction: row;
+}
+
+
 .overlaySelector {
     gap: 4px;
 }
@@ -28,7 +34,7 @@
 }
 .activeOverlaySelectorOption {
     color: white;
-    background-color: #336699;
+    background-color: var(--input-button-background-color);
     font-weight: bolder;
 }
 

@@ -3,11 +3,6 @@ label {
     margin-bottom: 2px;
 }
 
-main {
-    display: flex;
-    flex-direction: row;
-}
-
 
 .accountTextInput {
     display: block;

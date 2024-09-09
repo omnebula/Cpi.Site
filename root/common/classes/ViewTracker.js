@@ -18,11 +18,7 @@ class ViewTracker {
                 this.#viewParams += `&orig=${this.#origin}`;
 
                 if (this.#origin === "progress") {
-                    $("#viewProgress")
-                        .css("display", "inline-block")
-                        .on("click", () => {
-                            window.open("/progress", "_self");
-                        });
+                    this.initViewProgressButton($(".viewProgressButton"));
                 }
             }
         }
@@ -70,5 +66,13 @@ class ViewTracker {
         else {
             return false;
         }
+    }
+
+    initViewProgressButton(button) {
+        button
+            .css("display", "inline-block")
+            .on("click", () => {
+                window.open("/progress", "_self");
+            });
     }
 }

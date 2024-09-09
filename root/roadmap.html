@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/common/styles/jquery-ui.min.css" type="text/css" />
     <link rel="stylesheet" href="/common/styles/jquery.scrolltable.css" type="text/css" />
     <link rel="stylesheet" href="/common/styles/global.css" type="text/css" />
+    <link rel="stylesheet" href="./common/styles/OverlayController.css" type="text/css" />
     <link rel="stylesheet" href="./roadmap.css" type="text/css" />
     <script type="text/javascript" src="/common/data/static.js"></script>
     <script type="text/javascript" src="/common/scripts/jquery.min.js"></script>
@@ -14,6 +15,8 @@
     <script type="text/javascript" src="/common/scripts/jquery.scrolltable.js"></script>
     <script type="text/javascript" src="/common/scripts/global.js"></script>
     <script type="text/javascript" src="/common/classes/DataTable.js"></script>
+    <script type="text/javascript" src="/common/classes/TableController.js"></script>
+    <script type="text/javascript" src="/common/classes/OverlayController.js"></script>
     <script type="text/javascript" src="/common/classes/ViewTracker.js"></script>
     <script type="text/javascript" src="./roadmap.js" defer></script>
 
@@ -40,47 +43,92 @@
                 </div>
             </header>
 			<main>
-                <div class="navigationPanel">
-                    <div id="navigationSelectors">
-                        <select id="subjectSelector" class="inputSelect navigationSelect" title="Select Subject">
-                        </select>
-                        <select id="gradeSelector" class="inputSelect navigationSelect" title="Select Grade">
-                        </select>
-                        <select id="scopeSelector" class="inputSelect navigationSelect" title="Select Scope">
-                            <option value="all">View All</option>
-                            <option value="unassigned">View Unassigned</option>
-                            <option value="assigned">View Assigned</option>
-                        </select>
-                    </div>
-                    <div>
-                        <input id="viewProgress" class="inputButton navigationButton" type="button" value="Return to Progress"/>
-                    </div>
+                <!-- Selectors  -->
+                <div class="inputColumn overlaySelector">
                 </div>
-                <div class="roadmapPanel">
-                    <table id="roadmapTable" class="scrollTable listTable roadmapTable" cellpadding="0" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th class="listTableHeader">Benchmark</th>
-                                <th class="listTableHeader lessonColumn">Lesson</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="listRow roadmapRow">
-                                <td class="listColumn">
-                                    <div class="benchmarkInfo">
-                                        <a id="benchmarkCode" class="benchmarkCode" target="_blank"></a>
-                                        <div id="benchmarkSynopsis" class="benchmarkSynopsis"></div>
-                                    </div>
-                                </td>
-                                <td id="benchmarkLesson" class="listColumn lessonColumn">
-                                    <div id="lessonBubble" class="lessonBubble">
-                                        <a id="lessonLink" class="lessonLink"><span id="lessonName" class="lessonName"></span>&nbsp;&bull;&nbsp;<span id="lessonDate" class="lessonNDate"></span></a>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+
+                <!-- Overlays -->
+                <div class="inputColumn overlaySection">
+                    <div id="Summary" class="overlayPanel summaryPanel">
+                        <div class="overlayContent">
+                            <div class="summaryStatsBanner"><span class="summaryStatsLabel">Overall Progress:</span><span id="summaryStatsText" class="summaryStatsText"></span></div>
+                            <table id="summaryTable" class="scrollTable listTable summaryTable" cellpadding="0" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th class="listTableHeader summarySubjectColumn">Subject</th>
+                                        <th class="listTableHeader summaryGradeColumn">Grade</th>
+                                        <th class="listTableHeader">&nbsp;</th>
+                                        <th class="listTableHeader summaryProgressColumn">Progress</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="listRow summaryRow">
+                                        <td id="summarySubject" class="listColumn summarySubjectColumn"></td>
+                                        <td id="summaryGrade" class="listColumn summaryGradeColumn"></td>
+                                        <td class="listColumn">&nbsp;</td>
+                                        <td id="summaryProgress" class="listColumn summaryProgressColumn"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="overlayCommands">
+                            <div id="viewOnlyButtons" class="overlayCommands">
+                                <input id="viewProgress" class="inputButton overlayCommandButton" type="button" value="Return to Progress"/>
+                            </div>
+                            <div class="overlayCommands">
+                                <input id="viewSummaryBenchmarks" class="inputButton overlayCommandButton" type="button" value="View Benchmarks"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Benchmarks" class="overlayPanel benchmarksPanel">
+                        <div class="overlayContent">
+                            <div class="navigationPanel">
+                                <div id="navigationSelectors">
+                                    <select id="subjectSelector" class="inputSelect navigationSelect" title="Select Subject">
+                                    </select>
+                                    <select id="gradeSelector" class="inputSelect navigationSelect" title="Select Grade">
+                                    </select>
+                                    <select id="scopeSelector" class="inputSelect navigationSelect" title="Select Scope">
+                                        <option value="all">View All</option>
+                                        <option value="unassigned">View Unassigned</option>
+                                        <option value="assigned">View Assigned</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <input id="viewProgress" class="inputButton overlayCommandButton viewProgressButton" type="button" value="Return to Progress"/>
+                                </div>
+                            </div>
+                            <div class="roadmapPanel">
+                                <table id="roadmapTable" class="scrollTable listTable roadmapTable" cellpadding="0" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th class="listTableHeader">Benchmark</th>
+                                            <th class="listTableHeader lessonColumn">Lesson</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="listRow roadmapRow">
+                                            <td class="listColumn">
+                                                <div class="benchmarkInfo">
+                                                    <a id="benchmarkCode" class="benchmarkCode" target="_blank"></a>
+                                                    <div id="benchmarkSynopsis" class="benchmarkSynopsis"></div>
+                                                </div>
+                                            </td>
+                                            <td id="benchmarkLesson" class="listColumn lessonColumn">
+                                                <div id="lessonBubble" class="lessonBubble">
+                                                    <a id="lessonLink" class="lessonLink"><span id="lessonName" class="lessonName"></span>&nbsp;&bull;&nbsp;<span id="lessonDate" class="lessonNDate"></span></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+   
+                    </div>
+
                 </div>
+
             </main>
 		</div>
 	</div>

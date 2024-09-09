@@ -4,17 +4,27 @@ class OverlayController {
     #overlayContexts = {};
     #restoreOverlayPropertyName;
 
-    constructor(contexts, restoreOverlayPropertyName) {
+    constructor(contexts, restoreOverlayPropertyName, initialOverlayName) {
         for (const current of contexts) {
             this.addOverlay(current);
         }
 
         this.#restoreOverlayPropertyName = restoreOverlayPropertyName;
 
-        if (this.#restoreOverlayPropertyName) {
-            const lastOverlayName = localStorage.getItem(this.#restoreOverlayPropertyName);
-            this.showOverlay(lastOverlayName || contexts[0].name);                
+        if (!initialOverlayName) {
+            if (this.#restoreOverlayPropertyName) {
+                initialOverlayName = localStorage.getItem(this.#restoreOverlayPropertyName);
+            }
+            else {
+                initialOverlayName = contexts[0].name;
+            }
         }
+
+        this.showOverlay(initialOverlayName);
+    }
+
+    get currentOverlayName() {
+        return this.#currentOverlayName;
     }
 
     addOverlay(overlayContext) {

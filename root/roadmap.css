@@ -1,24 +1,26 @@
 .theme-light {
-    --st-tr-even-background-color: #e7e7e7;
     --benchmark-code-color: #336699;
     --benchmark-synopsis-color: #333;
     --benchmark-synopsis-color-assigned: #00910c;
     --lesson-bubble-background-color: steelblue;
     --lesson-bubble-border-color: #336699;
+
+    --list-table-font-weight: bold;
+
+    --summary-stats-label-color: var(--page-title-color);
+    --summary-stats-text-color: darkgreen;
 }
 .theme-dark {
-    --st-tr-even-background-color: #1f2328;
     --benchmark-code-color: lightsteelblue;
     --benchmark-synopsis-color: #eee;
     --benchmark-synopsis-color-assigned: #3ee34c;
     --lesson-bubble-background-color: black;
     --lesson-bubble-border-color: #444;
-}
 
-/*
-*/
-.st-tr-even {
-    background-color: var(--st-tr-even-background-color);
+    --list-table-font-weight: normal;
+
+    --summary-stats-label-color: var(--page-title-color);
+    --summary-stats-text-color: #01a301;
 }
 
 
@@ -26,19 +28,31 @@
     text-align: left;
     font-size: 14px;
     color: var(--input-label-color);
+    font-weight: var(--list-table-font-weight);
+}
+.listRow {
+    color: var(--list-row-color);
 }
 .listColumn {
     padding: 16px 0;
 }
-
-
-main{
-    display: flex;
-    flex-direction: column;    
+#Summary .listColumn {
+    padding: 10px 0;
+}
+#Summary .listRow:hover {
+    color: white;
+    background-color: steelblue;
+}
+#Summary .listRow_selected {
+    color: white;
+    background-color: #336699;
 }
 
+
 #navigationSelectors {
-    visibility: hidden;
+}
+.navigationSelect {
+    height: 100%;
 }
 
 .roadmapPanel {
@@ -54,6 +68,49 @@ main{
 .roadmapRow {
 }
 
+
+.summaryPanel {
+}
+.summaryTable {
+    flex: 1;
+}
+.summarySubjectColumn {
+    width: 230px;
+}
+.summaryGradeColumn {
+    width: 80px;
+    text-align: center;
+}
+.summaryProgressColumn {
+    width: 200px;
+    text-align: center;
+}
+#viewOnlyButtons {
+    margin-bottom: 33px;
+    visibility: hidden;
+}
+#viewOnlyButtons #viewProgress {
+    display: inline-block;
+}
+.summaryStatsBanner {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+.summaryStatsLabel {
+    color: var(--summary-stats-label-color);
+    margin-right: 4px;
+}
+.summaryStatsText {
+    color: var(--summary-stats-text-color);
+}
+
+
+.benchmarksPanel {
+    flex-direction: column;
+}
+#Benchmarks .overlayContent {
+    margin-right: 0;
+}
 .benchmarkInfo {
     display: flex;
     flex-direction: row;
