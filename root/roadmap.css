@@ -2,6 +2,8 @@
     --benchmark-code-color: #336699;
     --benchmark-synopsis-color: #333;
     --benchmark-synopsis-color-assigned: #00910c;
+    --benchmark-row-referred-background-color: #555;
+
     --lesson-bubble-background-color: steelblue;
     --lesson-bubble-border-color: #336699;
 
@@ -14,6 +16,9 @@
     --benchmark-code-color: lightsteelblue;
     --benchmark-synopsis-color: #eee;
     --benchmark-synopsis-color-assigned: #3ee34c;
+
+    --benchmark-row-referred-background-color: #080845;
+
     --lesson-bubble-background-color: black;
     --lesson-bubble-border-color: #444;
 
@@ -53,6 +58,7 @@
 }
 .navigationSelect {
     height: 100%;
+    margin-right: 0;
 }
 
 .roadmapPanel {
@@ -110,6 +116,10 @@
 }
 #Benchmarks .overlayContent {
     margin-right: 0;
+}
+
+.benchmarkReferredRow {
+    background-color: var(--benchmark-row-referred-background-color);
 }
 .benchmarkInfo {
     display: flex;

@@ -37,7 +37,6 @@ main {
 }
 
 .lessonNavigationButton {
-    margin-right: 2px;
     padding: 4px 10px;
     font-size: 12px;
 }
@@ -49,6 +48,7 @@ main {
 .navigationGroup {
     display: flex;
     justify-content: space-between;
+    gap: 2px;
 }
 
 .navigationTitleGroup {

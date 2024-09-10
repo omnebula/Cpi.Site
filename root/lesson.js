@@ -94,6 +94,11 @@ class LessonPage extends CpiPage {
             window.open(`/schedule?week=${Cpi.CalculateWeekNumber(data.lessonDate)}${this.#viewTracker.viewParams}`, "_self");
         });
 
+        // Roadmap link.
+        $("#viewRoadmap").on("click", () => {
+            window.open(`/roadmap?subject=${data.subjectName}&grade=${data.gradeName}${this.#viewTracker.viewParams}`, "_self");
+        });
+
         // Benchmarks
         this.#addBenchmarks(data.benchmarks);
 

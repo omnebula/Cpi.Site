@@ -24,12 +24,18 @@ class RoadmapPage extends CpiPage
             this.#pageData = {};
         }
 
+        // Compute the initial overlay.
+        var initialOverlayName;
+
         // If view-only mode, hide the disabled "roadmap" menu and show the live option
         // so the use can return to their recpective rodamap.
-        var initialOverlayName;
         if (this.isViewOnly) {
             $("#myRoadmap").css("display", "inline-block");
             $(".siteCurrentMenuOption").css("display", "none");
+
+            this.pageData.benchmarks.lastSubject = "";
+            this.pageData.benchmarks.lastGrade = "";
+            this.pageData.benchmarks.lastScope = "all";
 
             initialOverlayName = "Summary";
         }
@@ -37,6 +43,18 @@ class RoadmapPage extends CpiPage
         // since we're already on the user's roadmap page.
         else {
             $("#myRoadmap").css("display", "none");
+        }
+
+        // CHeck if subject and grade were specified by referrer, e.g., from lesson page.
+        // Note that this will override default or view-only settings/
+        const searchSubject = this.viewTracker.searchParams.get("subject");
+        const searchGrade = this.viewTracker.searchParams.get("grade");
+        if (searchSubject && searchGrade) { // all or nothing
+            this.#pageData.benchmarks.lastSubject = searchSubject;
+            this.#pageData.benchmarks.lastGrade = searchGrade;
+            this.#pageData.benchmarks.lastScope = "all";
+
+            initialOverlayName = "Benchmarks";
         }
 
         const overlays = [
@@ -141,6 +159,8 @@ class SummaryOverlay extends RoadmapOverlay {
         });
 
         this.#tableController._formatRow = (row, data) => {
+            row.attr("id", `${data.subject}${data.grade}`);
+
             row.find("#summarySubject").text(data.subject);
             row.find("#summaryGrade").text(data.grade);
 
@@ -158,7 +178,7 @@ class SummaryOverlay extends RoadmapOverlay {
 
     _activateOverlay() {
         if (this.#initialized) {
-            super._activateOverlay();
+            this.#syncSelectedStat();
         }
         else {
             Cpi.SendApiRequest({
@@ -171,11 +191,23 @@ class SummaryOverlay extends RoadmapOverlay {
                     const progress = `${percentage.toFixed(1)}% (${this.#assignedCount}/${this.#totalCount})`;
                     $("#summaryStatsText").text(progress);
 
-                    super._activateOverlay();
+                    this.#syncSelectedStat();
+
                     this.#initialized = true;
                 }
             });
         }
+    }
+
+    #syncSelectedStat() {
+        const id = `#${this.pageData.benchmarks.lastSubject}${this.pageData.benchmarks.lastGrade}`;
+        if (id !== "#") {
+            const row = this.#tableController.findRows(id);
+            if (row.length) {
+                this.#tableController.setSelectedRow(row);
+            }
+        }
+        super._activateOverlay();
     }
 }
 
@@ -186,6 +218,7 @@ class BenchmarkOverlay extends RoadmapOverlay  {
     #subjectSelector;
     #gradeSelector;
     #scopeSelector;
+    #referrerLessonId;
 
     constructor(roadmapPage) {
         super(
@@ -212,14 +245,6 @@ class BenchmarkOverlay extends RoadmapOverlay  {
             localStorage.removeItem("lastRoadmapScope");
 
             this.savePageData();
-        }
-
-        // If view-only mode, hide the disabled "roadmap" menu and show the live option
-        // so the use can return to their recpective rodamap.
-        if (this.isViewOnly) {
-            this.pageData.benchmarks.lastSubject = "";
-            this.pageData.benchmarks.lastGrade = "";
-            this.pageData.benchmarks.lastScope = "all";
         }
 
         /*
@@ -251,6 +276,12 @@ class BenchmarkOverlay extends RoadmapOverlay  {
             this.#queryBenchmarks();
             this.savePageData();
         });
+
+        // Referrer Lesson
+        const referrer = new URL(document.referrer);
+        if (referrer.pathname === "/lesson") {
+            this.#referrerLessonId = referrer.searchParams.get("id");
+        }
     }
 
     _activateOverlay() {
@@ -277,6 +308,9 @@ class BenchmarkOverlay extends RoadmapOverlay  {
             this.#populateBenchmarkTable(data.benchmarks);
 
             super._activateOverlay();
+
+            // Disable any subsequent referrer-lesson processing.
+            this.#referrerLessonId = null;
         });
     }
 
@@ -343,6 +377,7 @@ class BenchmarkOverlay extends RoadmapOverlay  {
                 const synopsis = row.find("#benchmarkSynopsis");
                 synopsis.html(benchmark.synopsis);
 
+                var isReferrerLesson = false;
                 if (benchmark.lessons.length) {
                     synopsis.addClass("benchmarkSynopsis_assigned");
 
@@ -357,6 +392,12 @@ class BenchmarkOverlay extends RoadmapOverlay  {
                         lessonBubble.find("#lessonLink").attr("href", `/lesson?id=${lesson.id}${this.viewTracker.viewParams}`);
     
                         lessonColumn.append(lessonBubble);
+
+                        isReferrerLesson = isReferrerLesson || (lesson.id === this.#referrerLessonId);
+                    }
+
+                    if (isReferrerLesson) {
+                        row.addClass("benchmarkReferredRow");
                     }
                 }
             });
