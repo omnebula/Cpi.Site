@@ -376,6 +376,10 @@ class CpiPage {
                     case "team":
                         $("#siteViewProgress").css("display", "inline-block");
                 }
+
+                // Enable/disable teacher menu options.
+                const display = this.#accountData.classes.length ? "inline-block" : "none";
+                $(".siteMenuTeacherOption").css("display", display);
             }
         }
     }
