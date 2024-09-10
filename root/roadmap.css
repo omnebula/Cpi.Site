@@ -61,11 +61,24 @@
     margin-right: 0;
 }
 
+
 .roadmapPanel {
     flex: 1;
     display: flex;
     flex-direction: column;
 }
+
+.roadmapStatsBanner {
+    margin-bottom: 20px;
+}
+.roadmapStatsLabel {
+    color: var(--summary-stats-label-color);
+    margin-right: 4px;
+}
+.roadmapStatsText {
+    color: var(--summary-stats-text-color);
+}
+
 
 .roadmapTable {
     flex: 1;
@@ -76,6 +89,10 @@
 
 
 .summaryPanel {
+}
+
+.summaryStatsBanner {
+    font-size: 24px;
 }
 .summaryTable {
     flex: 1;
@@ -98,17 +115,6 @@
 #viewOnlyButtons #viewProgress {
     display: inline-block;
 }
-.summaryStatsBanner {
-    margin-bottom: 20px;
-    font-size: 24px;
-}
-.summaryStatsLabel {
-    color: var(--summary-stats-label-color);
-    margin-right: 4px;
-}
-.summaryStatsText {
-    color: var(--summary-stats-text-color);
-}
 
 
 .benchmarksPanel {
@@ -116,6 +122,12 @@
 }
 #Benchmarks .overlayContent {
     margin-right: 0;
+}
+
+.benchmarkStatsBanner {
+    margin-top: 8px;
+    margin-bottom: 28px;
+    font-size: 18px
 }
 
 .benchmarkReferredRow {

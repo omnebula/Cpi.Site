@@ -361,6 +361,10 @@ class BenchmarkOverlay extends RoadmapOverlay  {
                 else {
                     this.#populateBenchmarkTable(data.benchmarks);
                 }
+
+                const percentage = (data.stats.assigned / data.stats.total) * 100;
+                const progress = `${percentage.toFixed(1)}% (${data.stats.assigned}/${data.stats.total})`;
+                $("#benchmarkStatsText").text(progress);
             }
         });
     }
