@@ -75,6 +75,8 @@ class DataTable {
             for (const data of dataSet) {
                 this.appendRow(data, initializer);
             }
+
+            this.scrollTop();
         }
     }
 
@@ -109,6 +111,10 @@ class DataTable {
 		selection
 			.filter(':odd').addClass(oddClass).end()
 			.filter(':even').addClass(evenClass);
+    }
+
+    scrollTop() {
+        this.#table.find(".st-body-scroll").scrollTop(0);
     }
 
     /*

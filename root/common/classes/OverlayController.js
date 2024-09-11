@@ -112,8 +112,8 @@ class TableOverlay extends OverlayContext {
         super(settings);
 
         this.#tableController = new TableController(settings);
-        this.#tableController._formatRow = this._formatRow || this.#tableController._formatRow;
-        this.#tableController._compareRows = this._compareRows || this.#tableController._compareRows;
+        this.#tableController._formatRow = this._formatRow ? (row, data) => { this._formatRow(row, data); } : this.#tableController._formatRow;
+        this.#tableController._compareRows = this._compareRows ? (lhs, rhs) => { return this._compareRows(lhs, rhs); } : this.#tableController._compareRows;
         this.#tableController.refreshRows = this.refreshRows || this.#tableController.refreshRows;
         this.#tableController.insertEntity = this.insertEntity || this.#tableController.insertEntity;
         this.#tableController.updateEntity = this.updateEntity || this.#tableController.updateEntity;

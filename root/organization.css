@@ -2,11 +2,24 @@
     --holiday-list-row-color: #333;
     --holiday-list-row-color-active: black;
     --list-table-header-font-weight: bold;
+
+    --curriculum-code-color: #336699;
+    --curriculum-synopsis-color: #333;
+    --curriculum-synopsis-color-assigned: #00910c;
 }
 .theme-dark {
     --holiday-list-row-color: #ddd;
     --holiday-list-row-color-active: white;
     --list-table-header-font-weight: normal;
+
+    --curriculum-code-color: lightsteelblue;
+    --curriculum-synopsis-color: #eee;
+    --curriculum-synopsis-color-assigned: #3ee34c;
+}
+
+
+p {
+    margin: 0;
 }
 
 
@@ -202,3 +215,38 @@
     width: 420px;
 }
 
+
+/* Curriculum */
+
+.curriculumSelectorBanner {
+    margin-bottom:18px;
+}
+
+.curriculumInfo {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 6px 0;
+}
+
+.curriculumStandardCode, .curriculumSynopsis {
+    display: inline-block;
+}
+
+.curriculumStandardCode {
+    color: var(--curriculum-code-color);
+}
+
+.curriculumSynopsis {
+    display: inline-block;
+    color: var(--curriculum-synopsis-color);
+    padding-right: 12px;
+}
+.curriculumSynopsis_assigned {
+    color: var(--curriculum-synopsis-color-assigned);
+}
+
+#curriculumEditCommands {
+    display: none;
+}

@@ -17,7 +17,8 @@ class OrganizationPage extends CpiPage {
             new AccountOverlay(),
             new ClassOverlay(),
             new CourseOverlay(),
-            new LocationOverlay()
+            new LocationOverlay(),
+            new CurriculumOverlay()
         ];
         this.#overlayController = new OverlayController(overlays, "organizationOverlayName");
 
@@ -689,10 +690,19 @@ class CourseOverlay extends TableOverlay {
             editor: editor
         });
 
+        // Initialize subject and grade editor selectors
         const subjectDropdown = editor.find("#courseSubject");
-        for (const subjectName of cpidata.organization.curriculum.search.subjects) {
-            subjectDropdown.append(`<option>${subjectName}</option>`);
+        for (const subject of cpidata.organization.curriculum.search.subjects) {
+            const option = document.createElement("option");
+            option.text = subject.name;
+            option.grades = subject.grades;
+            subjectDropdown.append(option);
         }
+        this.#syncGradeOptions();
+    }
+
+    get editor() {
+        return this.tableController.editor;
     }
 
     _formatRow(row, course) {
@@ -726,6 +736,18 @@ class CourseOverlay extends TableOverlay {
             editor.find("#courseName").val("");
             editor.find("#courseSubject").val("");
             editor.find("#courseGrade").val("");
+        }
+    }
+
+    #syncGradeOptions() {
+        const subject = this.editor.find("#courseSubject").find(":selected");
+        if (subject.length) {
+            const selector = this.editor.find("#courseGrade");
+            selector.empty();
+
+            for (const grade of subject[0].grades) {
+                selector.append(`<option>${grade}</option`);
+            }
         }
     }
 }
@@ -772,6 +794,239 @@ class LocationOverlay extends TableOverlay {
         else {
             editor.find("#locationName").val("");
         }
+    }
+}
+
+
+class CurriculumOverlay extends TableOverlay {
+    #initialized = false;
+    #overlayData;
+    #subjectSelector;
+    #gradeSelector;
+    #scopeSelector;
+
+    constructor() {
+        super({
+            overlayName: "Curriculum",
+            table: $("#curriculumTable")
+        });
+
+        const pageDataItem = localStorage.getItem("curriculumOverlay");
+        if (pageDataItem) {
+            this.#overlayData = JSON.parse(pageDataItem);
+        }
+        else {
+            this.#overlayData = {
+                selectors: {
+                    lastSubject: "",
+                    lastGrade: "",
+                    lastScope: "all"
+                }
+            };
+        }
+
+        /* Navigation Seelectors */
+        this.#subjectSelector = $("#curriculumSubjectSelector");
+        this.#subjectSelector.on("change", () => {
+            this.#overlayData.selectors.lastSubject = this.#subjectSelector.val();
+            this.#saveOverlayData();
+            this.#initGradeOptions();
+            this.#queryCurriculum();
+        });
+
+        this.#gradeSelector = $("#curriculumGradeSelector");
+        this.#gradeSelector.on("change", () => {
+            this.#overlayData.selectors.lastGrade = this.#gradeSelector.val();
+            this.#saveOverlayData();
+            this.#queryCurriculum();
+        });
+
+        this.#scopeSelector = $("#curriculumScopeSelector");
+        this.#scopeSelector.on("change", () => {
+            this.#overlayData.selectors.lastScope = this.#scopeSelector.val();
+            this.#saveOverlayData();
+            this.#queryCurriculum();
+        });
+
+        /* Edit Buttons */
+        this.element.find("#curriculumEdit").on("click", () => {
+            this.#showEditButtons(true);
+        });
+
+        this.element.find("#curriculumSave").on("click", () => {
+            this.#saveCurriculumChanges();
+        });
+
+        this.element.find("#curriculumCancel").on("click", () => {
+            this.#queryCurriculum();
+            this.#showEditButtons(false);
+        });
+
+        this.element.find("#curriculumSelectAll").on("click", () => {
+            this.element.find(".curriculumCheckbox").prop("checked", true);
+        });
+
+        this.element.find("#curriculumDeselectAll").on("click", () => {
+            this.element.find(".curriculumCheckbox").prop("checked", false);
+        });
+    }
+
+    _activateOverlay() {
+        if (this.#initialized) {
+            this.#queryCurriculum();
+        }
+        else {
+            Cpi.SendApiRequest({
+                method: "GET",
+                url: "/@/organization/curriculum/options",
+                success: (data) => {
+                    this.#initSubjectOptions(data);
+                    this.#queryCurriculum();
+                }
+            });
+        }
+    }
+
+    _deactivateOverlay() {
+        this.#showEditButtons(false);
+    }
+
+    /*
+    * Private
+    */
+    #initSubjectOptions(subjects) {
+        this.#subjectSelector.empty();
+
+        for (const subject of subjects) {
+            const option = document.createElement("option");
+            option.text = subject.name;
+            option.grades = subject.grades;
+            this.#subjectSelector.append($(option));
+        }
+
+        if(this.#subjectSelector.val(this.#overlayData.selectors.lastSubject).val() !== this.#overlayData.selectors.lastSubject) {
+            this.#overlayData.selectors.lastSubject = this.#subjectSelector.find(":first").val();
+            this.#subjectSelector.val(this.#overlayData.selectors.lastSubject);
+            this.#saveOverlayData();
+        }
+
+        this.#initGradeOptions();
+    }
+
+    #initGradeOptions() {
+        const selectedSubject = this.#subjectSelector.find(":selected");
+
+        if (selectedSubject.length) {
+            const grades = selectedSubject[0].grades;
+
+            this.#gradeSelector.empty();
+            
+            for (const grade of grades) {
+                const option = document.createElement("option");
+                option.value = option.text = grade;
+                this.#gradeSelector.append(option);
+            }
+
+            if(this.#gradeSelector.val(this.#overlayData.selectors.lastGrade).val() !== this.#overlayData.selectors.lastGrade) {
+                this.#overlayData.selectors.lastGrade = this.#gradeSelector.find(":first").val();
+                this.#gradeSelector.val(this.#overlayData.selectors.lastGrade);
+                this.#saveOverlayData();
+            }
+        }
+    }
+
+    #saveOverlayData() {
+        localStorage.setItem("curriculumOverlay", JSON.stringify(this.#overlayData));
+    }
+
+    #queryCurriculum() {
+        Cpi.SendApiRequest({
+            method: "GET",
+            url: `/@/organization/curriculum?subject=${this.#overlayData.selectors.lastSubject}&grade=${this.#overlayData.selectors.lastGrade}&scope=${this.#overlayData.selectors.lastScope}`,
+            success: (data) => {
+                this.#populateCurriculumTable(data);
+            }
+        });
+
+        super._activateOverlay();
+    }
+
+    #populateCurriculumTable(data) {
+        this.tableController.setRows(data);
+    }
+    _formatRow(row, benchmark) {
+        row.attr("id", benchmark.id);
+
+        const checkbox = row.find("#curriculumCheckbox");
+        checkbox
+            .attr("id", benchmark.id)
+            .prop("checked", benchmark.assigned)
+            .on("change", () => {
+                this.#syncRowColors(row, checkbox.prop("checked") == true);
+            })
+            .on("click", (event) => {
+                event.stopPropagation();
+            });
+
+        row.find("#curriculumStandardCode")
+            .text(benchmark.code)
+            .attr("href", benchmark.url)
+            .on("click", (event) => {
+                event.stopPropagation();
+            });
+
+        row.find("#curriculumSynopsis").html(benchmark.synopsis);
+
+        row.on("click", () => {
+            checkbox.trigger("click");
+        })
+
+        this.#syncRowColors(row, benchmark.assigned);
+    }
+
+    #syncRowColors(row, assigned) {
+        if (assigned) {
+            row.find("#curriculumSynopsis").addClass("curriculumSynopsis_assigned");
+        }
+        else {
+            row.find("#curriculumSynopsis").removeClass("curriculumSynopsis_assigned");
+        }
+    }
+
+    #saveCurriculumChanges() {
+        const assigned = [], unassigned = [];
+
+        const checkboxes = this.element.find(".curriculumCheckbox");
+        for (const element of checkboxes) {
+            const checkbox = $(element);
+            if (checkbox.prop("checked")) {
+                assigned.push(checkbox.attr("id"));
+            }
+            else {
+                unassigned.push(checkbox.attr("id"));
+            }
+        }
+
+        const params = {
+            subject: this.#overlayData.selectors.lastSubject,
+            grade: this.#overlayData.selectors.lastGrade,
+            assigned: assigned,
+            unassigned: unassigned
+        };
+
+        Cpi.SendApiRequest({
+            method: "PUT",
+            url: "/@/organization/curriculum",
+            data: JSON.stringify(params),
+            success: (data) => {
+                this.#showEditButtons(false);
+            }
+        });
+    }
+
+    #showEditButtons(show) {
+        $("#curriculumEditCommands").css("display", show ? "block" : "none");
+        $("#curriculumNonEditCommands").css("display", !show ? "block" : "none");
     }
 }
 

@@ -27,6 +27,7 @@ main {
 
 .navigationSelect {
     background-color: var(--input-button-background-color);
+    margin-right: 12px;
 }
 .navigationSelect:hover {
     background-color: var(--input-button-background-color-hover);

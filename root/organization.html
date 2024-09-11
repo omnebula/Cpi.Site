@@ -341,6 +341,63 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Curriculum Overlay -->
+                    <div id="Curriculum" class="overlayPanel">
+                        <div class="overlayContent">
+                            <div class="curriculumSelectorBanner">
+                                <select id="curriculumSubjectSelector" class="inputSelect navigationSelect">
+                                </select>
+                                <select id="curriculumGradeSelector" class="inputSelect navigationSelect">
+                                </select>
+                                <select id="curriculumScopeSelector" class="inputSelect navigationSelect">
+                                    <option value="all">View All</option>
+                                    <option value="inactive">View Inactive</option>
+                                    <option value="active">View Active</option>
+                                </select>
+                            </div>
+
+                            <table id="curriculumTable" class="scrollTable listTable" cellpadding="0" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th class="listTableHeader curriculumBenchmarkColumn"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr id="curriculumRow" class="listRow">
+                                        <td id="curriculumBenchmark" class="listColumn curriculumBenchmarkColumn">
+                                            <div class="curriculumInfo">
+                                                <input id="curriculumCheckbox" class="curriculumCheckbox" type="checkbox"/>
+                                                <a id="curriculumStandardCode" class="curriculumStandardCode" target="_blank"></a>
+                                                <div id="curriculumSynopsis" class="curriculumSynopsis"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="overlayCommands">
+                            <div id="curriculumNonEditCommands" class="overlayCommandGroup">
+                                <input id="curriculumEdit" type="button" class="inputButton overlayCommandButton" value="Edit Curriculum"/>
+                            </div>
+                            <div id="curriculumEditCommands">
+                                <div class="overlayCommandGroup">
+                                    <input id="curriculumSave" type="button" class="inputButton inputAcceptButton" value="Save Changes"/>
+                                    <input id="curriculumCancel" type="button" class="inputButton inputCancelButton" value="Cancel Changes"/>
+                                </div>
+                                <div class="overlayCommandGroup">
+                                    <input id="curriculumSelectAll" type="button" class="inputButton overlayCommandButton" value="Select All"/>
+                                    <input id="curriculumDeselectAll" type="button" class="inputButton overlayCommandButton" value="Deselect All"/>
+                                </div>
+                            </div>
+                            <div class="overlayCommandGroup">
+                                <input id="curriculumUpload" type="button" class="inputButton overlayCommandButton" value="Upload Curriculum" disabled/>
+                                <input id="curriculumDeselectAll" type="button" class="inputButton overlayCommandButton" value="Download Curriculum" disabled/>
+                            </div>
+
+                        </div>
+                    </div>
+                    
                 </div>
             </main>
         
@@ -486,28 +543,12 @@
                 <div class="inputCell">
                     <label for="courseSubject" class="popupLabel">Subject</label>
                     <select id="courseSubject" class="inputSelect">
-                        <option value=""></option>
                     </select>
                 </div>
 
                 <div class="inputCell">
                     <label for="courseGrade" class="popupLabel">Grade</label>
                     <select id="courseGrade" class="inputSelect">
-                        <option value=""></option>
-                        <option>PK</option>
-                        <option>K</option>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                        <option>6</option>
-                        <option>7</option>
-                        <option>8</option>
-                        <option>9</option>
-                        <option>10</option>
-                        <option>11</option>
-                        <option>12</option>
                     </select>
                 </div>
             </div>

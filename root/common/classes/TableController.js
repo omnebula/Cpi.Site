@@ -38,6 +38,10 @@ class TableController {
 
     }
 
+    get dataTable() {
+        return this.#dataTable;
+    }
+
     get entityBroker() {
         return this.#entityBroker;
     }
@@ -72,11 +76,13 @@ class TableController {
 
     /* Table Interface */
     refreshRows() {
-        this.#entityBroker.fetchEntitySet(
-            (dataSet) => {
-                this.setRows(dataSet);
-            }
-        );
+        if (this.#entityBroker) {
+            this.#entityBroker.fetchEntitySet(
+                (dataSet) => {
+                    this.setRows(dataSet);
+                }
+            );
+        }
     }
 
     setRows(dataSet) {
