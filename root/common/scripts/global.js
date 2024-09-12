@@ -297,6 +297,64 @@ class Cpi {
     }
 
     /*
+    * File Transfer
+    */
+    static #FileUploadBox;
+    static UploadFile(url, caption, success) {
+        if (!Cpi.#FileUploadBox) {
+            Cpi.#FileUploadBox = $("#fileUploader");
+        }
+
+        if (caption) {
+            Cpi.#FileUploadBox.find("#popupCaptionTitle").text(caption);
+        }
+        else {
+            Cpi.#FileUploadBox.find("#popupCaptionTitle").text("File Upload");
+        }
+
+        Cpi.ShowPopup(
+            Cpi.#FileUploadBox,
+            () => {
+                const fileUploadName = Cpi.#FileUploadBox.find("#fileUploadName");
+
+                if (fileUploadName.length) {
+                    const files = fileUploadName[0].files;
+
+                    if (files.length) {
+                        const formData = new FormData();
+
+                        for (const file of files) {
+                            formData.append('file', file);
+                        }
+            
+                        Cpi.SendApiRequest({
+                            method: "POST",
+                            url: url,
+                            data: formData,
+                            contentType: false,
+                            processData: false,
+                            success: (data, status, xhr) => {
+                                if (success) {
+                                    success(data, status, xhr);
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        )
+    }
+
+    static DownloadFile(url, filename) {
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    /*
     * Private Data
     */
 

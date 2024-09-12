@@ -377,9 +377,15 @@
                             </table>
                         </div>
                         <div class="overlayCommands">
-                            <div id="curriculumNonEditCommands" class="overlayCommandGroup">
-                                <input id="curriculumEdit" type="button" class="inputButton overlayCommandButton" value="Edit Curriculum"/>
-                            </div>
+                            <div id="curriculumNonEditCommands">
+                                <div class="overlayCommandGroup">
+                                    <input id="curriculumEdit" type="button" class="inputButton overlayCommandButton" value="Edit Curriculum"/>
+                                </div>
+                                <div class="overlayCommandGroup">
+                                    <input id="curriculumUpload" type="button" class="inputButton overlayCommandButton" value="Upload Curriculum"/>
+                                    <input id="curriculumDownload" type="button" class="inputButton overlayCommandButton" value="Download Curriculum"/>
+                                </div>
+                            </div> 
                             <div id="curriculumEditCommands">
                                 <div class="overlayCommandGroup">
                                     <input id="curriculumSave" type="button" class="inputButton inputAcceptButton" value="Save Changes"/>
@@ -390,11 +396,6 @@
                                     <input id="curriculumDeselectAll" type="button" class="inputButton overlayCommandButton" value="Deselect All"/>
                                 </div>
                             </div>
-                            <div class="overlayCommandGroup">
-                                <input id="curriculumUpload" type="button" class="inputButton overlayCommandButton" value="Upload Curriculum" disabled/>
-                                <input id="curriculumDeselectAll" type="button" class="inputButton overlayCommandButton" value="Download Curriculum" disabled/>
-                            </div>
-
                         </div>
                     </div>
                     
@@ -566,6 +567,22 @@
                 <div class="inputCell">
                     <label for="locationName" class="popupLabel">Location Name</label>
                     <input id="locationName" class="inputTextBox" type="text" autocomplete="off"/>
+                </div>
+            </div>
+        </div>
+
+        <div id="fileUploader" class="popupBox fileUploader">
+            <div class="popupCaption">
+                <div id="popupCaptionTitle" class="popupCaptionTitle">File Upload</div>
+                <div>
+                    <input id="popupAccept" class="inputAcceptButton popupCaptionButton" type="button" value="Accept"/>
+                    <input id="popupCancel" class="inputCancelButton popupCaptionButton" type="button" value="Cancel"/>
+                </div>
+            </div>
+            <div class="popupRow">
+                <div class="inputCell">
+                    <label for="fileUploadName" class="popupLabel">File Name</label>
+                    <input id="fileUploadName" class="inputTextBox" type="file" autocomplete="off"/>
                 </div>
             </div>
         </div>

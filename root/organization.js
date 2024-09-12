@@ -869,6 +869,20 @@ class CurriculumOverlay extends TableOverlay {
         this.element.find("#curriculumDeselectAll").on("click", () => {
             this.element.find(".curriculumCheckbox").prop("checked", false);
         });
+
+        this.element.find("#curriculumUpload").on("click", () => {
+            Cpi.UploadFile(
+                "/@/organization/curriculum/import",
+                "Upload Curriculum", 
+                (data) => {
+                    this.#queryCurriculum();
+                }
+            );
+        });
+
+        this.element.find("#curriculumDownload").on("click", () => {
+            Cpi.DownloadFile("/@/organization/curriculum/export", "curriculum.csv");
+        });
     }
 
     _activateOverlay() {
