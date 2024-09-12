@@ -281,7 +281,7 @@ class BenchmarkPicker {
         const subjects = $("#benchmarkPickerSearchSubject");
 
         for (const current of cpidata.organization.curriculum.search.subjects) {
-            subjects.append(`<option>${current}</option>`);
+            subjects.append(`<option>${current.name}</option>`);
         }
 
         subjects.on("change", () => {

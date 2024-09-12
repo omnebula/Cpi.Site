@@ -42,14 +42,10 @@ class OverlayController {
     }
 
     showOverlay(overlayName) {
-        if (this.#currentOverlayName) {
+        const prevOverlay = this.#overlayContexts[this.#currentOverlayName];
+        if (prevOverlay) {
             $(`input[value="${this.#currentOverlayName}"]`).toggleClass("overlaySelectorOption activeOverlaySelectorOption");
-            $(`#${this.#currentOverlayName}`).css("display", "none");
-
-            const context = this.#overlayContexts[this.#currentOverlayName];
-            if (context) {
-                context.hideOverlay();
-            }
+            prevOverlay.hideOverlay();
         }
 
         this.#currentOverlayName = overlayName;
@@ -58,9 +54,9 @@ class OverlayController {
             localStorage.setItem(this.#restoreOverlayPropertyName, this.#currentOverlayName);
         }
 
-        const context = this.#overlayContexts[this.#currentOverlayName];
-        if (context) {
-            context.showOverlay();
+        const nextOverlay = this.#overlayContexts[this.#currentOverlayName];
+        if (nextOverlay) {
+            nextOverlay.showOverlay();
         }
 
         $(`input[value="${this.#currentOverlayName}"]`).toggleClass("overlaySelectorOption activeOverlaySelectorOption");

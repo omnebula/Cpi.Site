@@ -107,7 +107,7 @@ class SchedulePage extends CpiPage {
 
         Cpi.ShowAppFrame();
         
-        this.#coursePicker = new CoursePicker(this.accountData.courses);
+        this.#coursePicker = new CoursePicker(this.accountData.options.courses);
 
         $(".appFrame").on("mousedown", () => {
             this.#selectLesson(undefined);
@@ -355,7 +355,7 @@ class SchedulePage extends CpiPage {
     }
 
     #syncInsertButtons(containerId) {
-        const maxCourses = this.accountData.courses.length;
+        const maxCourses = this.accountData.options.courses.length;
         const buttons = $(".addLesson");
         const containers = $(".scheduleLessonContainer");
 

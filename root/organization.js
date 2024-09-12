@@ -902,6 +902,7 @@ class CurriculumOverlay extends TableOverlay {
     }
 
     _deactivateOverlay() {
+        super._deactivateOverlay();
         this.#showEditButtons(false);
     }
 

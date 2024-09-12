@@ -159,7 +159,7 @@ class SummaryOverlay extends RoadmapOverlay {
         });
 
         this.#tableController._formatRow = (row, data) => {
-            row.attr("id", `${data.subject}${data.grade}`);
+            row.attr("id", this.#formatSummaryId(data.subject, data.grade));
 
             row.find("#summarySubject").text(data.subject);
             row.find("#summaryGrade").text(data.grade);
@@ -200,14 +200,18 @@ class SummaryOverlay extends RoadmapOverlay {
     }
 
     #syncSelectedStat() {
-        const id = `#${this.pageData.benchmarks.lastSubject}${this.pageData.benchmarks.lastGrade}`;
+        const id = this.#formatSummaryId(this.pageData.benchmarks.lastSubject, this.pageData.benchmarks.lastGrade);
         if (id !== "#") {
-            const row = this.#tableController.findRows(id);
+            const row = $(document.getElementById(id));
             if (row.length) {
                 this.#tableController.setSelectedRow(row);
             }
         }
         super._activateOverlay();
+    }
+
+    #formatSummaryId(subject, grade) {
+        return `#${subject}${grade}`.replace(/ /g, '-');
     }
 }
 
@@ -255,9 +259,20 @@ class BenchmarkOverlay extends RoadmapOverlay  {
         this.#scopeSelector = $("#scopeSelector");
 
         // Subject selector
+        if (!this.viewTracker.teacherId) {
+            for (const subject of roadmapPage.accountData.options.subjects) {
+                const option = document.createElement("option");
+                option.text = subject.name;
+                option.grades = subject.grades;
+                this.#subjectSelector.append(option);
+            }
+
+            this.#syncSubjectGradeOptions();
+        }
+
         this.#subjectSelector.on("change", () => {
             this.pageData.benchmarks.lastSubject = this.#subjectSelector.val();
-            this.#syncSubjectGrades(this.pageData.benchmarks.lastGrade);
+            this.#syncSubjectGradeOptions();
             this.#queryBenchmarks();
             this.savePageData();
         });
@@ -285,28 +300,7 @@ class BenchmarkOverlay extends RoadmapOverlay  {
     }
 
     _activateOverlay() {
-        this.#queryBenchmarks(true, (data) => {
-            var currentSubject = this.pageData.benchmarks.lastSubject;
-            var currentGrade = this.pageData.benchmarks.lastGrade;
-    
-            // Initialize subjects.
-            this.#subjectSelector.empty();
-            for (const subject of data.meta.subjects) {
-                const option = document.createElement("option");
-                option.value = option.text = subject.name;
-                option.grades = subject.grades;
-                this.#subjectSelector.append($(option));
-            }
-    
-            if (!currentSubject || (currentSubject === "") || (this.#subjectSelector.val(currentSubject).val() != currentSubject)) {
-                currentSubject = this.#subjectSelector.find(":first").val();
-                this.pageData.benchmarks.lastSubject = currentSubject;                
-            }
-            this.#subjectSelector.val(currentSubject);
-    
-            this.#syncSubjectGrades(currentGrade);
-            this.#populateBenchmarkTable(data.benchmarks);
-
+        this.#queryBenchmarks((data) => {
             super._activateOverlay();
 
             // Disable any subsequent referrer-lesson processing.
@@ -314,7 +308,7 @@ class BenchmarkOverlay extends RoadmapOverlay  {
         });
     }
 
-    #syncSubjectGrades(currentGrade) {
+    #syncSubjectGradeOptions() {
         this.#gradeSelector.empty();
 
         const selectedSubject = this.#subjectSelector.find(":selected");
@@ -328,6 +322,7 @@ class BenchmarkOverlay extends RoadmapOverlay  {
             }
         }
 
+        var currentGrade = this.pageData.benchmarks.lastGrade;
         if (!currentGrade || (this.#gradeSelector.val(currentGrade).val() !== currentGrade)) {
             currentGrade = this.#gradeSelector.find(":first").val();
             this.pageData.benchmarks.lastGrade = currentGrade;
@@ -336,43 +331,71 @@ class BenchmarkOverlay extends RoadmapOverlay  {
         }    
     }
 
-    #queryBenchmarks(wantMeta, successHandler) {
-        var subject = this.pageData.benchmarks.lastSubject;
-        var grade = this.pageData.benchmarks.lastGrade;
-        if (!subject || !grade) {
-            subject = "";
-            grade = "";
-        }
+    #queryBenchmarks(successHandler) {
+        // Build basic query url.
+        var subject = this.pageData.benchmarks.lastSubject || "";
+        var grade = this.pageData.benchmarks.lastGrade || "";
         var queryUrl = `/@/lesson/roadmap/benchmarks?subject=${subject}&grade=${grade}&scope=${this.pageData.benchmarks.lastScope}`;
-        if (wantMeta) {
-            queryUrl += "&wantMeta";
-        }
+
+        // Append teacherId if viewing a specific teacher, i.e., via progress page.
         if (this.viewTracker.teacherId) {
             queryUrl += `&teacherId=${this.viewTracker.teacherId}`;
+        }
+
+        // Request subject and grade options if the selectors are currently empty.
+        if (!this.#subjectSelector.find(":first").length) {
+            queryUrl += "&wantOptions";
         }
 
         Cpi.SendApiRequest({
             method: "GET",
             url: queryUrl,
             success: (data, status, xhr) => {
+                this.#populateUI(data);
+
+                if (data.stats) {
+                    const percentage = (data.stats.assigned / data.stats.total) * 100;
+                    const progress = `${percentage.toFixed(1)}% (${data.stats.assigned}/${data.stats.total})`;
+                    $("#benchmarkStatsText").text(progress);
+                }
+
                 if (successHandler) {
                     successHandler(data);
                 }
-                else {
-                    this.#populateBenchmarkTable(data.benchmarks);
-                }
-
-                const percentage = (data.stats.assigned / data.stats.total) * 100;
-                const progress = `${percentage.toFixed(1)}% (${data.stats.assigned}/${data.stats.total})`;
-                $("#benchmarkStatsText").text(progress);
             }
         });
     }
 
-    #populateBenchmarkTable(benchmarks) {
+    #populateUI(data) {
+        // Conditionally sync selected optionsreturned from the server.
+        if (data.selected) {
+            this.pageData.benchmarks.lastSubject = data.selected.subject;
+            this.pageData.benchmarks.lastGrade = data.selected.grade;
+        }
+
+        // Conditionally sync subject and grade selector options.
+        if (data.options) {
+            this.#subjectSelector.empty();
+
+            for (const subject of data.options.subjects) {
+                const option = document.createElement("option");
+                option.text = subject.name;
+                option.grades = subject.grades;
+                this.#subjectSelector.append(option);
+            }
+            
+            this.#syncSubjectGradeOptions();
+        }
+
+        // Sync selected options.
+        this.#subjectSelector.val(this.pageData.benchmarks.lastSubject);
+        this.#gradeSelector.val(this.pageData.benchmarks.lastGrade);
+        this.#scopeSelector.val(this.pageData.benchmarks.lastScope);
+
+        // Populate benchmark table.
         this.#roadmapTable.empty();
 
-        for (const benchmark of benchmarks) {
+        for (const benchmark of data.benchmarks) {
             this.#roadmapTable.appendRow(benchmark, (row, benchmark) => {
                 const benchmarkCode = row.find("#benchmarkCode");
                 benchmarkCode.text(benchmark.code);

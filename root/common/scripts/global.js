@@ -436,7 +436,7 @@ class CpiPage {
                 }
 
                 // Enable/disable teacher menu options.
-                const display = this.#accountData.classes.length ? "inline-block" : "none";
+                const display = this.#accountData.options.classes.length ? "inline-block" : "none";
                 $(".siteMenuTeacherOption").css("display", display);
             }
         }
