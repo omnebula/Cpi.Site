@@ -9,7 +9,7 @@
             "request": "launch",
             "name": "Launch Chrome",
             "url": "https://local.coreplanit.com",
-            "webRoot": "${workspaceFolder}/root"
+            "webRoot": "${workspaceFolder}/root/public"
         }
     ]
 }
