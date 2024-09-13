@@ -14,9 +14,13 @@ class Cpi {
     }
 
     static FormatIsoDateString(date) {
-        return date.toISOString().substring(0, 10);
+        return data ? date.toISOString().substring(0, 10) : "";
     }
     static FormatShortDateString(date, includeDay) {
+        if (!date) {
+            return "";
+        }
+
         if (typeof date === "string") {
             date = Cpi.ParseLocalDate(date);
         }
@@ -25,7 +29,6 @@ class Cpi {
         if (includeDay) {
             dateString = `${this.#DAY_NAMES[date.getDay()]} ${dateString}`;
         }
-
         return dateString;
     }
 
@@ -199,9 +202,72 @@ class Cpi {
         $(".appFrame").css("display", "flex");
     }
 
-    static ShowLogin() {
+    static #LoginFrame;
+    static ShowLogin(popupParams) {
+        popupParams = popupParams || {};
+
+        if (!popupParams.url) {
+            popupParams.url = "/@/account/login";
+        }
+        if (!popupParams.success) {
+            popupParams.success = (data, status, xhr) => {
+                localStorage.setItem("accountData", JSON.stringify(data));
+                window.location.reload();
+            };
+        }
+        if (!popupParams.error) {
+            popupParams.error = (xhr, status, data) => {
+                Cpi.ShowAlert(data);
+            }
+        }
+        if (!popupParams.submit) {
+            popupParams.submit = (loginParams) => {
+                $.ajax({
+                    method: "POST",
+                    url: popupParams.url,
+                    data: JSON.stringify(loginParams),
+                    success: (data, status, xhr) => {
+                        popupParams.success(data, status, xhr);
+                    },
+                    error: (xhr, status, data) => {
+                        popupParams.error(xhr, status, data);
+                    }
+                });
+            };
+        }
+
         Cpi.HideSpinner();
-        $("#loginFrame").css("display", "block");
+
+        if (!Cpi.#LoginFrame) {
+            // Dynamically insert the login panel.
+            $("body").append($.parseHTML(Cpi.#LoginHtml)[1]);
+
+            Cpi.#LoginFrame = $("#loginFrame");
+
+            $("#loginForm").on("submit", (event) => {
+                event.preventDefault();
+
+                const loginUsername = $("#loginUsername");
+                const loginPassword = $("#loginPassword");
+            
+                const loginParams = {
+                    username: loginUsername.val(),
+                    password: loginPassword.val()
+                };
+
+                loginUsername.val("");
+                loginPassword.val("");
+
+                popupParams.submit(loginParams);
+            });
+        }
+
+        Cpi.#LoginFrame.css("display", "block");
+    }
+    static HideLogin() {
+        if (Cpi.#LoginFrame) {
+            Cpi.#LoginFrame.css("display", none);
+        }
     }
 
     static ShowAlert(params) {
@@ -218,7 +284,7 @@ class Cpi {
         var alertFrame = $("#alertFrame");
         if (!alertFrame.length) {
             // Dynamically insert the alert panel.
-            $("body").append($.parseHTML(Cpi.#alertHtml)[1]);
+            $("body").append($.parseHTML(Cpi.#AlertHtml)[1]);
             alertFrame = $("#alertFrame");
         }
 
@@ -357,8 +423,7 @@ class Cpi {
     /*
     * Private Data
     */
-
-    static #alertHtml = String.raw`
+    static #AlertHtml = String.raw`
         <div id="alertFrame" class="alertFrame">
             <div id="alertBox" class="alertBox">
                 <div class="alertTitle">
@@ -372,6 +437,32 @@ class Cpi {
             </div>
         </div>
 `;
+
+    static #LoginHtml = String.raw`
+    <div id="loginFrame" class="loginFrame">
+        <div class="loginBox">
+            <div class="loginLogo"><img src="/common/images/logo-graphic.svg" class="loginLogoGraphic"><img src="/common/images/logo-text.svg" class="loginLogoText"></div>
+            <form id="loginForm">
+                <div class="inputRow">
+                    <div class="inputCell">
+                        <label class="inputLabel" for="loginUsername">Email</label>
+                        <input class="inputTextBox loginUsername" id="loginUsername" name="username" type="text"/>
+                    </div>
+                </div>
+                <div class="inputRow">
+                    <div class="inputCell">
+                        <label class="inputLabel" for="loginPassword">Password</label>
+                        <input class="inputTextBox loginPassword" id="loginPassword" name="password" type="password"/>
+                    </div>
+                </div>
+                <div class="inputRow loginSubmitRow">
+                    <input class="inputButton loginSubmit" type="submit" value="Log In"/>
+                </div>
+            </form>
+        </div>
+    </div>
+`;
+
 }
 
 Cpi.InitSiteTheme();
@@ -385,38 +476,16 @@ class CpiPage {
 
         // Dynamically insert the spinner panel.
         $("body").append($.parseHTML(this.#spinnerHtml)[1]);
+    }
 
-        // Dynamically insert the login panel.
-        $("body").append($.parseHTML(this.#loginHtml)[1]);
+    get accountData() {
+        return this.#accountData;
+    }
 
-        $("#loginForm").on("submit", (event) => {
-            event.preventDefault();
-
-            const loginUsername = $("#loginUsername");
-            const loginPassword = $("#loginPassword");
-        
-            const params = {
-                username: loginUsername.val(),
-                password: loginPassword.val()
-            };
-
-            loginUsername.val("");
-            loginPassword.val("");
-        
-            $.ajax({
-                method: "POST",
-                url: "/@/account/login",
-                data: JSON.stringify(params),
-                success: (data, status, xhr) => {
-                    localStorage.setItem("accountData", JSON.stringify(data));
-                    window.location.reload();
-                },
-                error: (xhr, status, data) => {
-                    Cpi.ShowAlert(data);
-                }
-            });
-        });
-
+    isLoggedIn() {
+        return window.cpidata && this.#accountData;
+    }
+    validateLogin() {
         this.#accountData = JSON.parse(localStorage.getItem("accountData"));
 
         if (this.isLoggedIn()) {
@@ -425,8 +494,10 @@ class CpiPage {
                 this.#onLogout();
             });
 
-            if (this.#accountData) {
+            if (this.#accountData.accessType !== "system") {
+
                 switch(this.#accountData.accessType) {
+                    case "evaluation":
                     case "organization":
                     case "location":
                         $("#siteViewManager").css("display", "inline-block");
@@ -438,28 +509,25 @@ class CpiPage {
                 // Enable/disable teacher menu options.
                 const display = this.#accountData.options.classes.length ? "inline-block" : "none";
                 $(".siteMenuTeacherOption").css("display", display);
-            }
-        }
-    }
 
-    get accountData() {
-        return this.#accountData;
-    }
-
-    isLoggedIn() {
-        return window.cpidata && this.#accountData;
-    }
-    validateLogin() {
-        if (this.isLoggedIn()) {
-            if (location.pathname !== "/" && location.pathname !== "/login") {
-                localStorage.setItem("lastVisitedPage", location.toString());
+                if (location.pathname !== "/" && location.pathname !== "/login") {
+                    localStorage.setItem("lastVisitedPage", location.toString());
+                }
             }
+
             return true;
         }
         else {
             Cpi.ShowLogin();
             return false;
         }
+    }
+
+    /*
+    * Protected
+    */
+    get _loginUrl() {
+        return "/login";
     }
 
     /*
@@ -473,7 +541,7 @@ class CpiPage {
             method: "POST",
             url: "/@/account/logout",
             success: () => {
-                window.location = "/login";
+                window.location = this._loginUrl;
             }
         });
     }
@@ -516,30 +584,5 @@ class CpiPage {
         <div id="spinnerFrame" class="spinnerFrame">
             <img src="/common/images/spinner.svg" class="spinnerImage" width="240" height="240">
         </div>
-`;
-
-    #loginHtml = String.raw`
-    <div id="loginFrame" class="loginFrame">
-        <div class="loginBox">
-            <div class="loginLogo"><img src="/common/images/logo-graphic.svg" class="loginLogoGraphic"><img src="/common/images/logo-text.svg" class="loginLogoText"></div>
-            <form id="loginForm">
-                <div class="inputRow">
-                    <div class="inputCell">
-                        <label class="inputLabel" for="loginUsername">Email</label>
-                        <input class="inputTextBox loginUsername" id="loginUsername" name="username" type="text"/>
-                    </div>
-                </div>
-                <div class="inputRow">
-                    <div class="inputCell">
-                        <label class="inputLabel" for="loginPassword">Password</label>
-                        <input class="inputTextBox loginPassword" id="loginPassword" name="password" type="password"/>
-                    </div>
-                </div>
-                <div class="inputRow loginSubmitRow">
-                    <input class="inputButton loginSubmit" type="submit" value="Log In"/>
-                </div>
-            </form>
-        </div>
-    </div>
 `;
 }

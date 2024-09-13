@@ -38,40 +38,12 @@ p {
 }
 
 
-.listTable {
-    height: 100%;
-    width: 100%
-}
-
-
-.listTableHeader {
-    text-align: left;
-    font-size: 14px;
-    font-weight: var(--list-table-header-font-weight);
-    color: var(--input-label-color);
-}
 .listCommandsColumn {
     width: 50px;
 }
 
-.listRow {
-    color: var(--list-row-color);
-}
-.listRow:hover {
-    color: white;
-    background-color: steelblue;
-}
-.listRow_selected {
-    color: white;
-    background-color: #336699;
-}
-
 .pickerListRow {
     color: #eee;
-}
-
-.listColumn {
-    padding: 6px 0;
 }
 
 

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Core Plan It - Administration</title>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/common/styles/jquery-ui.min.css" type="text/css" />
+    <link rel="stylesheet" href="/common/styles/jquery.scrolltable.css" type="text/css" />
+    <link rel="stylesheet" href="/common/styles/global.css" type="text/css" />
+    <link rel="stylesheet" href="./common/styles/OverlayController.css" type="text/css" />
+    <link rel="stylesheet" href="./console.css" type="text/css" />
+    <script type="text/javascript" src="/common/data/static.js"></script>
+    <script type="text/javascript" src="/common/scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="/common/scripts/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/common/scripts/jquery.scrolltable.js"></script>
+    <script type="text/javascript" src="/common/scripts/global.js"></script>
+    <script type="text/javascript" src="/common/classes/DataTable.js"></script>
+    <script type="text/javascript" src="/common/classes/EntityBroker.js"></script>
+    <script type="text/javascript" src="/common/classes/EntityPicker.js"></script>
+    <script type="text/javascript" src="/common/classes/EditController.js"></script>
+    <script type="text/javascript" src="/common/classes/TableController.js"></script>
+    <script type="text/javascript" src="/common/classes/OverlayController.js"></script>
+    <script type="text/javascript" src="./classes/AdminPage.js"></script>
+    <script type="text/javascript" src="./console.js" defer></script>
+</head>
+
+<body>
+    <div class="appFrame">
+        <div class="pageFrame">
+            <header>
+                <div class="siteLogo"><img src="/common/images/logo-graphic.svg" class="siteLogoGraphic"><img src="/common/images/logo-text.svg" class="siteLogoText"></div>
+                <div class="siteNavigation">
+                    <div id="pageTitle" class="pageTitle">Administration Console</div>
+                    <div id="siteMenu" class="siteMenu">
+                        <div class="siteCurrentMenuOption">console</div>
+                        <a class="siteLastMenuOption" id="siteLogout">logout</a>
+                    </div>
+                </div>
+            </header>
+        
+            <main>
+                <!-- Selectors  -->
+                <div class="inputColumn overlaySelector">
+                </div>
+
+                <!-- Overlays -->
+                <div class="inputColumn overlaySection">
+
+                    <div id="Organizations" class="overlayPanel">
+                        <div class="overlayContent">
+                            <table id="organizationTable" class="scrollTable listTable" cellpadding="0" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th class="listTableHeader organizationNameColumn">Organization Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr id="organizationRow" class="listRow">
+                                        <td id="organizationNameColumn" class="listColumn organizationNameColumn"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="overlayCommands">
+                            <div class="overlayCommandGroup">
+                                <input id="addOrganization" type="button" class="inputButton overlayCommandButton" value="Add Organization..."/>
+                                <input id="editOrganization" type="button" class="inputButton overlayCommandButton" value="Edit Organization..." disabled/>
+                                <input id="deleteOrganization" type="button" class="inputButton overlayCommandButton" value="Delete Organization" disabled/>
+                            </div>
+                            <div class="overlayCommandGroup">
+                                <input id="sendInvite" type="button" class="inputButton overlayCommandButton" value="Send Invite" disabled/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        
+            <footer>
+        
+            </footer>
+    
+        </div>
+    
+    </div>
+    <div class="popupFrame">
+
+        <div id="organizationEditor" class="popupBox organizationEditor">
+            <div class="popupCaption">
+                <div id="popupCaptionTitle" class="popupCaptionTitle">Organization</div>
+                <div>
+                    <input id="popupAccept" class="inputAcceptButton popupCaptionButton" type="button" value="Accept"/>
+                    <input id="popupCancel" class="inputCancelButton popupCaptionButton" type="button" value="Cancel"/>
+                </div>
+            </div>
+            <div class="popupRow">
+                <div class="inputCell">
+                    <label for="organizationName" class="popupLabel">Organization Name</label>
+                    <input id="organizationName" class="inputTextBox" type="text" autocomplete="off"/>
+                </div>
+            </div>
+            <div class="popupRow">
+                <div class="inputCell">
+                    <label for="organizationCurriculumCode" class="popupLabel">Curriculum Standards</label>
+                    <select id="organizationCurriculumCode" class="inputSelect">
+                        <option value="FLCS">Florida State Core Standards</option>
+                    </select>
+            </div>
+            </div>
+            <div class="popupRow">
+                <div class="inputCell">
+                    <label for="organizationDomainName" class="popupLabel">Domain Name</label>
+                    <input id="organizationDomainName" class="inputTextBox" type="text" autocomplete="off"/>
+                </div>
+            </div>
+            <div id="insertControls">
+                <div class="popupRow">
+                    <div class="inputCell">
+                        <label for="principalLirstName" class="popupLabel">Principal First Name</label>
+                        <input id="principalFirstName" class="inputTextBox" type="text" autocomplete="off"/>
+                    </div>
+                    <div class="inputCell">
+                        <label for="principalLastName" class="popupLabel">Principal Last Name</label>
+                        <input id="principalLastName" class="inputTextBox" type="text" autocomplete="off"/>
+                    </div>
+                </div>
+                <div class="popupRow">
+                    <div class="inputCell">
+                        <label for="principalEmail" class="popupLabel">Principal Email</label>
+                        <input id="principalEmail" class="inputTextBox" type="text" autocomplete="off"/>
+                    </div>
+                </div>
+            </div>
+            <div id="editControls">
+                <div class="popupRow">
+                    <div class="inputCell">
+                        <label for="principalId" class="popupLabel">Principal Account</label>
+                        <select id="principalId" class="inputSelect">
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>

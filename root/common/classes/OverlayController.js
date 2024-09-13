@@ -114,12 +114,19 @@ class TableOverlay extends OverlayContext {
         this.#tableController.insertEntity = this.insertEntity || this.#tableController.insertEntity;
         this.#tableController.updateEntity = this.updateEntity || this.#tableController.updateEntity;
         this.#tableController.deleteEntity = this.deleteEntity || this.#tableController.deleteEntity;
-        this.#tableController._getEditorData = this._getEditorData || this.#tableController._getEditorData;
-        this.#tableController._setEditorData = this._setEditorData || this.#tableController._setEditorData;
+        this.#tableController._getEditorData = this._getEditorData ? (editor) => { return this._getEditorData(editor); } : this.#tableController._getEditorData;
+        this.#tableController._setEditorData = this._setEditorData ? (editor, data) => { this._setEditorData(editor, data); } : this.#tableController._setEditorData;
+
+        this.#tableController._beginAddEntity = this._beginAddEntity ? () => { this._beginAddEntity(); } : this.#tableController._beginAddEntity;
+        this.#tableController._beginEditEntity = this._beginEditEntity ? () => { this._beginEditEntity(); } : this.#tableController._beginEditEntity;
     }
 
     get tableController() {
         return this.#tableController;
+    }
+
+    get editor() {
+        return this.#tableController.editor;
     }
 
     _activateOverlay() {

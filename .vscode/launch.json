@@ -7,9 +7,16 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Launch Chrome",
+            "name": "Launch Public",
             "url": "https://local.coreplanit.com",
             "webRoot": "${workspaceFolder}/root/public"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch Admin",
+            "url": "https://local-admin.coreplanit.com",
+            "webRoot": "${workspaceFolder}/root/admin"
         }
     ]
 }

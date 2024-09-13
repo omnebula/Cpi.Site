@@ -7,18 +7,6 @@
 
 
 
-.listTable {
-    height: 100%;
-    width: 100%
-}
-
-.listTableHeader {
-    text-align: left;
-    font-size: 14px;
-    font-weight: var(--list-table-header-font-weight);
-    color: var(--input-label-color);
-}
-
 .listRow {
     color: var(--list-row-color);
 }

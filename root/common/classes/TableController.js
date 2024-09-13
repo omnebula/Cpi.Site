@@ -99,6 +99,10 @@ class TableController {
 
     /* Housekeeping Interface */
     onAddEntity() {
+        if (this._beginAddEntity) {
+            this._beginAddEntity();
+        }
+
         this.#showEditor(`Add ${this.#entityCaption}`, undefined, (data) => {
             this.#entityBroker.insertEntity(data, (data) => {
                 // Insert the new table row.
@@ -113,6 +117,10 @@ class TableController {
 
     onEditEntity() {
         if (this.#editor) {
+            if (this._beginEditEntity) {
+                this._beginEditEntity();
+            }
+
             const row = this.getSelectedRow();
             if (row) {
                 // Fetch entity data from the datasource

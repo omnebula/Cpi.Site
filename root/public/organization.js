@@ -547,9 +547,7 @@ class AccountOverlay extends TableOverlay {
                 data: JSON.stringify(params),
                 success: (data) => {
                     row.find("#accountStatusColumn").text(data.statusType);
-
-                    const registrationUrl = `${window.location.protocol}//${window.location.host}/registration?id=${data.invitationId}`
-                    Cpi.ShowAlert(registrationUrl);
+                    Cpi.ShowAlert(data.registrationUrl);
                 }
             });
         }
