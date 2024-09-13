@@ -15,7 +15,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "Launch Admin",
-            "url": "https://local-admin.coreplanit.com",
+            "url": "https://admin-local.coreplanit.com",
             "webRoot": "${workspaceFolder}/root/admin"
         }
     ]

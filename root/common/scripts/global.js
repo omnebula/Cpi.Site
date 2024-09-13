@@ -14,7 +14,7 @@ class Cpi {
     }
 
     static FormatIsoDateString(date) {
-        return data ? date.toISOString().substring(0, 10) : "";
+        return date ? date.toISOString().substring(0, 10) : "";
     }
     static FormatShortDateString(date, includeDay) {
         if (!date) {
