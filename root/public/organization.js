@@ -2,6 +2,7 @@
 
 class OrganizationPage extends CpiPage {
     #overlayController;
+    #accessOptions;
 
     constructor() {
         super();
@@ -10,16 +11,29 @@ class OrganizationPage extends CpiPage {
             return;
         }
 
-        const overlays = [
-            new SettingsOverlay(),
-            new CalendarOverlay(),
-            //new StudentOverlay(),
-            new AccountOverlay(),
-            new ClassOverlay(),
-            new CourseOverlay(),
-            new LocationOverlay(),
-            new CurriculumOverlay()
-        ];
+        var overlays;
+        if (this.accountData.accessType === "evaluation") {
+            overlays = [
+                new SettingsOverlay(),
+                new CalendarOverlay(),
+                //new StudentOverlay(),
+                new ClassOverlay(),
+                new CourseOverlay(),
+                new CurriculumOverlay()
+            ];
+        }
+        else {
+            overlays = [
+                new SettingsOverlay(),
+                new CalendarOverlay(),
+                //new StudentOverlay(),
+                new AccountOverlay(),
+                new ClassOverlay(),
+                new CourseOverlay(),
+                new LocationOverlay(),
+                new CurriculumOverlay()
+            ];
+        }
         this.#overlayController = new OverlayController(overlays, "organizationOverlayName");
 
         Cpi.ShowAppFrame();
@@ -488,6 +502,10 @@ class AccountOverlay extends TableOverlay {
         $("#viewTeacherRoadmap").on("click", (event) => {
             this.#viewAccountDetail("roadmap", event.ctrlKey);
         });
+
+        if (cpidata.server.evaluation) {
+            $("#accountEditor #accessType").append("<option value='evaluation'>Evaluation</option>");
+        }
     }
 
     _formatRow(row, account) {
