@@ -154,6 +154,16 @@ class Cpi {
     }
 
 
+    static InitAutoDateFormatter(dateElement)
+    {
+        dateElement.on("blur", () => {
+            const string = dateElement.val();
+            const date = new Date(string);
+            dateElement.val(Cpi.FormatShortDateString(date));
+        });
+    }
+
+
     static SendApiRequest(params)
     {
         if (!params.hideSpinner) {

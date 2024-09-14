@@ -224,6 +224,9 @@ class CalendarOverlay extends OverlayContext {
         this.#calendarEditController = new CalendarEditController(this);
         this.#holidayTableController = new HolidayTableController();
 
+        Cpi.InitAutoDateFormatter($("#calendarStartDate"));
+        Cpi.InitAutoDateFormatter($("#calendarEndDate"));
+
         $("#addCalendar").on("click", () => {
             this.#isNewCalendar = true;
 
@@ -344,6 +347,9 @@ class HolidayTableController extends TableController {
             deleteButton: $("#deleteHoliday"),
             editor: $("#holidayEditor")
         });
+
+        Cpi.InitAutoDateFormatter($("#holidayEditor #startDate"));
+        Cpi.InitAutoDateFormatter($("#holidayEditor #endDate"));
     }
 
     getHolidays() {
