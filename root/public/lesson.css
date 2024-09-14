@@ -228,11 +228,12 @@ main {
 
 .pickerInput {
     padding: 4px 8px;
-    border: 1px solid steelblue;
+    border: 1px solid var(--input-button-background-color);
 }
 .pickerSelect {
-    padding: 2px 4px;
-    border: 1px solid steelblue;
+    padding: 3px 8px;
+    border: 0;
+    background-color: var(--input-button-background-color);
 }
 .pickerSelect:active {
     border-color: lightsteelblue;

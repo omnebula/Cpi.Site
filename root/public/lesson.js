@@ -270,38 +270,40 @@ class BenchmarkPicker {
     #rowContainer;
     #rowTemplate;
     #exclusions;
+    #subjectSelector;
+    #gradeSelector;
 
     constructor(initialSubject, initialGrade) {
         // Extract pick list elements.
         this.#pickerResults = $("#benchmarkPickerResults");
         this.#rowContainer = this.#pickerResults.find("#benchmarkPickerRowContainer");
         this.#rowTemplate = this.#rowContainer.find("#benchmarkPickerRow").detach();
+        this.#subjectSelector = $("#benchmarkPickerSearchSubject");
+        this.#gradeSelector = $("#benchmarkPickerSearchGrade");
 
         // Initialize subject dropdown.
-        const subjects = $("#benchmarkPickerSearchSubject");
-
         for (const current of cpidata.organization.curriculum.search.subjects) {
-            subjects.append(`<option>${current.name}</option>`);
+            const option = document.createElement("option");
+            option.text = current.name;
+            option.grades = current.grades;
+            this.#subjectSelector.append(option);
         }
-
-        subjects.on("change", () => {
-            this.#searchBenchmarks();
-        });
 
         if (initialSubject) {
-            subjects.val(initialSubject);
+            this.#subjectSelector.val(initialSubject);
         }
 
-        // Initialize grade dropdown.
-        const grades = $("#benchmarkPickerSearchGrade");
+        this.#syncGradeOptions(initialGrade);
 
-        grades.on("change", () => {
+        // Initialize grade dropdown.
+        this.#subjectSelector.on("change", () => {
+            this.#syncGradeOptions();
             this.#searchBenchmarks();
         });
 
-        if (initialGrade) {
-            grades.val(initialGrade);
-        }
+        this.#gradeSelector.on("change", () => {
+            this.#searchBenchmarks();
+        });
 
         // Initialize keyword input.
         const keyword = $("#benchmarkPickerSearchKeyword");
@@ -331,9 +333,24 @@ class BenchmarkPicker {
         this.#searchBenchmarks(success);
     }
 
+    #syncGradeOptions(initialGrade) {
+        this.#gradeSelector.empty();
+
+        const selectedSubject = this.#subjectSelector.find(":selected");
+        if (selectedSubject.length) {
+            for (const grade of selectedSubject[0].grades) {
+                this.#gradeSelector.append(`<option>${grade}</option>`);
+            }
+        }
+
+        if (!initialGrade || (this.#gradeSelector.val(initialGrade).val() != initialGrade)) {
+            this.#gradeSelector.val(this.#gradeSelector.find(":first").text());
+        }
+    }
+
     #searchBenchmarks(success) {
-        const subject = $("#benchmarkPickerSearchSubject").val();
-        const grade = $("#benchmarkPickerSearchGrade").val();
+        const subject = this.#subjectSelector.val();
+        const grade = this.#gradeSelector.val();
         const keyword = $("#benchmarkPickerSearchKeyword").val() || "";
 
         // N.B.: Query the opposite of what the button displays.
@@ -375,7 +392,8 @@ class BenchmarkPicker {
                     this.#benchmarkPicker.find("#popupAccept").trigger("click");
                 });
 
-            row.find("#benchmarkPickerCheckbox").attr("id", current.benchmarkId);
+            const checkbox = row.find("#benchmarkPickerCheckbox");
+            checkbox.attr("id", current.benchmarkId);
     
             const code = row.find("#benchmarkPickerCode");
             code.text(current.standardCode).attr("href", current.referenceUrl);
@@ -388,6 +406,9 @@ class BenchmarkPicker {
             if (current.assigned) {
                 synopsis.css("color", "#aaa");
             }
+            synopsis.on("click", () => {
+                checkbox.trigger("click");
+            });
 
             this.#rowContainer.append(row);
         }
