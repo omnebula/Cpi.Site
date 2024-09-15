@@ -408,9 +408,12 @@ class BenchmarkOverlay extends RoadmapOverlay  {
                 synopsis.html(benchmark.synopsis);
 
                 const lessonColumn = row.find("#benchmarkLesson");
-                lessonColumn.on("click", () => {
-                    this.#showLessonCreator(lessonColumn, benchmark.id);
-                });
+                
+                if (!this.roadmapPage.viewTracker.isActive) {
+                    lessonColumn.on("click", () => {
+                        this.#showLessonCreator(lessonColumn, benchmark.id);
+                    });
+                }
 
                 var isReferrerLesson = false;
                 if (benchmark.lessons.length) {
