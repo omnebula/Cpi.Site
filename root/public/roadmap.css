@@ -29,18 +29,6 @@
 }
 
 
-.listTableHeader {
-    text-align: left;
-    font-size: 14px;
-    color: var(--input-label-color);
-    font-weight: var(--list-table-font-weight);
-}
-.listRow {
-    color: var(--list-row-color);
-}
-.listColumn {
-    padding: 16px 0;
-}
 #Summary .listColumn {
     padding: 10px 0;
 }
@@ -51,6 +39,10 @@
 #Summary .listRow_selected {
     color: white;
     background-color: #336699;
+}
+
+#Benchmarks .listColumn {
+    padding: 16px 0;
 }
 
 
@@ -171,4 +163,12 @@
     color: white;
 }
 .lessonName {
+}
+
+
+#lessonDate {
+    width: 160px;
+}
+#lessonCourse {
+    width: 180px;
 }

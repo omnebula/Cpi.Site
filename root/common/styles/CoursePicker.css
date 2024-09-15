@@ -1,0 +1,60 @@
+
+
+.coursePicker {
+    width: 400px;
+    flex: 0;
+}
+
+.courseTable {
+    width: 100%;
+}
+
+.courseTableBody {
+    vertical-align: top;;
+}
+
+.courseNameColumn {
+    width: 50%;
+}
+
+.pickerListColumn {
+    padding: 3px 0;
+}
+.pickerCaption {
+    margin-bottom: 0;
+}
+.pickerCaptionButton {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    height: 100%;
+}
+.pickerSelectButton {
+    width: 100px;
+    border-radius: 4px;
+}
+.pickerRow {
+    margin: 0 12px 12px 12px;
+}
+.pickerSelectColumn {
+    width: 40px;
+}
+.classNameColumn {
+    text-align: right;
+}
+
+.pickerDateCell {
+    flex-direction: row;
+    align-items: center;    
+}
+.pickerDateRow {
+    margin-top: 12px;
+}
+.courseDateLabel {
+    display: inline-block;
+    margin-right: 8px;
+}
+.courseLessonDate {
+    width: 150px;
+    padding: 4px 8px;
+}
+

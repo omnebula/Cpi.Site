@@ -223,11 +223,14 @@ class BenchmarkOverlay extends RoadmapOverlay  {
     #gradeSelector;
     #scopeSelector;
     #referrerLessonId;
+    #coursePicker;
 
     constructor(roadmapPage) {
         super(
             roadmapPage, { overlayName: "Benchmarks" }
         );
+
+        this.#coursePicker = new CoursePicker(this.roadmapPage);
 
         // Extract the lesson bubble template.
         this.#lessonTemplate = $("#lessonBubble").detach();
@@ -404,20 +407,19 @@ class BenchmarkOverlay extends RoadmapOverlay  {
                 const synopsis = row.find("#benchmarkSynopsis");
                 synopsis.html(benchmark.synopsis);
 
+                const lessonColumn = row.find("#benchmarkLesson");
+                lessonColumn.on("click", () => {
+                    this.#showLessonCreator(lessonColumn, benchmark.id);
+                });
+
                 var isReferrerLesson = false;
                 if (benchmark.lessons.length) {
                     synopsis.addClass("benchmarkSynopsis_assigned");
 
-                    const lessonColumn = row.find("#benchmarkLesson");
                     for (const lesson of benchmark.lessons) {
-                        const lessonBubble = this.#lessonTemplate.clone(true);
-    
-                        lessonBubble.find("#lessonName").text(lesson.name);
-    
-                        lessonBubble.find("#lessonDate").text(Cpi.FormatShortDateString(lesson.date));
-    
-                        lessonBubble.find("#lessonLink").attr("href", `/lesson?id=${lesson.id}${this.viewTracker.viewParams}`);
-    
+
+                        const lessonBubble = this.#createLessonBubble(lesson);
+                        
                         lessonColumn.append(lessonBubble);
 
                         isReferrerLesson = isReferrerLesson || (lesson.id === this.#referrerLessonId);
@@ -433,6 +435,55 @@ class BenchmarkOverlay extends RoadmapOverlay  {
         this.#roadmapTable.stripeRows();
     }
 
+    #createLessonBubble(lesson) {
+        const lessonBubble = this.#lessonTemplate.clone(true);
+        lessonBubble.on("click", (event) => {
+            event.stopPropagation();
+        });
+
+        lessonBubble.find("#lessonName").text(lesson.name || lesson.lessonName);
+
+        lessonBubble.find("#lessonDate").text(Cpi.FormatShortDateString(lesson.date || lesson.lessonDate));
+
+        lessonBubble.find("#lessonLink").attr("href", `/lesson?id=${lesson.id || lesson.lessonId}${this.viewTracker.viewParams}`);
+
+        return lessonBubble;
+    }
+
+    #showLessonCreator(lessonColumn, benchmarkId) {
+        this.#coursePicker.show({
+            accept: (result) => {
+                if (result.selection.length) {
+                    const params = {
+                        lessonDate: result.lessonDate,
+                        lessons: []
+                    };
+
+                    for (const current of result.selection) {
+                        params.lessons.push({
+                            courseId: current.courseId,
+                            classId: current.classId,
+                            benchmarks : [
+                                benchmarkId
+                            ]
+                        });
+                    }
+    
+                    Cpi.SendApiRequest({
+                        method: "PUT",
+                        url: "/@/lesson/batch",
+                        data: JSON.stringify(params),
+                        success: (results, status, xhr) => {
+                            for (const lesson of results) {
+                                const lessonBubble = this.#createLessonBubble(lesson);
+                                lessonColumn.append(lessonBubble);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
 }
 
 

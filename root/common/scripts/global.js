@@ -298,7 +298,7 @@ class Cpi {
             alertFrame = $("#alertFrame");
         }
 
-        alertFrame.find("#alertCaption").html(caption);
+        alertFrame.find("#alertCaption").html(caption || "Alert");
         alertFrame.find("#alertMessage").html(message);
 
         alertFrame.find("#popupCancel")

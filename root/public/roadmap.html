@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="/common/styles/jquery-ui.min.css" type="text/css" />
     <link rel="stylesheet" href="/common/styles/jquery.scrolltable.css" type="text/css" />
     <link rel="stylesheet" href="/common/styles/global.css" type="text/css" />
-    <link rel="stylesheet" href="./common/styles/OverlayController.css" type="text/css" />
+    <link rel="stylesheet" href="/common/styles/OverlayController.css" type="text/css" />
+    <link rel="stylesheet" href="/common/styles/CoursePicker.css" type="text/css" />
     <link rel="stylesheet" href="./roadmap.css" type="text/css" />
     <script type="text/javascript" src="/common/data/static.js"></script>
     <script type="text/javascript" src="/common/scripts/jquery.min.js"></script>
@@ -18,6 +19,7 @@
     <script type="text/javascript" src="/common/classes/TableController.js"></script>
     <script type="text/javascript" src="/common/classes/OverlayController.js"></script>
     <script type="text/javascript" src="/common/classes/ViewTracker.js"></script>
+    <script type="text/javascript" src="/common/classes/CoursePicker.js"></script>
     <script type="text/javascript" src="./roadmap.js" defer></script>
 
 </head>
@@ -135,6 +137,69 @@
             </main>
 		</div>
 	</div>
+    <div class="popupFrame">
 
+        <div id="lessonCreator" class="popupBox lessonCreator">
+            <div class="popupCaption">
+                <div id="popupCaptionTitle" class="popupCaptionTitle">Create Lesson</div>
+                <div>
+                    <input id="popupAccept" class="inputAcceptButton popupCaptionButton" type="button" value="Accept"/>
+                    <input id="popupCancel" class="inputCancelButton popupCaptionButton" type="button" value="Cancel"/>
+                </div>
+            </div>
+            <div class="popupRow">
+                <div class="inputCell">
+                    <label for="lessonDate" class="popupLabel">Date</label>
+                    <input id="lessonDate" class="inputTextBox holidayEditorDate" type="text" autocomplete="off"/>
+                </div>
+                <div class="inputCell">
+                    <label for="lessonCourse" class="popupLabel">Course</label>
+                    <select id="lessonCourse" class="inputSelect">
+                    </select>
+                </div>
+                <div class="inputCell">
+                    <label for="lessonClass" class="popupLabel">Class</label>
+                    <select id="lessonClass" class="inputSelect">
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div id="coursePicker" class="popupBox coursePicker">
+            <div class="popupCaption pickerCaption">
+                <div id="popupCaptionTitle" class="popupCaptionTitle">
+                    <input id="selectAll" type="button" class="inputButton popupCaptionButton pickerSelectButton" value="Select All"/>
+                    <input id="deselectAll" type="button" class="inputButton popupCaptionButton pickerSelectButton" value="Deselect All"/>
+                </div>
+                <div>
+                    <input id="popupAccept" class="inputAcceptButton popupCaptionButton" type="button" value="Accept"/>
+                    <input id="popupCancel" class="inputCancelButton popupCaptionButton" type="button" value="Cancel"/>
+                </div>
+            </div>
+            <div class="popupRow pickerRow pickerDateRow">
+                <div class="inputCell pickerDateCell">
+                    <label class="popupLabel courseDateLabel">Lesson Date:</label><input id="lessonDate" class="inputTextBox courseLessonDate" type="text" placeholder="Lesson Date" autocomplete="off"/>
+                </div>
+            </div>
+            <div class="popupRow pickerRow">
+                <table id="courseTable" class="scrollTable listTable courseTable" cellpadding="0" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th class="listTableHeader" colspan="2">Course</th>
+                            <th class="listTableHeader classNameColumn">Class</th>
+                        </tr>
+                    </thead>
+                    <tbody id="courseTableBody" class="courseTableBody">
+                        <tr id="courseRow" class="listRow">
+                            <td class="pickerListColumn pickerSelectColumn"><input class="pickerCheckbox" type="checkbox"/></td>
+                            <td id="courseName" class="pickerListColumn pickerToggleColumn courseNameColumn"></td>
+                            <td id="className" class="pickerListColumn pickerToggleColumn classNameColumn"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+    </div>
 </body>
 </html>

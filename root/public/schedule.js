@@ -13,6 +13,8 @@ class SchedulePage extends CpiPage {
             return;
         }
 
+        this.#coursePicker = new CoursePicker(this);
+
         // Detect view-only mode.
         this.#viewTracker = new ViewTracker();
 
@@ -107,8 +109,6 @@ class SchedulePage extends CpiPage {
 
         Cpi.ShowAppFrame();
         
-        this.#coursePicker = new CoursePicker(this.accountData.options.courses);
-
         $(".appFrame").on("mousedown", () => {
             this.#selectLesson(undefined);
         });
@@ -149,34 +149,35 @@ class SchedulePage extends CpiPage {
             exclusions.push($(current).attr("courseId") + $(current).attr("classId"));
         }
 
-        this.#coursePicker.show(exclusions, (selection) => {
-            lessonDate = Cpi.FormatIsoDateString(lessonDate);
+        this.#coursePicker.show({
+            lessonDate: lessonDate,
+            exclusions: exclusions,
+            accept: (result) => {
+                const params = {
+                    lessonDate: result.lessonDate,
+                    lessons: []
+                }
 
-            const params = {
-                lessonDate: lessonDate,
-                lessons: []
-            }
-
-            for (const current of selection) {
-                params.lessons.push({
-                    courseId: current.courseId,
-                    classId: current.classId
-                });
-            }
-
-            if (params.lessons.length) {
-                Cpi.SendApiRequest({
-                    method: "PUT",
-                    url: `/@/lesson/batch`,
-                    data: JSON.stringify(params),
-                    success: (results, status, xhr) => {
-                        this.#populateSchedule(results);
-
-                        // Update insert-lesson button visibility.
-                        this.#syncInsertButtons(containerId);
+                if (result.selection.length) {
+                    for (const current of result.selection) {
+                        params.lessons.push({
+                            courseId: current.courseId,
+                            classId: current.classId
+                        });
                     }
-                });
-       
+    
+                    Cpi.SendApiRequest({
+                        method: "PUT",
+                        url: `/@/lesson/batch`,
+                        data: JSON.stringify(params),
+                        success: (results, status, xhr) => {
+                            this.#populateSchedule(results);
+
+                            // Update insert-lesson button visibility.
+                            this.#syncInsertButtons(containerId);
+                        }
+                    });
+                }
             }
         });
     }
@@ -379,69 +380,6 @@ class SchedulePage extends CpiPage {
 
             ++index;  
         }
-    }
-}
-
-
-class CoursePicker {
-    #popup = $("#coursePicker");
-    #courseContainer = $("#courseTableBody");
-
-    constructor(courses) {
-        // Mass selection button.
-        this.#popup.find("#selectAll").on("click", () => {
-            this.#courseContainer.find("input[type=checkbox]").prop("checked", true);
-        });
-        this.#popup.find("#deselectAll").on("click", () => {
-            this.#courseContainer.find("input[type=checkbox]").prop("checked", false);
-        });
-
-        // Init table contents
-        const courseRowTemplate = this.#courseContainer.find("#courseRow").detach();
-        
-        for (const current of courses) {
-            const row = courseRowTemplate.clone(true);
-
-            row.attr("id", current.courseId + current.classId);
-            row.attr("courseId", current.courseId);
-            row.attr("classId", current.classId);
-            row.find("#courseName").text(current.courseName);
-            row.find("#className").text(current.className);
-
-            this.#courseContainer.append(row);
-        }
-    }
-
-    show(exclusions, accept) {
-        this.#courseContainer.children().css("display", "table-row");
-        this.#courseContainer.find("input:checked").prop("checked", false);
-
-        if (exclusions) {
-            for (const current of exclusions) {
-                this.#courseContainer.find(`#${current}`).css("display", "none");
-            }
-        }
-
-        Cpi.ShowPopup("#coursePicker", () => {
-            this.#acceptSelection(accept);
-        });
-    }
-
-    #acceptSelection(accept) {
-        const selection = [];
-        const checkboxes = this.#courseContainer.find("input:checked");
-
-        for (const current of checkboxes) {
-            const row = $(current).parent().parent();
-            if (row.css("display") !== "none") {
-                selection.push({
-                    courseId: row.attr("courseId"),
-                    classId: row.attr("classId")
-                });
-            }
-        }
-
-        accept(selection);
     }
 }
 
