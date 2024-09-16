@@ -15,12 +15,9 @@ class OverlayController {
             if (this.#restoreOverlayPropertyName) {
                 initialOverlayName = localStorage.getItem(this.#restoreOverlayPropertyName);
             }
-            else {
-                initialOverlayName = contexts[0].name;
-            }
         }
 
-        this.showOverlay(initialOverlayName);
+        this.showOverlay(initialOverlayName || contexts[0].name);
     }
 
     get currentOverlayName() {

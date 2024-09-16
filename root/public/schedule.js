@@ -235,6 +235,14 @@ class SchedulePage extends CpiPage {
     
             // Init name.
             lesson.find("#scheduleLessonName").text(current.lessonName);
+
+            // Init detail list.
+            if (current.details && current.details.length) {
+                const detailList = lesson.find("#scheduleLessonDetailList");
+                for (const name of current.details) {
+                    detailList.append(`<div class="scheduleLessonDetail">${name}</div>`);
+                }
+            }
     
             // Init command bar.
             if (!this.#viewTracker.isActive) {
