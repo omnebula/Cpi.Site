@@ -408,7 +408,7 @@ class BenchmarkOverlay extends RoadmapOverlay  {
                 synopsis.html(benchmark.synopsis);
 
                 const lessonColumn = row.find("#benchmarkLesson");
-                
+
                 if (!this.roadmapPage.viewTracker.isActive) {
                     lessonColumn.on("click", () => {
                         this.#showLessonCreator(lessonColumn, benchmark.id);
@@ -474,7 +474,7 @@ class BenchmarkOverlay extends RoadmapOverlay  {
     
                     Cpi.SendApiRequest({
                         method: "PUT",
-                        url: "/@/lesson/batch",
+                        url: "/@/lesson",
                         data: JSON.stringify(params),
                         success: (results, status, xhr) => {
                             for (const lesson of results) {

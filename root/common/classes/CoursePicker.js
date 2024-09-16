@@ -16,6 +16,9 @@ class CoursePicker {
             this.#courseContainer.find("input[type=checkbox]").prop("checked", false);
         });
 
+        // Lesson Date.
+        Cpi.InitAutoDateFormatter(this.#popup.find("#lessonDate"));
+
         // Init table contents
         const courseRowTemplate = this.#courseContainer.find("#courseRow").detach();
         

@@ -168,7 +168,7 @@ class SchedulePage extends CpiPage {
     
                     Cpi.SendApiRequest({
                         method: "PUT",
-                        url: `/@/lesson/batch`,
+                        url: `/@/lesson`,
                         data: JSON.stringify(params),
                         success: (results, status, xhr) => {
                             this.#populateSchedule(results);
