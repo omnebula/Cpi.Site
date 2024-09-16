@@ -50,6 +50,9 @@ class RoadmapPage extends CpiPage
         const searchSubject = this.viewTracker.searchParams.get("subject");
         const searchGrade = this.viewTracker.searchParams.get("grade");
         if (searchSubject && searchGrade) { // all or nothing
+            if (!this.#pageData.benchmarks) {
+                this.#pageData.benchmarks = {};
+            }
             this.#pageData.benchmarks.lastSubject = searchSubject;
             this.#pageData.benchmarks.lastGrade = searchGrade;
             this.#pageData.benchmarks.lastScope = "all";
@@ -336,9 +339,10 @@ class BenchmarkOverlay extends RoadmapOverlay  {
 
     #queryBenchmarks(successHandler) {
         // Build basic query url.
-        var subject = this.pageData.benchmarks.lastSubject || "";
-        var grade = this.pageData.benchmarks.lastGrade || "";
-        var queryUrl = `/@/lesson/roadmap/benchmarks?subject=${subject}&grade=${grade}&scope=${this.pageData.benchmarks.lastScope}`;
+        const subject = this.pageData.benchmarks.lastSubject || "";
+        const grade = this.pageData.benchmarks.lastGrade || "";
+        const scope = this.pageData.benchmarks.lastScope || "all";
+        var queryUrl = `/@/lesson/roadmap/benchmarks?subject=${subject}&grade=${grade}&scope=${scope}`;
 
         // Append teacherId if viewing a specific teacher, i.e., via progress page.
         if (this.viewTracker.teacherId) {
@@ -370,7 +374,7 @@ class BenchmarkOverlay extends RoadmapOverlay  {
     }
 
     #populateUI(data) {
-        // Conditionally sync selected optionsreturned from the server.
+        // Conditionally sync selected options returned from the server.
         if (data.selected) {
             this.pageData.benchmarks.lastSubject = data.selected.subject;
             this.pageData.benchmarks.lastGrade = data.selected.grade;
@@ -455,6 +459,10 @@ class BenchmarkOverlay extends RoadmapOverlay  {
 
     #showLessonCreator(lessonColumn, benchmarkId) {
         this.#coursePicker.show({
+            selection: {
+                subject: this.pageData.benchmarks.lastSubject,
+                grade: this.pageData.benchmarks.lastGrade
+            },
             accept: (result) => {
                 if (result.selection.length) {
                     const params = {

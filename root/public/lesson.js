@@ -295,7 +295,7 @@ class BenchmarkPicker {
 
         this.#syncGradeOptions(initialGrade);
 
-        // Initialize grade dropdown.
+        // Initialize option change handlers.
         this.#subjectSelector.on("change", () => {
             this.#syncGradeOptions();
             this.#searchBenchmarks();
@@ -334,6 +334,8 @@ class BenchmarkPicker {
     }
 
     #syncGradeOptions(initialGrade) {
+        initialGrade = initialGrade || this.#gradeSelector.val();
+
         this.#gradeSelector.empty();
 
         const selectedSubject = this.#subjectSelector.find(":selected");
