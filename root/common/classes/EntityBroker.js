@@ -95,6 +95,18 @@ class EntityBroker {
         }
     }
 
+    importEntities(url, caption, success) {
+        url = url || `/@/${this.#entityName}/import`;
+        caption = caption || `Upload ${"#entitySetName"}`;
+        Cpi.UploadFile(url, caption, success);
+    }
+
+    exportEntities(url, filename) {
+        url = url || `/@/${this.#entityName}/export`;
+        filename = filename || `${this.#entitySetName}.csv`; 
+        Cpi.DownloadFile(url, filename);
+    }
+
     /*
     * Private
     */

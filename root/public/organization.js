@@ -440,6 +440,30 @@ class HolidayBroker extends EntityBroker {
 }
 
 
+class ManagerTableOverlay extends TableOverlay {
+    constructor(settings) {
+        super(settings);
+
+        const entityBroker = this.tableController.entityBroker;
+
+        if (settings.import) {
+            if (settings.import.button) {
+                settings.import.button.on("click", () => {
+                    entityBroker.importEntities(settings.import.url, settings.import.caption, settings.import.success);
+                });
+            }
+        }
+        if (settings.export) {
+            if (settings.export.button) {
+                settings.export.button.on("click", () => {
+                    entityBroker.exportEntities(settings.export.url, settings.export.filename);
+                });
+            }
+        }
+    }
+}
+
+
 class StudentOverlay extends TableOverlay {
     constructor() {
         super({
@@ -693,7 +717,7 @@ class ClassOverlay extends TableOverlay {
     }
 }
 
-class CourseOverlay extends TableOverlay {
+class CourseOverlay extends ManagerTableOverlay {
     constructor() {
         const editor = $("#courseEditor");
 
@@ -709,10 +733,20 @@ class CourseOverlay extends TableOverlay {
             editButton: $("#editCourse"),
             deleteButton: $("#deleteCourse"),
             toggleButtons: [ $("#assignCourseClasses") ],
-            editor: editor
+            editor: editor,
+
+            import: {
+                button: $("#uploadCourses"),
+                success: (data) => {
+                    this.tableController.refreshRows();
+                }
+            },
+            export: {
+                button: $("#downloadCourses")
+            }
         });
 
-        // Initialize subject and grade editor selectors
+        // Initialize subject and grade editor selectors.
         const subjectDropdown = editor.find("#courseSubject");
         for (const subject of cpidata.organization.curriculum.search.subjects) {
             const option = document.createElement("option");

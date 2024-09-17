@@ -148,6 +148,7 @@ class TableController {
             this.#entityBroker.deleteEntity(row, () => {
                 row.remove();
                 this.#dataTable.stripeRows();
+                this.#syncToggleButtons();
             });
         }
     }
