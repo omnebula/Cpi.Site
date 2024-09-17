@@ -895,6 +895,7 @@ class LocationOverlay extends ManagerTableOverlay {
 
 class CurriculumOverlay extends TableOverlay {
     #initialized = false;
+    #enableEdit = false;
     #overlayData;
     #subjectSelector;
     #gradeSelector;
@@ -1134,9 +1135,20 @@ class CurriculumOverlay extends TableOverlay {
         });
     }
 
-    #showEditButtons(show) {
-        $("#curriculumEditCommands").css("display", show ? "block" : "none");
-        $("#curriculumNonEditCommands").css("display", !show ? "block" : "none");
+    #showEditButtons(enableEdit) {
+        this.#enableEdit = enableEdit;
+
+        $("#curriculumEditCommands").css("display", this.#enableEdit ? "block" : "none");
+        $("#curriculumNonEditCommands").css("display", !this.#enableEdit ? "block" : "none");
+
+        if (this.#enableEdit) {
+            const rows = this.tableController.find(".curriculumRow");
+            for (const row of rows) {
+                const $row = $(row);
+                $row.find(".curriculumCheckbox").prop("disabled", false);
+                $row.addClass("listRow");
+            }
+        }
     }
 }
 

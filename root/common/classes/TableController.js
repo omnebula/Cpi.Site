@@ -70,6 +70,9 @@ class TableController {
         this.#syncToggleButtons();
     }
 
+    find(predicate) {
+        return this.#dataTable.findRows(predicate);
+    }
     findRows(predicate) {
         return this.#dataTable.findRows(predicate);
     }
