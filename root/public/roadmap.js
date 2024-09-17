@@ -33,6 +33,10 @@ class RoadmapPage extends CpiPage
             $("#myRoadmap").css("display", "inline-block");
             $(".siteCurrentMenuOption").css("display", "none");
 
+            if (!this.pageData.benchmarks) {
+                this.pageData.benchmarks = {};
+            }
+
             this.pageData.benchmarks.lastSubject = "";
             this.pageData.benchmarks.lastGrade = "";
             this.pageData.benchmarks.lastScope = "all";
