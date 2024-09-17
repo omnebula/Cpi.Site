@@ -43,7 +43,7 @@ class ProfileOverlay extends OverlayContext {
 
         Cpi.SendApiRequest({
             method: "GET",
-            url: "/@/account/",
+            url: "/@/account",
             success: (data, status, xhr) => {
                 this.#currentData = data;
                 this.#setOverlayData(data);
