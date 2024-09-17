@@ -388,11 +388,12 @@ class Cpi {
             Cpi.#FileUploadBox.find("#popupCaptionTitle").text("File Upload");
         }
 
+        const fileUploadName = Cpi.#FileUploadBox.find("#fileUploadName");
+        fileUploadName.val("");
+
         Cpi.ShowPopup(
             Cpi.#FileUploadBox,
             () => {
-                const fileUploadName = Cpi.#FileUploadBox.find("#fileUploadName");
-
                 if (fileUploadName.length) {
                     const files = fileUploadName[0].files;
 

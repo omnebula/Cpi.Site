@@ -228,11 +228,9 @@ class CalendarOverlay extends OverlayContext {
         Cpi.InitAutoDateFormatter($("#calendarEndDate"));
 
         $("#addCalendar").on("click", () => {
-            this.#isNewCalendar = true;
-
             this.#setOverlayData(undefined);
-
             this.#calendarEditController.enableEditMode(true);
+            this.#isNewCalendar = true;
         });
     }
 
@@ -251,7 +249,7 @@ class CalendarOverlay extends OverlayContext {
         }
         else {
             method = "PATCH";
-            url = `/@/calendar/${this.#currentData.calendarId}`;
+            url = "/@/calendar";
         }
 
         // Check if new or update.
@@ -350,6 +348,23 @@ class HolidayTableController extends TableController {
 
         Cpi.InitAutoDateFormatter($("#holidayEditor #startDate"));
         Cpi.InitAutoDateFormatter($("#holidayEditor #endDate"));
+
+        $("#uploadHolidays").on("click", () => {
+            Cpi.UploadFile(
+                "/@/calendar/holiday/import",
+                "Import Holidays",
+                (holidays) => {
+                    this.setRows(holidays);
+                }
+            )
+        });
+
+        $("#downloadHolidays").on("click", () => {
+            Cpi.DownloadFile(
+                "/@/calendar/holiday/export",
+                "holidays.csv"
+            )
+        });
     }
 
     getHolidays() {
@@ -448,6 +463,12 @@ class ManagerTableOverlay extends TableOverlay {
 
         if (settings.import) {
             if (settings.import.button) {
+                if (!settings.import.success) {
+                    settings.import.success = () => {
+                        this.tableController.refreshRows();
+                    }
+                }
+
                 settings.import.button.on("click", () => {
                     entityBroker.importEntities(settings.import.url, settings.import.caption, settings.import.success);
                 });
@@ -504,7 +525,7 @@ class StudentOverlay extends TableOverlay {
 }
 
 
-class AccountOverlay extends TableOverlay {
+class AccountOverlay extends ManagerTableOverlay {
     constructor() {
         super({
             overlayName: "Accounts",
@@ -519,7 +540,14 @@ class AccountOverlay extends TableOverlay {
             editButton: $("#editAccount"),
             deleteButton: $("#deleteAccount"),
             toggleButtons: [ $("#sendAccountInvite"), $("#viewTeacherSchedule"), $("#viewTeacherRoadmap"), $("#assignAccountClasses") ],
-            editor: $("#accountEditor")
+            editor: $("#accountEditor"),
+
+            import: {
+                button: $("#uploadAccounts")
+            },
+            export: {
+                button: $("#downloadAccounts")
+            }
         });
 
         $("#sendAccountInvite").on("click", () => {
@@ -610,7 +638,7 @@ class AccountOverlay extends TableOverlay {
 }
 
 
-class ClassOverlay extends TableOverlay {
+class ClassOverlay extends ManagerTableOverlay {
     constructor() {
         super({
             overlayName: "Classes",
@@ -625,7 +653,14 @@ class ClassOverlay extends TableOverlay {
             deleteButton: $("#deleteClass"),
             deleteButton: $("#deleteClass"),
             toggleButtons: [ $("#assignClassStudents"), $("#assignClassCourses") ],
-            editor: $("#classEditor")
+            editor: $("#classEditor"),
+
+            import: {
+                button: $("#uploadClasses")
+            },
+            export: {
+                button: $("#downloadClasses")
+            }
         });
 
         $("#assignClassCourses").on("click", () => {
@@ -736,10 +771,7 @@ class CourseOverlay extends ManagerTableOverlay {
             editor: editor,
 
             import: {
-                button: $("#uploadCourses"),
-                success: (data) => {
-                    this.tableController.refreshRows();
-                }
+                button: $("#uploadCourses")
             },
             export: {
                 button: $("#downloadCourses")
@@ -809,7 +841,7 @@ class CourseOverlay extends ManagerTableOverlay {
 }
 
 
-class LocationOverlay extends TableOverlay {
+class LocationOverlay extends ManagerTableOverlay {
     constructor() {
         super({
             overlayName: "Locations",
@@ -822,7 +854,14 @@ class LocationOverlay extends TableOverlay {
             addButton: $("#addLocation"),
             editButton: $("#editLocation"),
             deleteButton: $("#deleteLocation"),
-            editor: $("#locationEditor")
+            editor: $("#locationEditor"),
+
+            import: {
+                button: $("#uploadLocations")
+            },
+            export: {
+                button: $("#downloadLocations")
+            }
         });
     }
 

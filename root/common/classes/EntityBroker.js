@@ -97,7 +97,7 @@ class EntityBroker {
 
     importEntities(url, caption, success) {
         url = url || `/@/${this.#entityName}/import`;
-        caption = caption || `Upload ${"#entitySetName"}`;
+        caption = caption || `Import ${this.#entitySetName}`;
         Cpi.UploadFile(url, caption, success);
     }
 
