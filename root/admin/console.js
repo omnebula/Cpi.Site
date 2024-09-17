@@ -144,12 +144,18 @@ class OrganizationOverlay extends TableOverlay {
             editor.find("#organizationDomainName").val(data.domainName);
             editor.find("#organizationCurriculumCode").val(data.curriculumCode);
             editor.find("#principalId").val(data.principalId);
+
+            // These are not used for existing organization.
+            editor.find("#principalFirstName").val("");
+            editor.find("#principalLastName").val("");
+            editor.find("#principalEmail").val("");
         }
         else {
             editor.find("#organizationName").val("");
+            editor.find("#organizationDomainName").val("");
+            editor.find("#organizationCurriculumCode").val("");
             editor.find("#principalFirstName").val("");
             editor.find("#principalLastName").val("");
-            editor.find("#organizationCurriculumCode").val("");
             editor.find("#principalEmail").val("");
         }
     }
