@@ -24,11 +24,11 @@ class RoadmapPage extends CpiPage
             this.#pageData = {};
         }
 
-        // Compute the initial overlay.
-        var initialOverlayName;
+        // Assume user wants to see the summary overlay.
+        var initialOverlayName = "Summary";
 
         // If view-only mode, hide the disabled "roadmap" menu and show the live option
-        // so the use can return to their recpective rodamap.
+        // so the use can return to their own roadmap.
         if (this.isViewOnly) {
             $("#myRoadmap").css("display", "inline-block");
             $(".siteCurrentMenuOption").css("display", "none");
@@ -40,8 +40,6 @@ class RoadmapPage extends CpiPage
             this.pageData.benchmarks.lastSubject = "";
             this.pageData.benchmarks.lastGrade = "";
             this.pageData.benchmarks.lastScope = "all";
-
-            initialOverlayName = "Summary";
         }
         // If not view-only mode, hide the live option and show the disabled one
         // since we're already on the user's roadmap page.
@@ -49,8 +47,7 @@ class RoadmapPage extends CpiPage
             $("#myRoadmap").css("display", "none");
         }
 
-        // CHeck if subject and grade were specified by referrer, e.g., from lesson page.
-        // Note that this will override default or view-only settings/
+        // Check if subject and grade were specified by referrer, e.g., from lesson page.
         const searchSubject = this.viewTracker.searchParams.get("subject");
         const searchGrade = this.viewTracker.searchParams.get("grade");
         if (searchSubject && searchGrade) { // all or nothing
