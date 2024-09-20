@@ -42,9 +42,120 @@ main {
     margin-right: 2px;
 }
 
+.listRow {
+    color: inherit;
+}
 
-.listRow:hover {
+.templateSection {
+    position: relative;
+    display: none;
+    text-align: right;
+    cursor: default;
+}
+.templateDropdown {
+    display: none;
+    position: absolute;
+    z-index: 1;
+    right: 0;
+    border: 1px solid #555;
+    background-color: #101010;
+    padding: 4px;
+}
+.templateSection:hover .templateDropdown {
+    display: block;
+}
+
+.templateLabel, .templateOption {
+    padding: 5px 12px;
+    text-align: right;
+    white-space: nowrap;
+}
+.templateLabel {
+    border-radius: 8px;
+    border: 1px solid #555;
+    background-color: #101010;
+}
+.templateSection:hover .templateLabel {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    background-color: #555;
+}
+
+.templateStaticOption {
+    color: lightgreen;
+}
+
+.templateOptionContainer {
+    margin-top: 4px;
+    border-top: 2px solid #555;
+    padding-top: 4px;
+}
+.templateOption {
+}
+.templateOption:hover {
+    background-color: #336699
+}
+
+.saveTemplatePopup {
+    width: 400px;
+}
+
+.templateManagerPopup {
+    width: 400px;
+}
+.templateManagerList {
+    height: 105px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 10px;
+    border: 1px solid #666;
+    border-radius: 8px;
+}
+.templateManagerList:hover {
+    border-color: var(--input-text-border-color-hover);
+}
+
+.templateManagerPopupRow {
+    margin-bottom: 10px;
+}
+.templatePopupRowContainer {
+    vertical-align: top;
+}
+.templatePopupTable {
+}
+.templatePopupRow {
+}
+.templatePopupRow_selected {
     background-color: #336699;
+}
+.templatePopupTemplateName {
+    padding: 4px 2px;
+}
+.templateNameInput {
+    outline: none;
+    display: block;
+    box-sizing: border-box;
+    border: 0;
+    color: #eee;
+    background-color: transparent;
+    font-size: inherit;
+    font-family: inherit;
+    width: 100%;
+    height: 100%;
+    cursor: default;
+}
+.templateNameEditMode {
+    color: #111;
+    background-color: #eee;
+    cursor:text;
+}
+
+.templateManagerPopupButtons {
+}
+.templatePopupButton {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: 150px;
 }
 
 

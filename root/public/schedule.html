@@ -43,6 +43,18 @@
                         <input id="viewPreviousWeek" class="inputButton navigationButton" type="button" value="Previous" title="Go to the previous week"/><input id="viewNextWeek" class="inputButton navigationButton" type="button" value="Next" title="Go to the next week"/><input id="viewCurrentWeek" class="inputButton navigationButton" type="button" value="Current" title="Go to the current week"/>
                     </div>
                     <div>
+                        <div id="templateSection" class="templateSection">
+                            <div class="templateLabel">Templates</div>
+                            <div id="templateDropdown" class="templateDropdown">
+                                <div id="saveCurrentLayout" class="templateOption templateStaticOption">Save template...</div>
+                                <div id="showTemplateManager" class="templateOption templateStaticOption">Manage templates...</div>
+                                <div id="templateOptionContainer" class="templateOptionContainer">
+                                    <div class="templateOption"></div>
+                                </div>
+                                </table>
+                            </div>
+                        </div>
+
                         <input id="viewProgress" class="inputButton navigationButton viewProgressButton" type="button" value="Return to Progress"/>
                     </div>
                 </div>
@@ -151,6 +163,59 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+
+        <div id="saveTemplatePopup" class="popupBox saveTemplatePopup">
+            <div class="popupCaption">
+                <div id="popupCaptionTitle" class="popupCaptionTitle">Save Template</div>
+                <div>
+                    <input id="popupAccept" class="inputAcceptButton popupCaptionButton" type="button" value="Accept"/>
+                    <input id="popupCancel" class="inputCancelButton popupCaptionButton" type="button" value="Cancel"/>
+                </div>
+            </div>
+            <div class="popupRow">
+                <div class="inputCell">
+                    <input id="templateNameInput" class="inputTextBox" type="text" autocomplete="off"/>
+                </div>
+            </div>
+            <div class="popupRow">
+                <div class="inputCell templateManagerList">
+                    <table id="templatePopupTable" class="templatePopupTable" cellpadding="0" cellspacing="0">
+                        <tbody id="templatePopupRowContainer">
+                            <tr id="templatePopupRow" class="listRow templatePopupRow">
+                                <td id="templateName" class="templatePopupTemplateName">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="templateManagerPopup" class="popupBox templateManagerPopup">
+            <div class="popupCaption">
+                <div id="popupCaptionTitle" class="popupCaptionTitle">Manage Templates</div>
+                <div>
+                    <input id="popupCancel" class="inputCancelButton popupCaptionButton" type="button" value="Close"/>
+                </div>
+            </div>
+            <div class="popupRow templateManagerPopupRow">
+                <div class="inputCell templateManagerList">
+                    <table id="templatePopupTable" class="templatePopupTable" cellpadding="0" cellspacing="0">
+                        <tbody id="templatePopupRowContainer">
+                            <tr id="templatePopupRow" class="listRow templatePopupRow">
+                                <td class="templatePopupTemplateName">
+                                    <input id="templateName" class="templateNameInput" type="text" autocomplete="off" readonly/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="popupRow templateManagerPopupButtons">
+                <input id="renameTemplate" class="inputButton templatePopupButton" type="button" value="Rename Template"/>
+                <input id="deleteTemplate" class="inputButton templatePopupButton" type="button" value="Delete Template"/>
             </div>
         </div>
 

@@ -155,7 +155,7 @@ input[type=submit], textarea {
 
 .inputTextBox, .inputSelect {
     outline: none;
-    padding: 16px;
+    padding: 10px;
     border-radius: 8px;
     display: block;
     box-sizing: border-box;

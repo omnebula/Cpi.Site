@@ -336,10 +336,6 @@ class Cpi {
             popup = $(popup);
         }
 
-        popup.css("display", "flex");
-        $(".popupFrame").css("display", "block");
-        $(".appFrame").css("opacity", "0.5");
-
         popup.find("#popupAccept").off("click").on("click", () => {
             Cpi.HidePopup(popup);
             if (accept) {
@@ -352,6 +348,15 @@ class Cpi {
                 cancel();
             }
         });
+
+        popup.css("display", "flex");
+        $(".popupFrame").css("display", "block");
+        $(".appFrame").css("opacity", "0.5");
+
+        const inputs = popup.find(".popupRow input");
+        if (inputs.length) {
+            $(inputs[0]).focus();
+        }
     }
 
     static HidePopup(popup) {
@@ -491,6 +496,9 @@ class CpiPage {
 
     get accountData() {
         return this.#accountData;
+    }
+    persistAccountData() {
+        localStorage.setItem("accountData", JSON.stringify(this.#accountData));
     }
 
     isLoggedIn() {

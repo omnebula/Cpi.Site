@@ -979,6 +979,9 @@ class CurriculumOverlay extends TableOverlay {
         this.element.find("#curriculumDownload").on("click", () => {
             Cpi.DownloadFile("/@/organization/curriculum/export", "curriculum.csv");
         });
+
+        // Disable table controller selection until user clicks "Edit".
+        this.tableController.enableSelect = false;
     }
 
     _activateOverlay() {
@@ -1088,9 +1091,9 @@ class CurriculumOverlay extends TableOverlay {
 
         row.find("#curriculumSynopsis").html(benchmark.synopsis);
 
-        row.on("click", () => {
+        row.on("click", (event) => {
             checkbox.trigger("click");
-        })
+        });
 
         this.#syncRowColors(row, benchmark.assigned);
     }
@@ -1137,6 +1140,7 @@ class CurriculumOverlay extends TableOverlay {
 
     #showEditButtons(enableEdit) {
         this.#enableEdit = enableEdit;
+        this.tableController.enableSelect = enableEdit;
 
         $("#curriculumEditCommands").css("display", this.#enableEdit ? "block" : "none");
         $("#curriculumNonEditCommands").css("display", !this.#enableEdit ? "block" : "none");

@@ -6,6 +6,7 @@ class TableController {
     #toggleButtons;
     #entityCaption;
     #editor;
+    #enableSelect = true;
 
     constructor(params) {
         this.#entityBroker = params.entityBroker;
@@ -48,6 +49,13 @@ class TableController {
 
     get editor() {
         return this.#editor;
+    }
+
+    get enableSelect() {
+        return this.#enableSelect;
+    }
+    set enableSelect(enable) {
+        this.#enableSelect = enable;
     }
 
     getRows() {
@@ -170,12 +178,14 @@ class TableController {
     */
 
     _onClickRow(row) {
-        const current = this.getSelectedRow();
-        if (!current || (current[0] !== row[0])) {
-            this.setSelectedRow(row);
-        }
-        else {
-            this.setSelectedRow(undefined);
+        if (this.enableSelect) {
+            const current = this.getSelectedRow();
+            if (!current || (current[0] !== row[0])) {
+                this.setSelectedRow(row);
+            }
+            else {
+                this.setSelectedRow(undefined);
+            }
         }
     }
 
