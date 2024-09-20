@@ -457,7 +457,7 @@ class TemplateManager {
     }
 
     static FormatTemplateId(templateName) {
-        return `#${templateName.replace(/ /g, '-').replace(/./g, '-')}`;
+        return templateName.replace(/ /g, '-').replace(/\./g, '-');
     }
 
     #showTemplateMenu() {
@@ -639,6 +639,11 @@ class ManagerPopup extends TemplatePopup {
 
                 const nameInput = row.find("#templateName");
                 nameInput.val(templateName)
+                    .on("click", () => {
+                        if (nameInput.is(":focus")) {
+                            this.#commitRenameTemplate(row);
+                        }
+                    })
                     .on("dblclick", (event) => {
                         this.#table.selectedRow = row;
                         this.#renameButton.trigger("click");
@@ -681,7 +686,7 @@ class ManagerPopup extends TemplatePopup {
         const newId = TemplateManager.FormatTemplateId(newName);
 
         // Check if already exists.
-        const existing = this.#table.findRow(newId);
+        const existing = this.#table.findRow(`#${newId}`);
         if (!existing.length) {
 
             const oldName = selection.attr("templateName");
@@ -693,7 +698,7 @@ class ManagerPopup extends TemplatePopup {
                     this.#disableEditMode(nameInput);
 
                     selection.attr("id", newId);
-                    selection.attr("templateName", templateName);
+                    selection.attr("templateName", newName);
 
                     const scheduleTemplates = this.schedulePage.accountData.templates.schedule;
                     for (var index = 0; index < scheduleTemplates.length; index++) {
@@ -809,7 +814,7 @@ class TemplateOptionTable {
         for (const templateName of templates) {
             const row = this.#rowTemplate.clone(true);
 
-            row.attr("id", templateName.replace(/ /g, '_'));
+            row.attr("id", TemplateManager.FormatTemplateId(templateName));
             row.attr("templateName", templateName);
             row.on("click", () => {
                 this.selectedRow = row;
