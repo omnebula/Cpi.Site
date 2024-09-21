@@ -927,6 +927,7 @@ class CurriculumOverlay extends TableOverlay {
             this.#overlayData.selectors.lastSubject = this.#subjectSelector.val();
             this.#saveOverlayData();
             this.#initGradeOptions();
+            this.#showEditButtons(false);
             this.#queryCurriculum();
         });
 
@@ -934,6 +935,7 @@ class CurriculumOverlay extends TableOverlay {
         this.#gradeSelector.on("change", () => {
             this.#overlayData.selectors.lastGrade = this.#gradeSelector.val();
             this.#saveOverlayData();
+            this.#showEditButtons(false);
             this.#queryCurriculum();
         });
 
@@ -941,6 +943,7 @@ class CurriculumOverlay extends TableOverlay {
         this.#scopeSelector.on("change", () => {
             this.#overlayData.selectors.lastScope = this.#scopeSelector.val();
             this.#saveOverlayData();
+            this.#showEditButtons(false);
             this.#queryCurriculum();
         });
 
@@ -954,8 +957,8 @@ class CurriculumOverlay extends TableOverlay {
         });
 
         this.element.find("#curriculumCancel").on("click", () => {
-            this.#queryCurriculum();
             this.#showEditButtons(false);
+            this.#queryCurriculum();
         });
 
         this.element.find("#curriculumSelectAll").on("click", () => {
@@ -1058,16 +1061,14 @@ class CurriculumOverlay extends TableOverlay {
             method: "GET",
             url: `/@/organization/curriculum?subject=${this.#overlayData.selectors.lastSubject}&grade=${this.#overlayData.selectors.lastGrade}&scope=${this.#overlayData.selectors.lastScope}`,
             success: (data) => {
-                this.#populateCurriculumTable(data);
+                this.tableController.setRows(data);
+                this.#syncEditCheckboxes();
             }
         });
 
         super._activateOverlay();
     }
 
-    #populateCurriculumTable(data) {
-        this.tableController.setRows(data);
-    }
     _formatRow(row, benchmark) {
         row.attr("id", benchmark.id);
 
@@ -1097,13 +1098,19 @@ class CurriculumOverlay extends TableOverlay {
 
         this.#syncRowColors(row, benchmark.assigned);
     }
-
     #syncRowColors(row, assigned) {
         if (assigned) {
             row.find("#curriculumSynopsis").addClass("curriculumSynopsis_assigned");
         }
         else {
             row.find("#curriculumSynopsis").removeClass("curriculumSynopsis_assigned");
+        }
+    }
+    #syncEditCheckboxes() {
+        if (this.#enableEdit) {
+            this.tableController.find(".curriculumRow")
+                .addClass("listRow")
+                .find(".curriculumCheckbox").prop("disabled", false);
         }
     }
 
@@ -1145,6 +1152,9 @@ class CurriculumOverlay extends TableOverlay {
         $("#curriculumEditCommands").css("display", this.#enableEdit ? "block" : "none");
         $("#curriculumNonEditCommands").css("display", !this.#enableEdit ? "block" : "none");
 
+        this.#syncEditCheckboxes();
+
+/*
         if (this.#enableEdit) {
             const rows = this.tableController.find(".curriculumRow");
             for (const row of rows) {
@@ -1153,6 +1163,7 @@ class CurriculumOverlay extends TableOverlay {
                 $row.addClass("listRow");
             }
         }
+*/
     }
 }
 
