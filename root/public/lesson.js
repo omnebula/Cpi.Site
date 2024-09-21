@@ -15,25 +15,51 @@ class LessonPage extends CpiPage {
             return;
         }
 
+        // Initialize Benchmark elements.
+        this.#benchmarkTable = $("#lessonBenchmarkTable");
+        this.#benchmarkRowContainer = $("#lessonBenchmarkRowContainer");
+        this.#benchmarkRowTemplate = this.#benchmarkRowContainer.find(".lessonBenchmarkRow").detach();
+
         // Detect view-only mode.
         this.#viewTracker = new ViewTracker();
 
         if (this.#viewTracker.isActive) {
             this.#readOnly = true;
 
+            // Initialize benchmark background.
+            $("#lessonBenchmarkSection").addClass("lessonBenchmarkSection_readonly");
+
             // Initialize all text boxes.
             $(".lessonDetailText").prop("readonly", true);
         }
         else {
             $("#mySchedule").css("display", "none");
+
+            $("#lessonBenchmarkSection").on("mouseup", (event) => {
+                if (event.which === 1) {
+                    this.#showBenchmarkPicker();
+                }
+            });
+    
+            this.#benchmarkRowContainer.on("mouseup", (event) => {
+                event.stopPropagation();
+            });
+
+            $(".lessonDetailText")
+                .on("change", () => {
+                    this.#detailChanged = true;
+                })
+                .on("blur", () => {
+                    this.#sendUpdatedDetails();
+                })
+                .on("keydown", (event) => {
+                    if (event.ctrlKey && (event.keyCode === 13)) {
+                        this.#sendUpdatedDetails();
+                    }
+                });
         }
 
         this.#lessonId = this.#viewTracker.searchParams.get("id");
-
-        // Initialize Benchmark section.
-        this.#benchmarkTable = $("#lessonBenchmarkTable");
-        this.#benchmarkRowContainer = $("#lessonBenchmarkRowContainer");
-        this.#benchmarkRowTemplate = this.#benchmarkRowContainer.find(".lessonBenchmarkRow").detach();
 
         Cpi.ShowAppFrame();
 
@@ -105,20 +131,7 @@ class LessonPage extends CpiPage {
         // Benchmarks
         this.#addBenchmarks(data.benchmarks);
 
-        if (this.#readOnly) {
-            $("#lessonBenchmarkSection").addClass("lessonBenchmarkSection_readonly");
-        }
-        else {
-            $("#lessonBenchmarkSection").on("mouseup", (event) => {
-                if (event.which === 1) {
-                    this.#showBenchmarkPicker();
-                }
-            });
-    
-            this.#benchmarkRowContainer.on("mouseup", (event) => {
-                event.stopPropagation();
-            });
-
+        if (!this.#readOnly) {
             // Benchmark picker
             this.#benchmarkPicker = new BenchmarkPicker(data.subjectName, data.gradeName);
         }
@@ -128,19 +141,7 @@ class LessonPage extends CpiPage {
         texts.each((key, element) => {
             const detailName = element.id;
             const detailText = data.details ? (data.details[detailName] || "") : "";
-
-            $(element).val(detailText)
-                .on("change", () => {
-                    this.#detailChanged = true;
-                })
-                .on("blur", () => {
-                    this.#sendUpdatedDetails();
-                })
-                .on("keydown", (event) => {
-                    if (event.ctrlKey && (event.keyCode === 13)) {
-                        this.#sendUpdatedDetails();
-                    }
-                });
+            $(element).val(detailText);
         });
     }
 
