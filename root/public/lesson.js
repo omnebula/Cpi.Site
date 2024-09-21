@@ -20,6 +20,9 @@ class LessonPage extends CpiPage {
 
         if (this.#viewTracker.isActive) {
             this.#readOnly = true;
+
+            // Initialize all text boxes.
+            $(".lessonDetailText").prop("readonly", true);
         }
         else {
             $("#mySchedule").css("display", "none");
@@ -121,33 +124,24 @@ class LessonPage extends CpiPage {
         }
     
         // Details
-        if (data.details) {
-            const texts = $(".lessonDetailText");
-            texts.each((key, element) => {
-                const detailName = element.id;
+        const texts = $(".lessonDetailText");
+        texts.each((key, element) => {
+            const detailName = element.id;
+            const detailText = data.details ? (data.details[detailName] || "") : "";
 
-                element = $(element);
-                if (this.#readOnly) {
-                    element.val(data.details[detailName])
-                        .prop("readonly", true);
-                }
-                else {
-                    element
-                        .val(data.details[detailName])
-                        .on("change", () => {
-                            this.#detailChanged = true;
-                        })
-                        .on("blur", () => {
-                            this.#sendUpdatedDetails();
-                        })
-                        .on("keydown", (event) => {
-                            if (event.ctrlKey && (event.keyCode === 13)) {
-                                this.#sendUpdatedDetails();
-                            }
-                        });
-                }
-            });
-        }
+            $(element).val(detailText)
+                .on("change", () => {
+                    this.#detailChanged = true;
+                })
+                .on("blur", () => {
+                    this.#sendUpdatedDetails();
+                })
+                .on("keydown", (event) => {
+                    if (event.ctrlKey && (event.keyCode === 13)) {
+                        this.#sendUpdatedDetails();
+                    }
+                });
+        });
     }
 
     #showBenchmarkPicker() {
