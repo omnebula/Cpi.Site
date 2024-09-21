@@ -79,7 +79,7 @@ class RegistrationPage {
             url: "/@/account/registration",
             data: JSON.stringify(params),
             success: (data) => {
-                localStorage.setItem("accountData", JSON.stringify(data));
+                Cpi.UpdateLoginAccountData(data)
                 window.location.href = "/account";
             },
             error: (xhr, status, message) => {

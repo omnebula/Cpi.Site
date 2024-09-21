@@ -221,7 +221,7 @@ class Cpi {
         }
         if (!popupParams.success) {
             popupParams.success = (data, status, xhr) => {
-                localStorage.setItem("accountData", JSON.stringify(data));
+                Cpi.UpdateLoginAccountData(data);
                 window.location.reload();
             };
         }
@@ -278,6 +278,14 @@ class Cpi {
         if (Cpi.#LoginFrame) {
             Cpi.#LoginFrame.css("display", none);
         }
+    }
+    static UpdateLoginAccountData(accountData) {
+        const currentUser = localStorage.getItem("user");
+        if (currentUser && (accountData.email !== currentUser)) {
+            localStorage.clear();
+        }
+        localStorage.setItem("user", accountData.email);
+        localStorage.setItem("accountData", JSON.stringify(accountData));
     }
 
     static ShowAlert(params) {
@@ -529,6 +537,7 @@ class CpiPage {
                 const display = this.#accountData.options.classes.length ? "inline-block" : "none";
                 $(".siteMenuTeacherOption").css("display", display);
 
+                // Restore last page.
                 if (location.pathname !== "/" && location.pathname !== "/login") {
                     localStorage.setItem("lastVisitedPage", location.toString());
                 }
@@ -566,29 +575,14 @@ class CpiPage {
     }
 
     /*
-    * Versioning
+    * Versioning (Keep this around until soft-launch).
     */
     #detectVersionChange() {
         const pathname = location.pathname;
         if (pathname) {
             const key = `${pathname.replace(/\//g, "_")}_version`;
-
-            // Detect version change.
-            const currentVersion = localStorage.getItem(key);
-
-            // If no currentVersion, this is initial run...
-            if (!currentVersion) {
-                // ... just set the version.
-                localStorage.setItem(key, this.#siteVersion);
-            } 
-            // Otherwise, compare with value in local storage.
-            else if (currentVersion !== this.#siteVersion) {
-                localStorage.setItem(key, this.#siteVersion);
-                location.reload(true);
-                return true;
-            }
+            localStorage.removeItem(key);
         }
-
         return false;
     }
 
@@ -596,8 +590,6 @@ class CpiPage {
     * Private Data
     */
     #accountData;
-
-    #siteVersion = "0.0.1";
 
     #spinnerHtml = String.raw`
         <div id="spinnerFrame" class="spinnerFrame">

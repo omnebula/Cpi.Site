@@ -12,11 +12,8 @@ class DefaultPage extends CpiPage {
         if (lastVisitedPage) {
             window.location = lastVisitedPage;
         }
-        else if (this.accountData.accessType === "organization") {
-            window.location = "/organization";
-        }
         else {
-            window.location = `/schedule?week=${Cpi.GetCurrentWeekNumber()}`;
+            window.location = "/account";
         }
     }
 }
