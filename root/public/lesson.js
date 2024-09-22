@@ -24,13 +24,7 @@ class LessonPage extends CpiPage {
         this.#viewTracker = new ViewTracker();
 
         if (this.#viewTracker.isActive) {
-            this.#readOnly = true;
-
-            // Initialize benchmark background.
-            $("#lessonBenchmarkSection").addClass("lessonBenchmarkSection_readonly");
-
-            // Initialize all text boxes.
-            $(".lessonDetailText").prop("readonly", true);
+            this.#setReadOnly();
         }
         else {
             $("#mySchedule").css("display", "none");
@@ -73,7 +67,12 @@ class LessonPage extends CpiPage {
     }
 
     #init(data) {
-        this.#readOnly = this.#readOnly || data.readOnly;
+        if (data.readOnly) {
+            this.#setReadOnly();
+        }
+        else {
+            this.#benchmarkPicker = new BenchmarkPicker(data.subjectName, data.gradeName);
+        }
 
         // Name
         const lessonName = $("#lessonName");
@@ -131,11 +130,6 @@ class LessonPage extends CpiPage {
         // Benchmarks
         this.#addBenchmarks(data.benchmarks);
 
-        if (!this.#readOnly) {
-            // Benchmark picker
-            this.#benchmarkPicker = new BenchmarkPicker(data.subjectName, data.gradeName);
-        }
-    
         // Details
         const texts = $(".lessonDetailText");
         texts.each((key, element) => {
@@ -255,6 +249,16 @@ class LessonPage extends CpiPage {
             },
             hideSpinner: true
         });
+    }
+
+    #setReadOnly() {
+        this.#readOnly = true;
+
+        // Initialize benchmark background.
+        $("#lessonBenchmarkSection").addClass("lessonBenchmarkSection_readonly");
+
+        // Initialize all text boxes.
+        $(".lessonDetailText").prop("readonly", true);
     }
 }
 
