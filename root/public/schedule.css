@@ -9,7 +9,7 @@
 .theme-normal {
     --schedule-column-header-background-color: #274965;
     --schedule-column-header-background-color-today: #3c6d95;
-    --schedule-lesson-background-color-selected: #336699;
+    --schedule-lesson-background-color-selected: #23476b;
 }
 
 .theme-view-only {
