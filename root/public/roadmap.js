@@ -13,33 +13,22 @@ class RoadmapPage extends CpiPage
             return;
         }
 
+        this.#pageData = {
+            benchmarks: {
+                lastSubject: "",
+                lastGrade: "",
+                lastScope: "all"
+            }
+        };
+
         // Detect view-only mode.
         this.#viewTracker = new ViewTracker();
-
-        const pageDataSetting = localStorage.getItem("roadmapData");
-        if (pageDataSetting) {
-            this.#pageData = JSON.parse(pageDataSetting);
-        }
-        else {
-            this.#pageData = {};
-        }
-
-        // Assume user wants to see the summary overlay.
-        var initialOverlayName = "Summary";
 
         // If view-only mode, hide the disabled "roadmap" menu and show the live option
         // so the use can return to their own roadmap.
         if (this.isViewOnly) {
             $("#myRoadmap").css("display", "inline-block");
             $(".siteCurrentMenuOption").css("display", "none");
-
-            if (!this.pageData.benchmarks) {
-                this.pageData.benchmarks = {};
-            }
-
-            this.pageData.benchmarks.lastSubject = "";
-            this.pageData.benchmarks.lastGrade = "";
-            this.pageData.benchmarks.lastScope = "all";
         }
         // If not view-only mode, hide the live option and show the disabled one
         // since we're already on the user's roadmap page.
@@ -47,16 +36,18 @@ class RoadmapPage extends CpiPage
             $("#myRoadmap").css("display", "none");
         }
 
+        // Assume user wants to see the summary overlay.
+        var initialOverlayName = "Summary";
+
         // Check if subject and grade were specified by referrer, e.g., from lesson page.
         const searchSubject = this.viewTracker.searchParams.get("subject");
         const searchGrade = this.viewTracker.searchParams.get("grade");
         if (searchSubject && searchGrade) { // all or nothing
-            if (!this.#pageData.benchmarks) {
-                this.#pageData.benchmarks = {};
-            }
-            this.#pageData.benchmarks.lastSubject = searchSubject;
-            this.#pageData.benchmarks.lastGrade = searchGrade;
-            this.#pageData.benchmarks.lastScope = "all";
+            this.#pageData.benchmarks = {
+                lastSubject: searchSubject,
+                lastGrade: searchGrade,
+                lastScope: "all"
+            };
 
             initialOverlayName = "Benchmarks";
         }
@@ -83,12 +74,6 @@ class RoadmapPage extends CpiPage
 
     get pageData() {
         return this.#pageData;
-    }
-    savePageData() {
-        // Save data only if we're not in view-only mode.
-        if (!this.isViewOnly) {
-            localStorage.setItem("roadmapData", JSON.stringify(this.#pageData));
-        }
     }
 
     showBenchmarks(subject, grade) {
@@ -125,9 +110,6 @@ class RoadmapOverlay extends OverlayContext {
 
     get pageData() {
         return this.#roadmapPage.pageData;
-    }
-    savePageData() {
-        this.#roadmapPage.savePageData();
     }
 }
 
@@ -254,8 +236,6 @@ class BenchmarkOverlay extends RoadmapOverlay  {
             localStorage.removeItem("lastRoadmapSubject");
             localStorage.removeItem("lastRoadmapGrade");
             localStorage.removeItem("lastRoadmapScope");
-
-            this.savePageData();
         }
 
         /*
@@ -281,14 +261,12 @@ class BenchmarkOverlay extends RoadmapOverlay  {
             this.pageData.benchmarks.lastSubject = this.#subjectSelector.val();
             this.#syncSubjectGradeOptions();
             this.#queryBenchmarks();
-            this.savePageData();
         });
 
         // Grade selector
         this.#gradeSelector.on("change", () => {
             this.pageData.benchmarks.lastGrade = this.#gradeSelector.val();
             this.#queryBenchmarks();
-            this.savePageData();
         });
 
         // Scope selector
@@ -296,7 +274,6 @@ class BenchmarkOverlay extends RoadmapOverlay  {
         this.#scopeSelector.on("change", () => {
             this.pageData.benchmarks.lastScope = this.#scopeSelector.val();
             this.#queryBenchmarks();
-            this.savePageData();
         });
 
         // Referrer Lesson
@@ -334,7 +311,6 @@ class BenchmarkOverlay extends RoadmapOverlay  {
             currentGrade = this.#gradeSelector.find(":first").val();
             this.pageData.benchmarks.lastGrade = currentGrade;
             this.#gradeSelector.val(currentGrade);
-            this.savePageData();
         }    
     }
 
