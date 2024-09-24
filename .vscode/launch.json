@@ -9,14 +9,20 @@
             "request": "launch",
             "name": "Launch Public",
             "url": "https://local.coreplanit.com",
-            "webRoot": "${workspaceFolder}/root/public"
+            "webRoot": "${workspaceFolder}/root/public",
+            "sourceMapPathOverrides": {
+                "/common/*": "${workspaceFolder}/root/common/*"
+            }
         },
         {
             "type": "chrome",
             "request": "launch",
             "name": "Launch Admin",
             "url": "https://admin-local.coreplanit.com",
-            "webRoot": "${workspaceFolder}/root/admin"
+            "webRoot": "${workspaceFolder}/root/admin",
+            "sourceMapPathOverrides": {
+                "/common/*": "${workspaceFolder}/root/common/*"
+            }
         }
     ]
 }
