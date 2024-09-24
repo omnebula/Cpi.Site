@@ -11,7 +11,8 @@
             "url": "https://local.coreplanit.com",
             "webRoot": "${workspaceFolder}/root/public",
             "sourceMapPathOverrides": {
-                "/common/*": "${workspaceFolder}/root/common/*"
+                "/common/*": "${workspaceFolder}/root/common/*",
+                "/*": "${workspaceFolder}/root/common/public/*"
             }
         },
         {
@@ -21,7 +22,8 @@
             "url": "https://admin-local.coreplanit.com",
             "webRoot": "${workspaceFolder}/root/admin",
             "sourceMapPathOverrides": {
-                "/common/*": "${workspaceFolder}/root/common/*"
+                "/common/*": "${workspaceFolder}/root/common/*",
+                "/*": "${workspaceFolder}/root/common/admin/*"
             }
         }
     ]
