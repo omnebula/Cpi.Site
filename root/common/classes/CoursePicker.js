@@ -71,13 +71,16 @@ class CoursePicker {
     }
 
     #acceptSelection(accept) {
-        const lessonDate = this.#popup.find("#lessonDate").val();
-        if (lessonDate === "") {
+        const $lessonDate = this.#popup.find("#lessonDate");
+        const lessonDate = $lessonDate.val();
+        if ((lessonDate === "") || (lessonDate === "Invalid Date")) {
             Cpi.ShowAlert({
                 message: "Please enter a valid lesson date.",
                 close: () => {
+                    $lessonDate.val("");
+
                     Cpi.ShowPopup(this.#popup, () => {
-                        this.#acceptSelection(params.accept);
+                        this.#acceptSelection(accept);
                     });
                 }
             });

@@ -157,9 +157,13 @@ class Cpi {
     static InitAutoDateFormatter(dateElement)
     {
         dateElement.on("blur", () => {
-            const string = dateElement.val();
+            var string = dateElement.val();
             const date = new Date(string);
-            dateElement.val(Cpi.FormatShortDateString(date));
+            string = Cpi.FormatShortDateString(date);
+            if (string === "Invalid Date") {
+                string = "";
+            }
+            dateElement.val(string);
         });
     }
 
