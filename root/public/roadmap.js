@@ -276,6 +276,13 @@ class BenchmarkOverlay extends RoadmapOverlay  {
             this.#queryBenchmarks();
         });
 
+        // View Progress Button
+        if (!this.isViewOnly) {
+            // Completely hide the view-progress button div; otherwise the Coverage banner will be misaligned.
+            this.element.find("#viewProgress").parent().css("display", "none");
+        }
+
+
         // Referrer Lesson
         const referrer = new URL(document.referrer);
         if (referrer.pathname === "/lesson") {

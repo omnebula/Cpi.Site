@@ -46,6 +46,9 @@
 }
 
 
+.navigationPanel {
+    align-items: center;    
+}
 #navigationSelectors {
 }
 .navigationSelect {
@@ -64,7 +67,7 @@
 }
 .roadmapStatsLabel {
     color: var(--summary-stats-label-color);
-    margin-right: 4px;
+    margin-right: 6px;
 }
 .roadmapStatsText {
     color: var(--summary-stats-text-color);
@@ -107,6 +110,9 @@
     display: inline-block;
 }
 
+.viewProgressButton {
+}
+
 
 .benchmarksPanel {
     flex-direction: column;
@@ -116,8 +122,8 @@
 }
 
 .benchmarkStatsBanner {
-    margin-bottom: 20px;
-    font-size: 18px
+    font-size: 18px;
+    display: inline-block;
 }
 
 .benchmarkReferredRow {
