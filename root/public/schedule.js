@@ -181,9 +181,7 @@ class SchedulePage extends CpiPage {
             lesson.find("#scheduleLessonName").text(current.lessonName);
 
             // Init detail list.
-            if (current.details && current.details.length) {
-                this.#initLessonDetails(lesson, current);
-            }
+            this.#initLessonDetails(lesson, current);
     
             // Init command bar.
             if (!this.#viewTracker.isActive) {
@@ -409,6 +407,10 @@ class SchedulePage extends CpiPage {
     }
 
     #initLessonDetails(lessonBubble, lessonData) {
+        if (!lessonData.details || !lessonData.details.length) {
+            return;
+        }
+
         var hintPopup, waitTimeout, detailHints, currentLabel;
 
         function setHintText() {
@@ -428,6 +430,7 @@ class SchedulePage extends CpiPage {
         }
         
         const detailList = lessonBubble.find("#scheduleLessonDetailList");
+        detailList.css("display", "block");
         detailList.on("mouseleave", () => {
             if (hintPopup) {
                 hintPopup.css("display", "none");

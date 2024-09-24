@@ -312,6 +312,7 @@ main {
     color: #c3c300;
     margin-top: 6px;
     text-align: center;
+    display: none;
 }
 .scheduleLessonDetail {
     margin-right: 6px;
