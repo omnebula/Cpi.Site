@@ -317,3 +317,19 @@ main {
     margin-right: 6px;
     display: inline-block;
 }
+.scheduleLessonDetail_hover {
+    color: yellow;
+}
+
+.scheduleLessonDetailHint {
+    border: 1px solid white;
+    border-radius: 12px;
+    color: #d7d7d7;
+    text-align: left;
+    background-color: black;
+    padding: 8px 12px;
+    position: fixed;
+    z-index: 1;
+    display: none;
+    max-width: 260px;
+}

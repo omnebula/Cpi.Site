@@ -182,10 +182,7 @@ class SchedulePage extends CpiPage {
 
             // Init detail list.
             if (current.details && current.details.length) {
-                const detailList = lesson.find("#scheduleLessonDetailList");
-                for (const name of current.details) {
-                    detailList.append(`<div class="scheduleLessonDetail">${name}</div>`);
-                }
+                this.#initLessonDetails(lesson, current);
             }
     
             // Init command bar.
@@ -408,6 +405,94 @@ class SchedulePage extends CpiPage {
             }
 
             ++index;  
+        }
+    }
+
+    #initLessonDetails(lessonBubble, lessonData) {
+        var hintPopup, waitTimeout, detailHints, currentLabel;
+
+        function setHintText() {
+            currentLabel.addClass("scheduleLessonDetail_hover");
+
+            const detailName = currentLabel.text();
+            hintPopup.text(detailHints[detailName]);
+
+            // Compute the hint's position.
+            const bubbleRect = lessonBubble[0].getBoundingClientRect();
+            const hintWidth = hintPopup.outerWidth();
+            const hintLeft = bubbleRect.left + ((bubbleRect.width - hintWidth) / 2);
+
+            hintPopup.css("top", bubbleRect.bottom - 12);
+            hintPopup.css("left", hintLeft);
+            hintPopup.css("display", "block");
+        }
+        
+        const detailList = lessonBubble.find("#scheduleLessonDetailList");
+        detailList.on("mouseleave", () => {
+            if (hintPopup) {
+                hintPopup.css("display", "none");
+                hintPopup.remove();
+                hintPopup = undefined;
+            }
+
+            if (waitTimeout) {
+                clearTimeout(waitTimeout);
+                waitTimeout = undefined;
+            }
+
+            if (currentLabel) {
+                currentLabel.removeClass("scheduleLessonDetail_hover");
+            }
+    });
+
+        for (const detailName of lessonData.details) {
+            // Create the detail label, e.g., "benchmark", "objectives".
+            const detailLabel = $(document.createElement("div"));
+            detailLabel.text(detailName);
+            detailLabel.addClass("scheduleLessonDetail");
+
+            // Display hint when user hovers over label.
+            detailLabel.on("mouseenter", () => {
+                if (currentLabel) {
+                    currentLabel.removeClass("scheduleLessonDetail_hover");
+                }
+                currentLabel = detailLabel;
+
+                // If the hint is already showing, just update the text.
+                if (hintPopup) {
+                    setHintText();
+                }
+
+                // Otherwise, if we're not currently waiting for timeout, start it now.
+                else if (!waitTimeout) {
+                    waitTimeout = setTimeout(() => {
+                        // Query detail text if not yet received.
+                        if (!lessonBubble[0].lessonDetails) {
+                            Cpi.SendApiRequest({
+                                method: "GET",
+                                url: `/@/lesson/schedule/hints?id=${lessonData.lessonId}`,
+                                hideSpinner: true,
+                                success: (data) => {
+                                    detailHints = data;
+
+                                    // Create a new hint element
+                                    hintPopup = $(document.createElement("div"));
+                                    hintPopup.addClass("scheduleLessonDetailHint");
+                                    $(document.body).append(hintPopup);
+
+                                    setHintText();
+
+                                    // Clear the timeout variable.
+                                    waitTimeout = undefined;
+                                }
+                            });
+                        }
+                    },
+                    550);
+                }
+            });
+
+            detailList.append(detailLabel);
         }
     }
 }
