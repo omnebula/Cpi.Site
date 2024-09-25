@@ -46,6 +46,10 @@ main {
     width: 160px;
 }
 
+.lessonShortButton {
+    width: default;
+}
+
 .navigationGroup {
     display: flex;
     justify-content: space-between;
