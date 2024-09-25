@@ -55,15 +55,6 @@ class CalendarPopup {
 
         const date = Cpi.ParseLocalDate(this.#dateInput.val()) || Cpi.GetTodayDate();
 
-        // Compute location.
-        const inputRect = this.#dateInput[0].getBoundingClientRect();
-        const popupWidth = this.#popup.outerWidth();
-        const popupLeft = inputRect.left + ((inputRect.width - popupWidth) / 2);
-
-        this.#popup.css("top", inputRect.bottom + 8);
-        this.#popup.css("left", popupLeft);
-        this.#popup.css("display", "inline-block");
-
         $(document).on("pointerdown", () => {
             this.hide();
         });
@@ -82,6 +73,8 @@ class CalendarPopup {
         this.#selectedYear = this.#selectedDate.getFullYear();
 
         this.#updateCalendarDates(enableHolidays);
+
+        this.#popup.css("display", "inline-block");
     }
     #updateCalendarDates(enableHolidays) {
         // Set the month name.
@@ -138,6 +131,14 @@ class CalendarPopup {
         const container = this.find("#calPop_tableBody");
         container.empty();
         container.append(rows);
+
+        // Compute location.
+        const inputRect = this.#dateInput[0].getBoundingClientRect();
+        const popupWidth = this.#popup.outerWidth();
+        const popupLeft = inputRect.left + ((inputRect.width - popupWidth) / 2);
+
+        this.#popup.css("top", inputRect.bottom + 8);
+        this.#popup.css("left", popupLeft);
     }
 
     #selectColumn(column) {
