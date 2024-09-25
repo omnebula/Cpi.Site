@@ -416,8 +416,6 @@ class SchedulePage extends CpiPage {
         var hintPopup, waitTimeout, detailHints, currentLabel;
 
         function setHintText() {
-            currentLabel.addClass("scheduleLessonDetail_hover");
-
             const detailName = currentLabel.text();
             hintPopup.text(detailHints[detailName]);
 
@@ -448,7 +446,7 @@ class SchedulePage extends CpiPage {
             if (currentLabel) {
                 currentLabel.removeClass("scheduleLessonDetail_hover");
             }
-    });
+        });
 
         for (const detailName of lessonData.details) {
             // Create the detail label, e.g., "benchmark", "objectives".
@@ -462,6 +460,7 @@ class SchedulePage extends CpiPage {
                     currentLabel.removeClass("scheduleLessonDetail_hover");
                 }
                 currentLabel = detailLabel;
+                currentLabel.addClass("scheduleLessonDetail_hover");
 
                 // If the hint is already showing, just update the text.
                 if (hintPopup) {
