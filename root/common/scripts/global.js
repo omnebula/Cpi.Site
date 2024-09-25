@@ -1,5 +1,6 @@
 class Cpi {
     static #DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    static #MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
     /*
     * Utilities
@@ -41,10 +42,18 @@ class Cpi {
     {
         if (dateString) {
             const utcDate = new Date(dateString);
-            return new Date(utcDate.getTime() + (utcDate.getTimezoneOffset() * 60000));
+            return Cpi.NormalizeLocalDate(utcDate);
         }
         else {
             return undefined;
+        }
+    }
+    static NormalizeLocalDate(utcDate) {
+        if (utcDate.getHours() || utcDate.getMinutes() || utcDate.getSeconds()) {
+            return new Date(utcDate.getTime() + (utcDate.getTimezoneOffset() * 60000));
+        }
+        else {
+            return utcDate;
         }
     }
         
@@ -57,6 +66,9 @@ class Cpi {
         const newDate = new Date(date);
         newDate.setDate(newDate.getDate() + days);
         return newDate;
+    }
+    static IsEqualDate(lhs, rhs) {
+        return lhs.getTime() === rhs.getTime();
     }
 
     static SnapDateToMonday(source) {
@@ -153,20 +165,12 @@ class Cpi {
         return Cpi.GetHolidayName(date) !== undefined;
     }
 
-
-    static InitAutoDateFormatter(dateElement)
-    {
-        dateElement.on("blur", () => {
-            var string = dateElement.val();
-            const date = new Date(string);
-            string = Cpi.FormatShortDateString(date);
-            if (string === "Invalid Date") {
-                string = "";
-            }
-            dateElement.val(string);
-        });
+    static GetDayName(dayOfWeek) {
+        return Cpi.#DAY_NAMES[dayOfWeek];
     }
-
+    static GetMonthName(monthIndex) {
+        return Cpi.#MONTH_NAMES[monthIndex];
+    }
 
     static SendApiRequest(params)
     {

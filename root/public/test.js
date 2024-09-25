@@ -1,9 +1,15 @@
 
+
 class TestPage extends CpiPage {
+    #datePicker;
+
     constructor() {
         super();
 
-        Cpi.ShowAlert("Quod erat optandum maxime iudices et quod ad inuidiam uestri ordinis infamiamque iudiciorum uestrorum maxime pertinabet");
+        this.#datePicker = new DatePicker($("#lessonDate"));
+
+        Cpi.ShowAppFrame();
+
     }
 }
 

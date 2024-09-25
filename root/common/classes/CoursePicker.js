@@ -18,7 +18,7 @@ class CoursePicker {
         });
 
         // Lesson Date.
-        Cpi.InitAutoDateFormatter(this.#popup.find("#lessonDate"));
+        new DatePicker(this.#popup.find("#lessonDate"));
 
         // Init table contents
         const courseRowTemplate = this.#courseContainer.find("#courseRow").detach();

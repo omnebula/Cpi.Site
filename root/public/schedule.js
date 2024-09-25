@@ -137,11 +137,13 @@ class SchedulePage extends CpiPage {
                 this.#syncInsertButtons();
 
                 // Conditionally set the current selection.
-                const url = new URL(document.referrer);
-                if (url.pathname === "/lesson") {
-                    const lessonId = url.searchParams.get("id");
-                    if (lessonId) {
-                        this.#selectLesson($(`#${lessonId}`));
+                if (document.referrer && (document.referrer !== "")) {
+                    const url = new URL(document.referrer);
+                    if (url.pathname === "/lesson") {
+                        const lessonId = url.searchParams.get("id");
+                        if (lessonId) {
+                            this.#selectLesson($(`#${lessonId}`));
+                        }
                     }
                 }
             }
