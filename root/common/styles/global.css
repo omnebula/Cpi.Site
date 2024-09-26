@@ -36,6 +36,9 @@
     --input-button-background-color-disabled: #555;
 
     --list-row-color: black;
+
+    --footer-color: #aaa;
+    --footer-background-color: #e4e4e4;
 }
 .theme-dark {
     --body-background-color: #1a1a1a;
@@ -72,6 +75,9 @@
     --input-button-background-color-disabled: #555;
 
     --list-row-color: #eee;
+
+    --footer-color: #555;
+    --footer-background-color: #171717;
 }
 
 
@@ -585,6 +591,19 @@ main {
 /*
 * Footer Section
 */
-footer {
+footer, .loginFooter {
+    height: 20px;
+    color: var(--footer-color);
+    text-align: center;
+    font-size: 13px;
+}
 
+footer {
+    background-color: var(--footer-background-color);
+}
+
+.loginFooter {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
 }

@@ -4,6 +4,11 @@ class RegistrationPage {
 
     constructor() {
         const searchParams = new URLSearchParams(window.location.search);
+
+        if (searchParams.has("test")) {
+            return;
+        }
+        
         const invitationId = searchParams.get("id");
         if (!invitationId) {
             window.open("/");

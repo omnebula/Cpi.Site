@@ -492,6 +492,7 @@ class Cpi {
                 </div>
             </form>
         </div>
+        <div class="loginFooter">&copy; CorePlanIt Inc. All rights reserved.</div>
     </div>
 `;
 
