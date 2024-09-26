@@ -45,6 +45,9 @@ main {
 .lessonViewButton {
     width: 160px;
 }
+.lessonShortButton {
+    width: 80px;
+}
 
 .lessonShortButton {
     width: default;
