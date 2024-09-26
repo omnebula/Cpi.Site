@@ -53,6 +53,10 @@ class LessonPage extends CpiPage {
                 });
         }
 
+        $("#printLesson").on("click", () => {
+            this.#printLesson();
+        })
+
         this.#lessonId = this.#viewTracker.searchParams.get("id");
 
         Cpi.ShowAppFrame();
@@ -259,6 +263,50 @@ class LessonPage extends CpiPage {
 
         // Initialize all text boxes.
         $(".lessonDetailText").prop("readonly", true);
+    }
+
+    #printLesson() {
+        function setPrint() {
+            const closePrint = () => {
+                document.body.removeChild(this);
+            };
+
+            const lesson = {
+                name: $("#lessonName").text(),
+                date: $("#lessonDate").text(),
+                benchmarks: [],
+                details: {}
+            };
+
+            $(".lessonBenchmarkRow").each((key, value) => {
+                const element = $(value);
+                const benchmarkCode = element.find("#lessonBenchmarkCode").text();
+                const benchmarkSynopsis = element.find("#lessonBenchmarkSynopsis").text();
+                lesson.benchmarks.push({
+                    code: benchmarkCode,
+                    synopsis: benchmarkSynopsis
+                });
+            });
+
+            $(".lessonDetailSection").each((key, value) => {
+                const element = $(value);
+                const detailLabel = element.find("label").text();
+                const detailContent = element.find("textarea").val();
+                lesson.details[detailLabel] = detailContent;
+            });
+
+            this.contentWindow.initPrintout(lesson);
+
+            this.contentWindow.onbeforeunload = closePrint;
+            this.contentWindow.onafterprint = closePrint;
+            this.contentWindow.print();
+        }
+
+        const hideFrame = document.createElement("iframe");
+        hideFrame.onload = setPrint;
+        hideFrame.style.display = "none"; // hide iframe
+        hideFrame.src = "./lesson-printout";
+        document.body.appendChild(hideFrame);
     }
 }
 

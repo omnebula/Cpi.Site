@@ -1,112 +1,155 @@
 <!DOCTYPE html>
-<html>
+<html dir="ltr" lang="en-US">
 <head>
-    <title>Core Plan It - Account</title>
+    <title>Core Plan It - Print Lesson</title>
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/common/styles/global.css" type="text/css" />
-    <link rel="stylesheet" href="./common/styles/OverlayController.css" type="text/css" />
     <link rel="stylesheet" href="./account.css" type="text/css" />
-    <script type="text/javascript" src="/common/data/static.js"></script>
     <script type="text/javascript" src="/common/scripts/jquery.min.js"></script>
-    <script type="text/javascript" src="/common/scripts/global.js"></script>
-    <script type="text/javascript" src="/common/classes/EditController.js"></script>
-    <script type="text/javascript" src="/common/classes/OverlayController.js"></script>
-    <script type="text/javascript" src="./account.js" defer></script>
+
+    <style>
+        @media print {
+            @page {
+                size: auto;
+                margin: 0mm;
+            }
+        }
+
+        body {
+            padding: 0.5in 0.5in;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            width: 8in;
+        }
+
+        header {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: end;
+            margin-bottom: 0.5in;
+        }
+
+        .siteLogoGraphic, .siteLogoText {
+            height: 20pt;
+        }
+
+        .lessonTitle {
+            font-size: 12pt;
+        }
+
+        main {
+            font-size: 10pt;
+        }
+
+        .lessonSection {
+            margin-bottom: .25in;
+        }
+        .sectionLabel {
+            font-size: 11.5pt;
+            font-weight: bold;
+            color: #666;
+            border-bottom: 1px solid #666;
+            padding-bottom: 2px;
+        }
+        .sectionContent {
+            margin: 0 .25in;
+            margin-top: .12in;
+            margin-bottom: .25in;
+            min-height: 0.8in;
+        }
+        td {
+            vertical-align: top;
+        }
+        .benchmarkCode {
+            padding-right: 8px;
+            font-weight: bold;
+        }
+    </style>
+
+    <script>
+        window.initPrintout = (lesson) => {
+            $("#lessonName").text(lesson.name);
+            $("#lessonDate").text(lesson.date);
+
+            const benchmarkContainer = $("#benchmarkContainer");
+            const benchmarkTemplate = benchmarkContainer.find("#benchmarkRow").detach();
+            for (const benchmark of lesson.benchmarks) {
+                const benchmarkRow = benchmarkTemplate.clone(true);
+                benchmarkRow.find("#benchmarkCode").text(benchmark.code);
+                benchmarkRow.find("#benchmarkSynopsis").text(benchmark.synopsis);
+                benchmarkContainer.append(benchmarkRow);
+            }
+
+            const sectionContainer = $("#sectionContainer");
+            const sectionTemplate = sectionContainer.find("#detailSection").detach();
+            for (const detailLabel in lesson.details) {
+                const detailSection = sectionTemplate.clone(true);
+
+                detailSection.find("#detailLabel").text(detailLabel);
+
+                const detailContent = lesson.details[detailLabel];
+                detailSection.find("#detailContent").text(detailContent);
+
+                sectionContainer.append(detailSection);
+            }
+        }
+    </script>
 
 </head>
 
 <body>
-    <div class="appFrame">
-        <div class="pageFrame">
-            <header>
-                <div class="siteLogo"><img src="/common/images/logo-graphic.svg" class="siteLogoGraphic"><img src="/common/images/logo-text.svg" class="siteLogoText"></div>
-                <div class="siteNavigation">
-                    <div id="pageTitle" class="pageTitle">Account Settings</div>
-                    <div id="siteMenu" class="siteMenu">
-                        <a class="siteMenuOption" id="siteViewManager" href="/organization">manager</a>
-                        <a class="siteMenuOption" id="siteViewProgress" href="/progress">progress</a>
-                        <div class="siteMenuTeacherOption">
-                            <a class="siteMenuOption" href="/schedule">schedule</a>
-                            <a class="siteMenuOption" href="/roadmap">roadmap</a>
-                        </div>
-                        <div class="siteCurrentMenuOption">account</div>
-                        <a class="siteLastMenuOption" id="siteLogout">logout</a>
-                    </div>
-                </div>
-            </header>
+    <header>
+        <div>
+            <img src="/common/images/logo-graphic.svg" class="siteLogoGraphic"><img src="/common/images/logo-text.svg" class="siteLogoText">
+        </div>
+        <div class="lessonTitle">
+            Lesson Plan&nbsp;&bull;&nbsp;<span id="lessonName"></span>&nbsp;&bull;&nbsp;<span id="lessonDate"></span>
+        </div>
+    </header>
+    <main>
+        <div class="lessonSection">
+            <div class="sectionLabel">Benchmarks</div>
+            <div class="sectionContent">
+                <table cellpadding="0" cellspacing="0">
+                    <tbody id="benchmarkContainer">
+                        <tr id="benchmarkRow">
+                            <td id="benchmarkCode" class="benchmarkCode"></td>
+                            <td id="benchmarkSynopsis"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="sectionContainer">
+            <div id="detailSection" class="lessonSection">
+                <div id="detailLabel" class="sectionLabel"></div>
+                <div id="detailContent" class="sectionContent"></div>
+            </div>
+        </div>
+    </main>
 
-			<main>
-                <!-- Selectors  -->
-                <div class="inputColumn overlaySelector">
-                </div>
-
-                <!-- Overlays -->
-                <div class="inputColumn overlaySection">
-
-                    <div id="Profile" class="overlayPanel">
-                        <div class="overlayContent">
-                            <div class="inputRow">
-                                <div class="inputCell">
-                                    <label class="inputLabel" for="firstName">First Name</label>
-                                    <input class="inputTextBox" id="firstName" type="text" autocomplete="off"/>
-                                </div>
-                                <div class="inputCell">
-                                    <label class="inputLabel" for="lastName">Last Name</label>
-                                    <input class="inputTextBox" id="lastName" type="text" autocomplete="off"/>
-                                </div>
-                            </div>
-                            <div class="inputRow">
-                                <div class="inputCell">
-                                    <label class="inputLabel" for="email" disabled>Email</label>
-                                    <input class="inputTextBox" id="email" type="text" disabled/>
-                                </div>
-                                <div class="inputCell">
-                                    <label class="inputLabel" for="phone">Phone</label>
-                                    <input class="inputTextBox" id="phone" type="text" autocomplete="off"/>
-                                </div>
-                            </div>
-                            <div class="passwordInfo">
-                                <div class="inputRow">
-                                    <div class="inputCell">
-                                        <label class="inputLabel" for="authCode">Password</label>
-                                        <input class="inputTextBox" id="authCode" type="password" autocomplete="new-password"/>
-                                    </div>
-                                    <div class="inputCell">
-                                        <label class="inputLabel" for="confirmAuthCode">Confirm Password</label>
-                                        <input class="inputTextBox" id="confirmAuthCode" type="password" autocomplete="new-password"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="overlayCommands">
-                            <div id="editInactiveButtons" class="overlayCommands editInactiveButtons">
-                                <input id="enableEdit" value="Edit Profile" type="button" class="inputButton overlayCommandButton"/>
-                            </div>
-                            <div id="editActiveButtons" class="overlayCommands editActiveButtons">
-                                <input id="acceptChanges" value="Accept Changes" type="button" class="inputButton inputAcceptButton"/>
-                                <input id="cancelChanges" value="Cancel Changes" type="button" class="inputButton inputCancelButton"/>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="Preferences" class="overlayPanel">
-                        <div class="overlayContent">
-                            <div class="inputRow">
-                                <select id="siteTheme" class="inputSelect">
-                                    <option value="theme-light">Light Theme</option>
-                                    <option value="theme-dark">Dark Theme</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="overlayCommands">
-                        </div>
-                    </div>
-
-                </div>
-            </main>
-		</div>
-	</div>
-
+    <script>
+        const searchParams = new URLSearchParams(window.location.search);
+        if (searchParams.has("test")) {
+            window.initPrintout({
+                name: "Grade 1 Math",
+                date: "Tue Sep 24, 2024",
+                benchmarks: [
+                    {
+                        code: "MA.2.AR.2.1",
+                        synopsis: "Determine and explain whether equations involving addition and subtraction are true or false."
+                    },
+                    {
+                        code: "SS.2.A.1.1",
+                        synopsis: "Examine primary and secondary sources."
+                    }
+                ],
+                details: {
+                    "Objectives": "quod erat optandum maxime iudices et quod unum ad inuidiam uestri ordinis infamiamque iudiciorum sedandam maxime pertinebat, id non humano consilio sed prope diuinitus datum atque oblatum uobis summo rei publicae tempore uidetur.",
+                    "Activities": "inueterauit enim iam opinio, perniciosa rei publicae uobisque periculosa, quae non modo apud populum romanum sed etiam exteras nationes omnium sermone percrebruit: his iuciis, quae nunc sunt, pecuniosum hominem, quamuis sit nocens, neminem posse damnari.",
+                    "Materials/Resources": "nunc in ipso iudicio, cum sint parati qui contionibus ac legibus hanc inuidiam senatus inflammare conentur, reus in iudicium adductus est, G. Verres, homo uita atque factis iam omnium opinione damnatus, pecuniae magnitudine sua spe ac praedicatione absolutus."
+                }
+            });
+        }
+    </script>
 </body>
 </html>
