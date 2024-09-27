@@ -86,21 +86,58 @@ class SchedulePage extends CpiPage {
 
             // Handle holiday
             if (Cpi.IsHoliday(lessonDate)) {
-                column.find(".scheduleColumnHeader").addClass("scheduleColumnHeader_holiday")
+                column.find(".scheduleColumnHeader").addClass("scheduleColumnHeader_holiday").prop("holiday", true);
                 column.find(".scheduleColumnDay").addClass("scheduleColumn_holiday");
                 column.find(".scheduleColumnDate").addClass("scheduleColumn_holiday");
-                column.find("#addLesson").css("visibility", "hidden").prop("holiday", true);
-                column.find("#repeatColumn").css("visibility", "hidden");
+                column.find(".scheduleColumnMenu").css("visibility", "hidden");
             }
             // Else, do regular school day.
             else {
-                if (this.#viewTracker.teacherId) {
-                    column.find("#addLesson").css("display", "none");
-                    column.find("#repeatColumn").css("display", "none");    
+                function enableColumnMenuDropdown(enable) {
+                    column.find("#scheduleColumnMenuDropdown").css("display", enable ? "" : "none");
                 }
+
+                column.find(".scheduleColumnMenuIcon").on("mouseenter", () => {
+                    enableColumnMenuDropdown(true);
+                });
+                
+                // Disable (hide) the column heaader menu if we're in view-only mode.
+                if (this.#viewTracker.isActive) {
+                    column.find(".scheduleColumnMenu").css("display", "none");
+                }
+                // Otherwise, configure the column menu options.
                 else {
-                    column.find("#addLesson").on("click", () => { this.#onAddLesson(lessonDate); });
-                    column.find("#repeatColumn").on("click", () => { this.#onRepeatColumn(lessonDate); });
+                    const addLesson = column.find("#addLesson");
+                    addLesson.on("click", () => {
+                        if (addLesson.prop("enabled")) {
+                            enableColumnMenuDropdown(false);
+                            this.#onAddLesson(lessonDate);
+                        }
+                    });
+
+                    const repeatOnce = column.find("#repeatOnce");
+                    repeatOnce.on("click", () => {
+                        if (repeatOnce.prop("enabled")) {
+                            enableColumnMenuDropdown(false);
+                            this.#onRepeatLesson(lessonDate);
+                        }
+                    });
+
+                    const repeatFill = column.find("#repeatFill");
+                    repeatFill.on("click", () => {
+                        if (repeatFill.prop("enabled")) {
+                            enableColumnMenuDropdown(false);
+                            this.#onRepeatFill(lessonDate);
+                        }
+                    });
+
+                    const deleteAll = column.find("#deleteAll");
+                    deleteAll.on("click", () => {
+                        if (deleteAll.prop("enabled")) {
+                            enableColumnMenuDropdown(false);
+                            this.#onDeleteAll(lessonDate);
+                        }
+                    });
                 }
             }
 
@@ -132,9 +169,6 @@ class SchedulePage extends CpiPage {
             url: queryUrl,
             success: (data, status, xhr) => {
                 this.populateSchedule(data);
-
-                // Update insert-lesson button visibility.
-                this.#syncInsertButtons();
 
                 // Conditionally set the current selection.
                 if (document.referrer && (document.referrer !== "")) {
@@ -234,6 +268,9 @@ class SchedulePage extends CpiPage {
             // Add to container.
             $(containers[containerId]).append(lesson);
         }
+
+        // Update insert-lesson button visibility.
+        this.#syncColumnMenuOptions();
     }
 
     #onAddLesson(lessonDate) {
@@ -268,19 +305,18 @@ class SchedulePage extends CpiPage {
                         data: JSON.stringify(params),
                         success: (results, status, xhr) => {
                             this.populateSchedule(results);
-
-                            // Update insert-lesson button visibility.
-                            this.#syncInsertButtons(containerId);
                         }
                     });
                 }
             }
         });
     }
+    #onRepeatLesson(lessonDate, count) {
+        count = count || 1;
 
-    #onRepeatColumn(lessonDate) {
         const params = {
-            lessonDate: Cpi.FormatIsoDateString(lessonDate)
+            lessonDate: Cpi.FormatIsoDateString(lessonDate),
+            count: count
         };
 
         Cpi.SendApiRequest({
@@ -295,23 +331,63 @@ class SchedulePage extends CpiPage {
                     this.#viewWeek(targetWeek);
                 }
                 else {
-                    // Clear out the target (next) column.
-                    const containerId = Cpi.DateDiff(targetDate, this.#weekDates.start);
-                    const container = $(".scheduleLessonContainer")[containerId];
-                    $(container).empty();
+                    // Clear out the target columns.
+                    var containerId = this.#calcContainerId(targetDate);
+                    const containers = $(".scheduleLessonContainer");
 
-                    // Repopulate the column.
+                    while (count--) {
+                        $(containers[containerId++]).empty();
+                    }
+
+                    // Repopulate the column(s).
                     this.populateSchedule(data.lessons);
-
-                    // Update insert-lesson button visibility.
-                    this.#syncInsertButtons(containerId);
                 }
             }
-        })
+        });
     }
+    #onRepeatFill(lessonDate) {
+        var count;
+
+        // If source date is a Friday, schedule all 5 days of the following week.
+        const dayOfWeek = lessonDate.getDay();
+        if (dayOfWeek === 5) {
+            count = 5;
+        } 
+        else {
+            count = 5 - dayOfWeek;
+        }
+
+        this.#onRepeatLesson(lessonDate, count);
+    }
+    #onDeleteAll(lessonDate) {
+        const containerId = this.#calcContainerId(lessonDate);
+        const container = this.#getContainerWithId(containerId);
+
+        const lessonIds = [];
+        const bubbles = container.find(".scheduleLesson");
+        bubbles.each((key, value) => {
+            lessonIds.push(value.id);
+        });
+
+        if (lessonIds.length) {
+            Cpi.SendApiRequest({
+                method: "DELETE",
+                url: `/@/lesson`,
+                data: JSON.stringify(lessonIds),
+                success: (data, status, xhr) => {
+                    container.empty();
+                    this.#syncColumnMenuOptions(containerId);
+                }
+            });
+        }
+    }
+
 
     #calcContainerId(lessonDate) {
         return Cpi.DateDiff(lessonDate, this.#weekDates.start);
+    }
+    #getContainerWithId(containerId) {
+        return $($(".scheduleLessonContainer")[containerId]);
     }
 
     #viewWeek(weekNumber) {
@@ -330,7 +406,7 @@ class SchedulePage extends CpiPage {
             url: `/@/lesson/${lessonId}`,
             success: (data, status, xhr) => {
                 lesson.remove();
-                this.#syncInsertButtons(containerId);
+                this.#syncColumnMenuOptions(containerId);
             }
         })
     }
@@ -386,9 +462,9 @@ class SchedulePage extends CpiPage {
         }
     }
 
-    #syncInsertButtons(containerId) {
+    #syncColumnMenuOptions(containerId) {
         const maxCourses = this.accountData.options.courses.length;
-        const buttons = $(".addLesson");
+        const headers = $(".scheduleColumnHeader");
         const containers = $(".scheduleLessonContainer");
 
         var index, max;
@@ -398,18 +474,35 @@ class SchedulePage extends CpiPage {
         }
         else {
             index = 0;
-            max = buttons.length;
+            max = headers.length;
         }
 
-        while (index < max) {
-            const button = $(buttons[index]);
-            if (!button.prop("holiday")) {
-                const current = $(containers[index]);
-                const children = current.children();
-                button.css("visibility", (children.length < maxCourses) ? "visible" : "hidden");
-            }
+        for (;index < max; ++index) {
+            // GGet current header.
+            const header = $(headers[index]);
 
-            ++index;  
+            // Skip if this is a holiday,
+            if (!header.prop("holiday")) {
+                const current = $(containers[index]);
+
+                // Enable Add Lessons if we haven't assigned all the courses yet.
+                if (current.children().length < maxCourses) {
+                    header.find("#addLesson").removeClass("scheduleColumnMenuOption_disabled").prop("enabled", true);
+                }
+                // Else, disable Add Lessons.
+                else {
+                    header.find("#addLesson").addClass("scheduleColumnMenuOption_disabled").prop("enabled", false);
+                }
+
+                // Enable Repeat if there's at least one assigned option.
+                if (current.children().length) {
+                    header.find(".repeatOption").removeClass("scheduleColumnMenuOption_disabled").prop("enabled", true);
+                }
+                // Else, disable Repeat options.
+                else {
+                    header.find(".repeatOption").addClass("scheduleColumnMenuOption_disabled").prop("enabled", false);
+                }
+            }
         }
     }
 
