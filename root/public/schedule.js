@@ -85,11 +85,15 @@ class SchedulePage extends CpiPage {
             column.find(".scheduleColumnDate").text(Cpi.FormatShortDateString(lessonDate));
 
             // Handle holiday
-            if (Cpi.IsHoliday(lessonDate)) {
+            const holidayName = Cpi.GetHolidayName(lessonDate);
+            if (holidayName) {
                 column.find(".scheduleColumnHeader").addClass("scheduleColumnHeader_holiday").prop("holiday", true);
                 column.find(".scheduleColumnDay").addClass("scheduleColumn_holiday");
                 column.find(".scheduleColumnDate").addClass("scheduleColumn_holiday");
                 column.find(".scheduleColumnMenu").css("visibility", "hidden");
+
+                const lessonContainer = this.#getContainerWithDate(lessonDate);
+                lessonContainer.append(`<div class='scheduleHoliday'>${holidayName}</div>`);
             }
             // Else, do regular school day.
             else {
@@ -387,6 +391,10 @@ class SchedulePage extends CpiPage {
         return Cpi.DateDiff(lessonDate, this.#weekDates.start);
     }
     #getContainerWithId(containerId) {
+        return $($(".scheduleLessonContainer")[containerId]);
+    }
+    #getContainerWithDate(lessonDate) {
+        const containerId = this.#calcContainerId(lessonDate);
         return $($(".scheduleLessonContainer")[containerId]);
     }
 

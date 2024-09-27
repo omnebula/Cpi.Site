@@ -283,6 +283,17 @@ main {
     position: relative;    
 }
 
+
+.scheduleHoliday {
+    padding: 20px 0;
+    font-size: 14px;
+    margin-top: 12px;
+    text-align: center;
+    font-style: italic;
+    color: #777;
+}
+
+
 .scheduleLesson {
     color: #ddd;
     background-color: var(--schedule-lesson-background-color);
