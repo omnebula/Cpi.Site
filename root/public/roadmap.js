@@ -428,6 +428,7 @@ class BenchmarkOverlay extends RoadmapOverlay  {
 
     #createLessonBubble(lesson) {
         const lessonBubble = this.#lessonTemplate.clone(true);
+        lessonBubble.attr("id", lesson.id || lesson.lessonId);
         lessonBubble.on("click", (event) => {
             event.stopPropagation();
         });
@@ -470,8 +471,11 @@ class BenchmarkOverlay extends RoadmapOverlay  {
                         data: JSON.stringify(params),
                         success: (results, status, xhr) => {
                             for (const lesson of results) {
-                                const lessonBubble = this.#createLessonBubble(lesson);
-                                lessonColumn.append(lessonBubble);
+                                // Only create if not already listed.
+                                if (!lessonColumn.find(`#${lesson.lessonId}`).length) {
+                                    const lessonBubble = this.#createLessonBubble(lesson);
+                                    lessonColumn.append(lessonBubble);
+                                }
                             }
                         }
                     });

@@ -168,6 +168,11 @@ class SchedulePage extends CpiPage {
         }
 
         for (const current of data) {
+            // Skip if already displayed.
+            if ($(`#${current.lessonId}`).length) {
+                continue;
+            }
+
             const lessonDate = Cpi.ParseLocalDate(current.lessonDate);
             const containerId = this.#calcContainerId(lessonDate);
 
