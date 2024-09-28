@@ -14,6 +14,10 @@
     <script type="text/javascript" src="/common/classes/ViewTracker.js"></script>
     <script type="text/javascript" src="/common/classes/DatePicker.js"></script>
     <script type="text/javascript" src="/common/classes/CoursePicker.js"></script>
+    <script type="text/javascript" src="./schedule-core.js"></script>
+    <script type="text/javascript" src="./schedule-template.js"></script>
+    <script type="text/javascript" src="./schedule-planner.js"></script>
+    <script type="text/javascript" src="./schedule-reviewer.js"></script>
     <script type="text/javascript" src="./schedule.js" defer></script>
 </head>
 
@@ -69,13 +73,15 @@
                                 <div class="scheduleColumnMenu">
                                     <img class="scheduleColumnMenuIcon" src="/common/images/schedule-menu-icon.svg"/>
                                     <div id="scheduleColumnMenuDropdown" class="scheduleColumnMenuDropdown">
-                                        <div id="addLesson" class="scheduleColumnMenuOption">Add lessons...</div>
-                                        <div class="scheduleColumnMenuGroup">
-                                            <div id="repeatOnce" class="scheduleColumnMenuOption repeatOption">Repeat once</div>
-                                            <div id="repeatFill" class="scheduleColumnMenuOption repeatOption">Repeat fill</div>
-                                        </div>
-                                        <div class="scheduleColumnMenuGroup">
-                                            <div id="deleteAll" class="scheduleColumnMenuOption repeatOption">Delete all</div>
+                                        <div class="plannerOptions">
+                                            <div id="addLesson" class="scheduleColumnMenuOption">Add lessons...</div>
+                                            <div class="scheduleColumnMenuGroup">
+                                                <div id="repeatOnce" class="scheduleColumnMenuOption repeatOption">Repeat once</div>
+                                                <div id="repeatFill" class="scheduleColumnMenuOption repeatOption">Repeat fill</div>
+                                            </div>
+                                            <div class="scheduleColumnMenuGroup">
+                                                <div id="deleteAll" class="scheduleColumnMenuOption repeatOption">Delete all</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -87,13 +93,15 @@
                                 <div class="scheduleColumnMenu">
                                     <img class="scheduleColumnMenuIcon" src="/common/images/schedule-menu-icon.svg"/>
                                     <div id="scheduleColumnMenuDropdown" class="scheduleColumnMenuDropdown">
-                                        <div id="addLesson" class="scheduleColumnMenuOption">Add lessons...</div>
-                                        <div class="scheduleColumnMenuGroup">
-                                            <div id="repeatOnce" class="scheduleColumnMenuOption repeatOption">Repeat once</div>
-                                            <div id="repeatFill" class="scheduleColumnMenuOption repeatOption">Repeat fill</div>
-                                        </div>
-                                        <div class="scheduleColumnMenuGroup">
-                                            <div id="deleteAll" class="scheduleColumnMenuOption repeatOption">Delete all</div>
+                                        <div class="plannerOptions">
+                                            <div id="addLesson" class="scheduleColumnMenuOption">Add lessons...</div>
+                                            <div class="scheduleColumnMenuGroup">
+                                                <div id="repeatOnce" class="scheduleColumnMenuOption repeatOption">Repeat once</div>
+                                                <div id="repeatFill" class="scheduleColumnMenuOption repeatOption">Repeat fill</div>
+                                            </div>
+                                            <div class="scheduleColumnMenuGroup">
+                                                <div id="deleteAll" class="scheduleColumnMenuOption repeatOption">Delete all</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -105,13 +113,15 @@
                                 <div class="scheduleColumnMenu">
                                     <img class="scheduleColumnMenuIcon" src="/common/images/schedule-menu-icon.svg"/>
                                     <div id="scheduleColumnMenuDropdown" class="scheduleColumnMenuDropdown">
-                                        <div id="addLesson" class="scheduleColumnMenuOption">Add lessons...</div>
-                                        <div class="scheduleColumnMenuGroup">
-                                            <div id="repeatOnce" class="scheduleColumnMenuOption repeatOption">Repeat once</div>
-                                            <div id="repeatFill" class="scheduleColumnMenuOption repeatOption">Repeat fill</div>
-                                        </div>
-                                        <div class="scheduleColumnMenuGroup">
-                                            <div id="deleteAll" class="scheduleColumnMenuOption repeatOption">Delete all</div>
+                                        <div class="plannerOptions">
+                                            <div id="addLesson" class="scheduleColumnMenuOption">Add lessons...</div>
+                                            <div class="scheduleColumnMenuGroup">
+                                                <div id="repeatOnce" class="scheduleColumnMenuOption repeatOption">Repeat once</div>
+                                                <div id="repeatFill" class="scheduleColumnMenuOption repeatOption">Repeat fill</div>
+                                            </div>
+                                            <div class="scheduleColumnMenuGroup">
+                                                <div id="deleteAll" class="scheduleColumnMenuOption repeatOption">Delete all</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -123,13 +133,15 @@
                                 <div class="scheduleColumnMenu">
                                     <img class="scheduleColumnMenuIcon" src="/common/images/schedule-menu-icon.svg"/>
                                     <div id="scheduleColumnMenuDropdown" class="scheduleColumnMenuDropdown">
-                                        <div id="addLesson" class="scheduleColumnMenuOption">Add lessons...</div>
-                                        <div class="scheduleColumnMenuGroup">
-                                            <div id="repeatOnce" class="scheduleColumnMenuOption repeatOption">Repeat once</div>
-                                            <div id="repeatFill" class="scheduleColumnMenuOption repeatOption">Repeat fill</div>
-                                        </div>
-                                        <div class="scheduleColumnMenuGroup">
-                                            <div id="deleteAll" class="scheduleColumnMenuOption repeatOption">Delete all</div>
+                                        <div class="plannerOptions">
+                                            <div id="addLesson" class="scheduleColumnMenuOption">Add lessons...</div>
+                                            <div class="scheduleColumnMenuGroup">
+                                                <div id="repeatOnce" class="scheduleColumnMenuOption repeatOption">Repeat once</div>
+                                                <div id="repeatFill" class="scheduleColumnMenuOption repeatOption">Repeat fill</div>
+                                            </div>
+                                            <div class="scheduleColumnMenuGroup">
+                                                <div id="deleteAll" class="scheduleColumnMenuOption repeatOption">Delete all</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -141,13 +153,15 @@
                                 <div class="scheduleColumnMenu">
                                     <img class="scheduleColumnMenuIcon" src="/common/images/schedule-menu-icon.svg"/>
                                     <div id="scheduleColumnMenuDropdown" class="scheduleColumnMenuDropdown">
-                                        <div id="addLesson" class="scheduleColumnMenuOption">Add lessons...</div>
-                                        <div class="scheduleColumnMenuGroup">
-                                            <div id="repeatOnce" class="scheduleColumnMenuOption repeatOption">Repeat once</div>
-                                            <div id="repeatFill" class="scheduleColumnMenuOption repeatOption">Repeat fill</div>
-                                        </div>
-                                        <div class="scheduleColumnMenuGroup">
-                                            <div id="deleteAll" class="scheduleColumnMenuOption repeatOption">Delete all</div>
+                                        <div class="plannerOptions">
+                                            <div id="addLesson" class="scheduleColumnMenuOption">Add lessons...</div>
+                                            <div class="scheduleColumnMenuGroup">
+                                                <div id="repeatOnce" class="scheduleColumnMenuOption repeatOption">Repeat once</div>
+                                                <div id="repeatFill" class="scheduleColumnMenuOption repeatOption">Repeat fill</div>
+                                            </div>
+                                            <div class="scheduleColumnMenuGroup">
+                                                <div id="deleteAll" class="scheduleColumnMenuOption repeatOption">Delete all</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
