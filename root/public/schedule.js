@@ -93,6 +93,7 @@ class SchedulePage extends CpiPage {
                 column.find(".scheduleColumnMenu").css("visibility", "hidden");
 
                 const lessonContainer = this.#getContainerWithDate(lessonDate);
+                lessonContainer.prop("holiday", true);
                 lessonContainer.append(`<div class='scheduleHoliday'>${holidayName}</div>`);
             }
             // Else, do regular school day.
@@ -201,7 +202,10 @@ class SchedulePage extends CpiPage {
 
         if (clear) {
             for (const current of containers) {
-                $(current).empty();
+                const container = $(current);
+                if (!container.prop("holiday")) {
+                    container.empty();
+                }
             }
         }
 
