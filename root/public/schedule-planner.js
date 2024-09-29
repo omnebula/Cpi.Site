@@ -2,6 +2,7 @@
 
 class SchedulePlanner extends ScheduleController {
     #lessonTemplate;
+    #templateManager;
 
     constructor(schedulePage) {
         super(schedulePage);
@@ -13,7 +14,7 @@ class SchedulePlanner extends ScheduleController {
         this.headers.each((key, value) => {
             const header = $(value);
             const lessonDate = header.prop("lessonDate");
-            const menuOptions = header.find(".plannerOptions");
+            const menuOptions = header.find(".plannerColumnMenuOptions");
 
             const addLesson = menuOptions.find("#addLesson");
             addLesson.on("click", () => {
@@ -46,7 +47,7 @@ class SchedulePlanner extends ScheduleController {
         });
 
         // Initialize template manager.
-        new TemplateManager(this);
+        this.#templateManager = new TemplateManager(this);
 
         // Initialize click handler to unselect a lessson when user clicks empty space.
         $(".appFrame").on("mousedown", () => {
@@ -55,30 +56,34 @@ class SchedulePlanner extends ScheduleController {
     }
 
     activate() {
-        // Query lessons.
-        var queryUrl = `/@/lessons?start=${Cpi.FormatIsoDateString(this.weekDates.start)}&end=${Cpi.FormatIsoDateString(this.weekDates.end)}`;
-        if (this.viewTracker.isActive) {
-            queryUrl += `&teacherId=${this.viewTracker.teacherId}`;
-        }
+        this.fetchLessons(this.queryUrl, (data) => {
+            this.populateSchedule(data);
 
-        Cpi.SendApiRequest({
-            method: "GET",
-            url: queryUrl,
-            success: (data, status, xhr) => {
-                this.populateSchedule(data);
+            $(".plannerColumnMenuOptions").css("display", "block");
 
-                // Conditionally set the current selection.
-                if (document.referrer && (document.referrer !== "")) {
-                    const url = new URL(document.referrer);
-                    if (url.pathname === "/lesson") {
-                        const lessonId = url.searchParams.get("id");
-                        if (lessonId) {
-                            this.#selectLesson($(`#${lessonId}`));
-                        }
+            this.#templateManager.show();
+
+            // Conditionally set the current selection.
+            if (document.referrer && (document.referrer !== "")) {
+                const url = new URL(document.referrer);
+                if (url.pathname === "/lesson") {
+                    const lessonId = url.searchParams.get("id");
+                    if (lessonId) {
+                        this.#selectLesson($(`#${lessonId}`));
                     }
                 }
             }
         });
+    }
+    
+    deactivate() {
+        super.deactivate();
+
+        // Hide planner-mode column dropdown menus.
+        $(".plannerColumnMenuOptions").css("display", "none");
+
+        // Hide the templates menu.
+        this.#templateManager.hide();
     }
 
     populateSchedule(data, clear) {

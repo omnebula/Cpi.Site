@@ -65,4 +65,21 @@ class ScheduleController {
     containerFromDate(date) {
         return this.schedulePage.containerFromDate(date);
     }
+
+    get queryUrl() {
+        var url = `/@/lessons?start=${Cpi.FormatIsoDateString(this.weekDates.start)}&end=${Cpi.FormatIsoDateString(this.weekDates.end)}`;
+        if (this.viewTracker.isActive) {
+            url += `&teacherId=${this.viewTracker.teacherId}`;
+        }
+        return url;
+    }
+    fetchLessons(url, success) {
+        Cpi.SendApiRequest({
+            method: "GET",
+            url: url,
+            success: (data, status, xhr) => {
+                success(data, status, xhr);
+            }
+        });
+    }
 }

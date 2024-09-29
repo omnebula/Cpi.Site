@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="./schedule.css" type="text/css" />
     <script type="text/javascript" src="/common/data/static.js"></script>
     <script type="text/javascript" src="/common/scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="/common/scripts/jquery.autogrow-textarea.js"></script>
     <script type="text/javascript" src="/common/scripts/global.js"></script>
     <script type="text/javascript" src="/common/classes/ViewTracker.js"></script>
     <script type="text/javascript" src="/common/classes/DatePicker.js"></script>
@@ -45,8 +46,11 @@
             <main>
                 <div class="navigationPanel">
                     <div>
-                        <select id="selectWeek" class="inputSelect navigationSelect" title="Got to a specific week"></select>
+                        <select id="selectWeek" class="inputSelect navigationSelect" title="Go to a specific week"></select>
                         <input id="viewPreviousWeek" class="inputButton navigationButton" type="button" value="Previous" title="Go to the previous week"/><input id="viewNextWeek" class="inputButton navigationButton" type="button" value="Next" title="Go to the next week"/><input id="viewCurrentWeek" class="inputButton navigationButton" type="button" value="Current" title="Go to the current week"/>
+                        <select id="selectCourse" class="inputSelect navigationSelect" title="Review consecutive course lessons">
+                            <option value="all">All Courses</option>
+                        </select>
                     </div>
                     <div>
                         <div id="templateSection" class="templateSection">
@@ -73,7 +77,7 @@
                                 <div class="scheduleColumnMenu">
                                     <img class="scheduleColumnMenuIcon" src="/common/images/schedule-menu-icon.svg"/>
                                     <div id="scheduleColumnMenuDropdown" class="scheduleColumnMenuDropdown">
-                                        <div class="plannerOptions">
+                                        <div class="plannerColumnMenuOptions">
                                             <div id="addLesson" class="scheduleColumnMenuOption">Add lessons...</div>
                                             <div class="scheduleColumnMenuGroup">
                                                 <div id="repeatOnce" class="scheduleColumnMenuOption repeatOption">Repeat once</div>
@@ -81,6 +85,12 @@
                                             </div>
                                             <div class="scheduleColumnMenuGroup">
                                                 <div id="deleteAll" class="scheduleColumnMenuOption repeatOption">Delete all</div>
+                                            </div>
+                                        </div>
+                                        <div class="reviewerColumnMenuOptions">
+                                            <div id="printLesson" class="scheduleColumnMenuOption">Print</div>
+                                            <div class="scheduleColumnMenuGroup">
+                                                <div id="deleteLesson" class="scheduleColumnMenuOption">Delete</div>
                                             </div>
                                         </div>
                                     </div>
@@ -93,7 +103,7 @@
                                 <div class="scheduleColumnMenu">
                                     <img class="scheduleColumnMenuIcon" src="/common/images/schedule-menu-icon.svg"/>
                                     <div id="scheduleColumnMenuDropdown" class="scheduleColumnMenuDropdown">
-                                        <div class="plannerOptions">
+                                        <div class="plannerColumnMenuOptions">
                                             <div id="addLesson" class="scheduleColumnMenuOption">Add lessons...</div>
                                             <div class="scheduleColumnMenuGroup">
                                                 <div id="repeatOnce" class="scheduleColumnMenuOption repeatOption">Repeat once</div>
@@ -101,6 +111,12 @@
                                             </div>
                                             <div class="scheduleColumnMenuGroup">
                                                 <div id="deleteAll" class="scheduleColumnMenuOption repeatOption">Delete all</div>
+                                            </div>
+                                        </div>
+                                        <div class="reviewerColumnMenuOptions">
+                                            <div id="printLesson" class="scheduleColumnMenuOption">Print</div>
+                                            <div class="scheduleColumnMenuGroup">
+                                                <div id="deleteLesson" class="scheduleColumnMenuOption">Delete</div>
                                             </div>
                                         </div>
                                     </div>
@@ -113,7 +129,7 @@
                                 <div class="scheduleColumnMenu">
                                     <img class="scheduleColumnMenuIcon" src="/common/images/schedule-menu-icon.svg"/>
                                     <div id="scheduleColumnMenuDropdown" class="scheduleColumnMenuDropdown">
-                                        <div class="plannerOptions">
+                                        <div class="plannerColumnMenuOptions">
                                             <div id="addLesson" class="scheduleColumnMenuOption">Add lessons...</div>
                                             <div class="scheduleColumnMenuGroup">
                                                 <div id="repeatOnce" class="scheduleColumnMenuOption repeatOption">Repeat once</div>
@@ -121,6 +137,12 @@
                                             </div>
                                             <div class="scheduleColumnMenuGroup">
                                                 <div id="deleteAll" class="scheduleColumnMenuOption repeatOption">Delete all</div>
+                                            </div>
+                                        </div>
+                                        <div class="reviewerColumnMenuOptions">
+                                            <div id="printLesson" class="scheduleColumnMenuOption">Print</div>
+                                            <div class="scheduleColumnMenuGroup">
+                                                <div id="deleteLesson" class="scheduleColumnMenuOption">Delete</div>
                                             </div>
                                         </div>
                                     </div>
@@ -133,7 +155,7 @@
                                 <div class="scheduleColumnMenu">
                                     <img class="scheduleColumnMenuIcon" src="/common/images/schedule-menu-icon.svg"/>
                                     <div id="scheduleColumnMenuDropdown" class="scheduleColumnMenuDropdown">
-                                        <div class="plannerOptions">
+                                        <div class="plannerColumnMenuOptions">
                                             <div id="addLesson" class="scheduleColumnMenuOption">Add lessons...</div>
                                             <div class="scheduleColumnMenuGroup">
                                                 <div id="repeatOnce" class="scheduleColumnMenuOption repeatOption">Repeat once</div>
@@ -141,6 +163,12 @@
                                             </div>
                                             <div class="scheduleColumnMenuGroup">
                                                 <div id="deleteAll" class="scheduleColumnMenuOption repeatOption">Delete all</div>
+                                            </div>
+                                        </div>
+                                        <div class="reviewerColumnMenuOptions">
+                                            <div id="printLesson" class="scheduleColumnMenuOption">Print</div>
+                                            <div class="scheduleColumnMenuGroup">
+                                                <div id="deleteLesson" class="scheduleColumnMenuOption">Delete</div>
                                             </div>
                                         </div>
                                     </div>
@@ -153,7 +181,7 @@
                                 <div class="scheduleColumnMenu">
                                     <img class="scheduleColumnMenuIcon" src="/common/images/schedule-menu-icon.svg"/>
                                     <div id="scheduleColumnMenuDropdown" class="scheduleColumnMenuDropdown">
-                                        <div class="plannerOptions">
+                                        <div class="plannerColumnMenuOptions">
                                             <div id="addLesson" class="scheduleColumnMenuOption">Add lessons...</div>
                                             <div class="scheduleColumnMenuGroup">
                                                 <div id="repeatOnce" class="scheduleColumnMenuOption repeatOption">Repeat once</div>
@@ -161,6 +189,12 @@
                                             </div>
                                             <div class="scheduleColumnMenuGroup">
                                                 <div id="deleteAll" class="scheduleColumnMenuOption repeatOption">Delete all</div>
+                                            </div>
+                                        </div>
+                                        <div class="reviewerColumnMenuOptions">
+                                            <div id="printLesson" class="scheduleColumnMenuOption">Print</div>
+                                            <div class="scheduleColumnMenuGroup">
+                                                <div id="deleteLesson" class="scheduleColumnMenuOption">Delete</div>
                                             </div>
                                         </div>
                                     </div>
@@ -179,6 +213,24 @@
                                     </div>
                                     <div id="scheduleLessonName" class="scheduleLessonName"></div>
                                     <div id="scheduleLessonDetailList" class="scheduleLessonDetailList"></div>
+                                </div>
+                                <div class="scheduleEditor">
+                                    <div class="scheduleEditorRow">
+                                        <label>Benchmarks</label>
+                                        <div class="benchmarkContainer"></div>
+                                    </div>
+                                    <div class="scheduleEditorRow">
+                                        <label>Objectives</label>
+                                        <textarea id="objectives" class="scheduleEditorTextarea" rows="2"></textarea>
+                                    </div>
+                                    <div class="scheduleEditorRow">
+                                        <label>Activities</label>
+                                        <textarea id="activities" class="scheduleEditorTextarea" rows="2"></textarea>
+                                    </div>
+                                    <div class="scheduleEditorRow">
+                                        <label>Materials</label>
+                                        <textarea id="materials" class="scheduleEditorTextarea" rows="2"></textarea>
+                                    </div>
                                 </div>
                             </div>
                             <div id="1" class="scheduleColumn scheduleLessonContainer">
@@ -289,5 +341,6 @@
         </div>
 
     </div>
+    <div id="shadowParent"></div>
 </body>
 </html>

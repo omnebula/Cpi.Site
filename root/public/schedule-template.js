@@ -21,7 +21,7 @@ class TemplateManager {
         this.#templateOptionTemplate = this.#templateContainer.find(".templateOption").detach();
 
         this.#templateSection.on("mouseenter", () => {
-            this.#showTemplateMenu();
+            this.#openTemplateMenu();
         });
 
         this.#templateDropdown.find("#saveCurrentLayout").on("click", () => {
@@ -50,7 +50,14 @@ class TemplateManager {
         return templateName.replace(/ /g, '-').replace(/\./g, '-');
     }
 
-    #showTemplateMenu() {
+    show() {
+        this.#templateSection.css("visibility", "visible");
+    }
+    hide() {
+        this.#templateSection.css("visibility", "hidden");
+    }
+
+    #openTemplateMenu() {
         this.#templateContainer.empty();
 
         if (this.schedulePage.accountData.templates.schedule.length) {
@@ -73,17 +80,17 @@ class TemplateManager {
 
         this.#templateDropdown.css("display", "");
     }
-    #hideTemplateMenu() {
+    #closeTemplateMenu() {
         this.#templateDropdown.css("display", "none");
     }
 
     #saveCurrentLayout() {
-        this.#hideTemplateMenu();
+        this.#closeTemplateMenu();
         this.#savePopup.show();
     }
 
     #applyTemplate(templateName) {
-        this.#hideTemplateMenu();
+        this.#closeTemplateMenu();
 
         Cpi.SendApiRequest({
             method: "POST",
@@ -95,7 +102,7 @@ class TemplateManager {
     }
 
     #showTemplateManager() {
-        this.#hideTemplateMenu();
+        this.#closeTemplateMenu();
         this.#managerPopup.show();
     }
 }

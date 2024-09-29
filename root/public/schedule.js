@@ -4,6 +4,7 @@
 * SchedulePage
 */
 class SchedulePage extends CpiPage {
+    #settings;
     #viewTracker;
     #coursePicker;
     #weekNumber;
@@ -13,12 +14,21 @@ class SchedulePage extends CpiPage {
     #containers;
     #controllers;
     #currentController;
+    #courseSelector;
 
     constructor() {
         super();
 
         if (!this.validateLogin()) {
             return;
+        }
+
+        var item = localStorage.getItem("schedulePage");
+        if (item) {
+            this.#settings = JSON.parse(item);
+        }
+        else {
+            this.#settings = {};
         }
 
         // Detect view-only mode.
@@ -136,7 +146,31 @@ class SchedulePage extends CpiPage {
             containerDate = Cpi.DateAdd(containerDate, 1);
         }
 
+        // Initialize course selector
+        this.#courseSelector = $("#selectCourse");
+        for (var course of this.accountData.options.courses) {
+            this.#courseSelector.append(`<option value="${course.courseId}_${course.classId}">${course.courseName}</option>`);
+        }
+        this.#courseSelector.on("change", () => {
+            const selection = this.#courseSelector.val();
+            if (selection === "all") {
+                this.#settings.courseValue = undefined;
+                this.#saveSettings();
+                this.#activateController("planner");
+            }
+            else {
+                this.#settings.courseValue = selection;
+                this.#saveSettings();
+                this.#activateController("reviewer");
+            }
+        });
 
+        var initialController = "planner";
+        if (this.#settings.courseValue) {
+            this.#courseSelector.val(this.#settings.courseValue);
+            initialController = "reviewer";
+        }
+        
         // Initialize the controllers.
         this.#controllers = {
             planner: new SchedulePlanner(this),
@@ -146,7 +180,7 @@ class SchedulePage extends CpiPage {
         // Show frame and activate planner mode.
         Cpi.ShowAppFrame();
 
-        this.#activateController("planner");
+        this.#activateController(initialController);
     }
 
     /*
@@ -225,6 +259,14 @@ class SchedulePage extends CpiPage {
         return this.containerFromId(this.columnIdFromDate(date));
     }
 
+    get selectedCourseValue() {
+        const selection = this.#courseSelector.find(":selected");
+        if (!selection || !selection.length) {
+            return undefined;
+        }
+        return selection.val();
+    }
+
     /*
     * Private Implementations
     */
@@ -236,6 +278,10 @@ class SchedulePage extends CpiPage {
         this.#currentController = this.#controllers[controllerName];
 
         this.#currentController.activate();
+    }
+
+    #saveSettings() {
+        localStorage.setItem("schedulePage", JSON.stringify(this.#settings));
     }
 
 }

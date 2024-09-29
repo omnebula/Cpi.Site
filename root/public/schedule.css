@@ -42,6 +42,12 @@ main {
     margin-right: 2px;
 }
 
+
+#selectCourse {
+    margin-left: 48px;
+}
+
+
 .listRow {
     color: inherit;
 }
@@ -257,6 +263,14 @@ main {
     padding-top: 4px;
 }
 
+.reviewerColumnMenuOptions {
+    display: none;
+}
+.plannerColumnMenuOptions {
+    display: none;
+}
+
+
 .scheduleBody {
     position: relative;
     overflow-y: scroll;
@@ -373,4 +387,34 @@ main {
     display: none;
     max-width: 260px;
     font-size: 12px;
+}
+
+/*
+* Schedule Editor
+*/
+.scheduleEditor {
+    margin-top: 12px;
+    color: gainsboro;
+    font-size: 11.5px;
+}
+
+.scheduleEditorRow {
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+}
+
+.scheduleEditorRow label {
+    color: #00d100;
+    font-size: 13px;
+}
+
+.scheduleEditorTextarea {
+    outline: none;
+    resize: none;
+    font-family: inherit;
+    font-size: inherit;
+    color: gainsboro;
+    background-color: transparent;
+    padding: 2px 0;
 }
