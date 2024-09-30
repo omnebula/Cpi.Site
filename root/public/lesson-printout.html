@@ -74,7 +74,7 @@
             for (const benchmark of lesson.benchmarks) {
                 const benchmarkRow = benchmarkTemplate.clone(true);
                 benchmarkRow.find("#benchmarkCode").text(benchmark.code);
-                benchmarkRow.find("#benchmarkSynopsis").text(benchmark.synopsis);
+                benchmarkRow.find("#benchmarkSynopsis").html(benchmark.synopsis);
                 benchmarkContainer.append(benchmarkRow);
             }
 

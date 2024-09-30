@@ -163,7 +163,7 @@ main {
 }
 
 .lessonBenchmarkCodeColumn {
-    color: lightsteelBlue;
+    color: lightsteelblue;
 }
 .lessonBenchmarkCodeColumn_readonly {
     color: var(--lesson-benchmark-code-color-disabled);
@@ -216,102 +216,3 @@ main {
     height: 100px;
     font-family: inherit;
 }
-
-
-.pickerInput, .pickerSelect {
-    color: #ddd;
-    background-color: transparent;
-    outline: none;
-    border-radius: 8px;
-    box-sizing: border-box;
-    border: 1px solid #777;    
-    font-size: inherit;
-    font-family: inherit;    
-}
-
-
-.popupRow {
-    margin: 0 18px 18px 18px;
-}
-
-.pickerInput {
-    padding: 4px 8px;
-    border: 1px solid var(--input-button-background-color);
-}
-.pickerSelect {
-    padding: 3px 8px;
-    border: 0;
-    background-color: var(--input-button-background-color);
-}
-.pickerSelect:active {
-    border-color: lightsteelblue;
-    background-color: #272727;
-}
-.pickerSelect:focus {
-    border-color: lightsteelblue;
-    background-color: #272727;
-}
-.pickerButton {
-    padding: 5px 0;
-    width: 150px;
-}
-
-
-.benchmarkPicker {
-    width: 800px;
-    height: 420px;
-}
-.benchmarkPickerSearch {
-    margin-bottom: 18px;
-}
-.benchmarkPickerSearchBar {
-    display: flex;
-    flex-direction: row;
-    align-items: center;    
-}
-.benchmarkPickerSearchSubject {
-    margin-right: 24px;
-}
-.benchmarkPickerSearchGrade {
-    margin-right: 24px;
-}
-.benchmarkPickerSearchKeyword {
-    width: 150px;
-    margin-right: 24px;
-}
-.benchmarkPickerResults {
-    overflow-y: auto;
-    margin-bottom: 32px;    
-}
-.benchmarkPickerTable {
-    width: 100%;
-}
-.benchmarkPickerTableBody {
-
-}
-.benchmarkPickerRow {
-}
-.benchmarkPickerRow:hover {
-    background-color: #336699;
-}
-.benchmarkPickerColumn {
-    padding: 4px 0;
-    vertical-align: top;
-}
-.benchmarkPickerCheckboxColumn {
-    padding-right: 12px;
-}
-.benchmarkPickerCheckbox {
-}
-.benchmarkPickerCodeColumn {
-    padding-right: 12px;
-    color: lightsteelBlue;
-}
-.benchmarkPickerCode {
-}
-.benchmarkPickerSynopsisColumn {
-    width: 100%;
-    padding-right: 6px;
-    color: #eee;
-}
-    

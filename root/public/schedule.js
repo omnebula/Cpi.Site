@@ -125,8 +125,8 @@ class SchedulePage extends CpiPage {
                     });
 
                     // Auto hide menu when user clicks an enabled option.
-                    header.find(".scheduleColumnMenuOption").on("click", () => {
-                        if ($(this).prop("enabled")) {
+                    header.find(".scheduleColumnMenuOption").on("click", (event) => {
+                        if ($(event.currentTarget).prop("enabled")) {
                             enableColumnMenuDropdown(false);    // disabling the dropdown closes it
                         }
                     })
@@ -146,11 +146,28 @@ class SchedulePage extends CpiPage {
             containerDate = Cpi.DateAdd(containerDate, 1);
         }
 
-        // Initialize course selector
+        // Initialize course selector.
+        // If view-only...
+        if (this.viewTracker.isActive) {
+            Cpi.SendApiRequest({
+                method: "GET",
+                url: `/@/account/courses?teacherId=${this.viewTracker.teacherId}`,
+                success: (courses) => {
+                    this.#initControllers(courses);
+                }
+            })
+        }
+        else {
+            this.#initControllers(this.accountData.options.courses);
+        }
+    }
+    #initControllers(courses) {
         this.#courseSelector = $("#selectCourse");
-        for (var course of this.accountData.options.courses) {
+
+        for (var course of courses) {
             this.#courseSelector.append(`<option value="${course.courseId}_${course.classId}">${course.courseName}</option>`);
         }
+
         this.#courseSelector.on("change", () => {
             const selection = this.#courseSelector.val();
             if (selection === "all") {
@@ -165,13 +182,14 @@ class SchedulePage extends CpiPage {
             }
         });
 
+        // Initialize the controllers.
         var initialController = "planner";
+
         if (this.#settings.courseValue) {
             this.#courseSelector.val(this.#settings.courseValue);
             initialController = "reviewer";
         }
         
-        // Initialize the controllers.
         this.#controllers = {
             planner: new SchedulePlanner(this),
             reviewer: new ScheduleReviewer(this)

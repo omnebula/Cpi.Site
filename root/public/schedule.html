@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/common/styles/global.css" type="text/css" />
     <link rel="stylesheet" href="/common/styles/DatePicker.css" type="text/css" />
     <link rel="stylesheet" href="/common/styles/CoursePicker.css" type="text/css" />
+    <link rel="stylesheet" href="/common/styles/BenchmarkPicker.css" type="text/css" />
     <link rel="stylesheet" href="./schedule.css" type="text/css" />
     <script type="text/javascript" src="/common/data/static.js"></script>
     <script type="text/javascript" src="/common/scripts/jquery.min.js"></script>
@@ -15,6 +16,8 @@
     <script type="text/javascript" src="/common/classes/ViewTracker.js"></script>
     <script type="text/javascript" src="/common/classes/DatePicker.js"></script>
     <script type="text/javascript" src="/common/classes/CoursePicker.js"></script>
+    <script type="text/javascript" src="/common/classes/BenchmarkPicker.js"></script>
+    <script type="text/javascript" src="/common/classes/LessonApi.js"></script>
     <script type="text/javascript" src="./schedule-core.js"></script>
     <script type="text/javascript" src="./schedule-template.js"></script>
     <script type="text/javascript" src="./schedule-planner.js"></script>
@@ -80,17 +83,22 @@
                                         <div class="plannerColumnMenuOptions">
                                             <div id="addLesson" class="scheduleColumnMenuOption">Add lessons...</div>
                                             <div class="scheduleColumnMenuGroup">
-                                                <div id="repeatOnce" class="scheduleColumnMenuOption repeatOption">Repeat once</div>
-                                                <div id="repeatFill" class="scheduleColumnMenuOption repeatOption">Repeat fill</div>
+                                                <div id="repeatOnce" class="scheduleColumnMenuOption activeOption">Repeat once</div>
+                                                <div id="repeatFill" class="scheduleColumnMenuOption activeOption">Repeat fill</div>
                                             </div>
                                             <div class="scheduleColumnMenuGroup">
-                                                <div id="deleteAll" class="scheduleColumnMenuOption repeatOption">Delete all</div>
+                                                <div id="deleteAll" class="scheduleColumnMenuOption activeOption">Delete all</div>
                                             </div>
                                         </div>
                                         <div class="reviewerColumnMenuOptions">
-                                            <div id="printLesson" class="scheduleColumnMenuOption">Print</div>
+                                            <div id="addLesson" class="scheduleColumnMenuOption">Add lesson</div>
                                             <div class="scheduleColumnMenuGroup">
-                                                <div id="deleteLesson" class="scheduleColumnMenuOption">Delete</div>
+                                                <div id="printLesson" class="scheduleColumnMenuOption activeOption">Print lesson</div>
+                                                <div id="deleteLesson" class="scheduleColumnMenuOption activeOption">Delete lesson</div>
+                                            </div>
+                                            <div class="scheduleColumnMenuGroup">
+                                                <div id="viewLesson" class="scheduleColumnMenuOption activeOption">View detail</div>
+                                                <div id="viewRoadmap" class="scheduleColumnMenuOption activeOption">View roadmap</div>
                                             </div>
                                         </div>
                                     </div>
@@ -106,17 +114,22 @@
                                         <div class="plannerColumnMenuOptions">
                                             <div id="addLesson" class="scheduleColumnMenuOption">Add lessons...</div>
                                             <div class="scheduleColumnMenuGroup">
-                                                <div id="repeatOnce" class="scheduleColumnMenuOption repeatOption">Repeat once</div>
-                                                <div id="repeatFill" class="scheduleColumnMenuOption repeatOption">Repeat fill</div>
+                                                <div id="repeatOnce" class="scheduleColumnMenuOption activeOption">Repeat once</div>
+                                                <div id="repeatFill" class="scheduleColumnMenuOption activeOption">Repeat fill</div>
                                             </div>
                                             <div class="scheduleColumnMenuGroup">
-                                                <div id="deleteAll" class="scheduleColumnMenuOption repeatOption">Delete all</div>
+                                                <div id="deleteAll" class="scheduleColumnMenuOption activeOption">Delete all</div>
                                             </div>
                                         </div>
                                         <div class="reviewerColumnMenuOptions">
-                                            <div id="printLesson" class="scheduleColumnMenuOption">Print</div>
+                                            <div id="addLesson" class="scheduleColumnMenuOption">Add lesson</div>
                                             <div class="scheduleColumnMenuGroup">
-                                                <div id="deleteLesson" class="scheduleColumnMenuOption">Delete</div>
+                                                <div id="printLesson" class="scheduleColumnMenuOption activeOption">Print lesson</div>
+                                                <div id="deleteLesson" class="scheduleColumnMenuOption activeOption">Delete lesson</div>
+                                            </div>
+                                            <div class="scheduleColumnMenuGroup">
+                                                <div id="viewLesson" class="scheduleColumnMenuOption activeOption">View detail</div>
+                                                <div id="viewRoadmap" class="scheduleColumnMenuOption activeOption">View roadmap</div>
                                             </div>
                                         </div>
                                     </div>
@@ -132,17 +145,22 @@
                                         <div class="plannerColumnMenuOptions">
                                             <div id="addLesson" class="scheduleColumnMenuOption">Add lessons...</div>
                                             <div class="scheduleColumnMenuGroup">
-                                                <div id="repeatOnce" class="scheduleColumnMenuOption repeatOption">Repeat once</div>
-                                                <div id="repeatFill" class="scheduleColumnMenuOption repeatOption">Repeat fill</div>
+                                                <div id="repeatOnce" class="scheduleColumnMenuOption activeOption">Repeat once</div>
+                                                <div id="repeatFill" class="scheduleColumnMenuOption activeOption">Repeat fill</div>
                                             </div>
                                             <div class="scheduleColumnMenuGroup">
-                                                <div id="deleteAll" class="scheduleColumnMenuOption repeatOption">Delete all</div>
+                                                <div id="deleteAll" class="scheduleColumnMenuOption activeOption">Delete all</div>
                                             </div>
                                         </div>
                                         <div class="reviewerColumnMenuOptions">
-                                            <div id="printLesson" class="scheduleColumnMenuOption">Print</div>
+                                            <div id="addLesson" class="scheduleColumnMenuOption">Add lesson</div>
                                             <div class="scheduleColumnMenuGroup">
-                                                <div id="deleteLesson" class="scheduleColumnMenuOption">Delete</div>
+                                                <div id="printLesson" class="scheduleColumnMenuOption activeOption">Print lesson</div>
+                                                <div id="deleteLesson" class="scheduleColumnMenuOption activeOption">Delete lesson</div>
+                                            </div>
+                                            <div class="scheduleColumnMenuGroup">
+                                                <div id="viewLesson" class="scheduleColumnMenuOption activeOption">View detail</div>
+                                                <div id="viewRoadmap" class="scheduleColumnMenuOption activeOption">View roadmap</div>
                                             </div>
                                         </div>
                                     </div>
@@ -158,17 +176,22 @@
                                         <div class="plannerColumnMenuOptions">
                                             <div id="addLesson" class="scheduleColumnMenuOption">Add lessons...</div>
                                             <div class="scheduleColumnMenuGroup">
-                                                <div id="repeatOnce" class="scheduleColumnMenuOption repeatOption">Repeat once</div>
-                                                <div id="repeatFill" class="scheduleColumnMenuOption repeatOption">Repeat fill</div>
+                                                <div id="repeatOnce" class="scheduleColumnMenuOption activeOption">Repeat once</div>
+                                                <div id="repeatFill" class="scheduleColumnMenuOption activeOption">Repeat fill</div>
                                             </div>
                                             <div class="scheduleColumnMenuGroup">
-                                                <div id="deleteAll" class="scheduleColumnMenuOption repeatOption">Delete all</div>
+                                                <div id="deleteAll" class="scheduleColumnMenuOption activeOption">Delete all</div>
                                             </div>
                                         </div>
                                         <div class="reviewerColumnMenuOptions">
-                                            <div id="printLesson" class="scheduleColumnMenuOption">Print</div>
+                                            <div id="addLesson" class="scheduleColumnMenuOption">Add lesson</div>
                                             <div class="scheduleColumnMenuGroup">
-                                                <div id="deleteLesson" class="scheduleColumnMenuOption">Delete</div>
+                                                <div id="printLesson" class="scheduleColumnMenuOption activeOption">Print lesson</div>
+                                                <div id="deleteLesson" class="scheduleColumnMenuOption activeOption">Delete lesson</div>
+                                            </div>
+                                            <div class="scheduleColumnMenuGroup">
+                                                <div id="viewLesson" class="scheduleColumnMenuOption activeOption">View detail</div>
+                                                <div id="viewRoadmap" class="scheduleColumnMenuOption activeOption">View roadmap</div>
                                             </div>
                                         </div>
                                     </div>
@@ -184,17 +207,22 @@
                                         <div class="plannerColumnMenuOptions">
                                             <div id="addLesson" class="scheduleColumnMenuOption">Add lessons...</div>
                                             <div class="scheduleColumnMenuGroup">
-                                                <div id="repeatOnce" class="scheduleColumnMenuOption repeatOption">Repeat once</div>
-                                                <div id="repeatFill" class="scheduleColumnMenuOption repeatOption">Repeat fill</div>
+                                                <div id="repeatOnce" class="scheduleColumnMenuOption activeOption">Repeat once</div>
+                                                <div id="repeatFill" class="scheduleColumnMenuOption activeOption">Repeat fill</div>
                                             </div>
                                             <div class="scheduleColumnMenuGroup">
-                                                <div id="deleteAll" class="scheduleColumnMenuOption repeatOption">Delete all</div>
+                                                <div id="deleteAll" class="scheduleColumnMenuOption activeOption">Delete all</div>
                                             </div>
                                         </div>
                                         <div class="reviewerColumnMenuOptions">
-                                            <div id="printLesson" class="scheduleColumnMenuOption">Print</div>
+                                            <div id="addLesson" class="scheduleColumnMenuOption">Add lesson</div>
                                             <div class="scheduleColumnMenuGroup">
-                                                <div id="deleteLesson" class="scheduleColumnMenuOption">Delete</div>
+                                                <div id="printLesson" class="scheduleColumnMenuOption activeOption">Print lesson</div>
+                                                <div id="deleteLesson" class="scheduleColumnMenuOption activeOption">Delete lesson</div>
+                                            </div>
+                                            <div class="scheduleColumnMenuGroup">
+                                                <div id="viewLesson" class="scheduleColumnMenuOption activeOption">View detail</div>
+                                                <div id="viewRoadmap" class="scheduleColumnMenuOption activeOption">View roadmap</div>
                                             </div>
                                         </div>
                                     </div>
@@ -217,19 +245,25 @@
                                 <div class="scheduleEditor">
                                     <div class="scheduleEditorRow">
                                         <label>Benchmarks</label>
-                                        <div class="benchmarkContainer"></div>
+                                        <div class="benchmarkContainer">
+                                            <div class="scheduleEditorBenchmark">
+                                                <a id="benchmarkCode" class="" target="_blank"></a><img id="removeBenchmark" src="/common/images/red-delete-icon.png"/>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="scheduleEditorRow">
-                                        <label>Objectives</label>
-                                        <textarea id="objectives" class="scheduleEditorTextarea" rows="2"></textarea>
-                                    </div>
-                                    <div class="scheduleEditorRow">
-                                        <label>Activities</label>
-                                        <textarea id="activities" class="scheduleEditorTextarea" rows="2"></textarea>
-                                    </div>
-                                    <div class="scheduleEditorRow">
-                                        <label>Materials</label>
-                                        <textarea id="materials" class="scheduleEditorTextarea" rows="2"></textarea>
+                                    <div id="scheduleEditorDetails">
+                                        <div class="scheduleEditorRow">
+                                            <label>Objectives</label>
+                                            <textarea id="objectives" class="scheduleEditorTextarea" rows="1"></textarea>
+                                        </div>
+                                        <div class="scheduleEditorRow">
+                                            <label>Activities</label>
+                                            <textarea id="activities" class="scheduleEditorTextarea" rows="1"></textarea>
+                                        </div>
+                                        <div class="scheduleEditorRow">
+                                            <label>Materials</label>
+                                            <textarea id="materials" class="scheduleEditorTextarea" rows="1"></textarea>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -337,6 +371,40 @@
             <div class="popupRow templateManagerPopupButtons">
                 <input id="renameTemplate" class="inputButton templatePopupButton" type="button" value="Rename Template"/>
                 <input id="deleteTemplate" class="inputButton templatePopupButton" type="button" value="Delete Template"/>
+            </div>
+        </div>
+
+        <div id="benchmarkPicker" class="popupBox benchmarkPicker">
+            <div class="popupCaption">
+                <div id="popupCaptionTitle" class="popupCaptionTitle">
+                    <div id="popupCaptionTitle" class="popupCaptionTitle">Assign Benchmarks</div>
+                </div>
+                <div>
+                    <input id="popupAccept" class="inputAcceptButton popupCaptionButton" type="button" value="Accept"/>
+                    <input id="popupCancel" class="inputCancelButton popupCaptionButton" type="button" value="Cancel"/>
+                </div>
+            </div>
+            <div class="popupRow pickerRow benchmarkPickerSearch">
+                <div class="benchmarkPickerSearchBar">
+                    <select id="benchmarkPickerSearchSubject" class="pickerSelect benchmarkPickerSearchSubject"></select>
+                    <select id="benchmarkPickerSearchGrade" class="pickerSelect benchmarkPickerSearchGrade">
+                    </select>
+                    <input id="benchmarkPickerSearchKeyword" class="pickerInput benchmarkPickerSearchKeyword" type="text" placeholder="Keywords" autocomplete="off"/>
+                    <input id="benchmarkPickerShowMode" class="inputButton pickerButton" type="button" value="Show All"/>
+                </div>
+            </div>
+            <div id="benchmarkPickerResults" class="popupRow pickerRow benchmarkPickerResults">
+                <table id="benchmarkPickerTable" class="listTable benchmarkPickerTable" cellpadding="0" cellspacing="0">
+                    <tbody id="benchmarkPickerRowContainer" class="benchmarkPickerRowContainer">
+                        <tr id="benchmarkPickerRow" class="listRow benchmarkPickerRow">
+                            <td class="benchmarkPickerColumn benchmarkPickerCheckboxColumn"><input id="benchmarkPickerCheckbox" class="benchmarkPickerCheckbox" type="checkbox"/></td>
+                            <td class="benchmarkPickerColumn  benchmarkPickerCodeColumn">
+                                <a id="benchmarkPickerCode" class="benchmarkPickerCode" target="_blank"></a>
+                            </td>
+                            <td id="benchmarkPickerSynopsis" class="benchmarkPickerColumn benchmarkPickerSynopsisColumn"></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 

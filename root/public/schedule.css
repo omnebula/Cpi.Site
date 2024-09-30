@@ -1,8 +1,18 @@
 .theme-light {
     --schedule-lesson-background-color: #474747;
+
+    --editor-row-label-color: darkgreen;
+    --editor-row-label-font-weight: bold;
+    --editor-benchmark-color: steelblue;
+    --editor-textarea-color: #101010;
 }
 .theme-dark {
     --schedule-lesson-background-color: #101010;
+
+    --editor-row-label-color: #00c200;
+    --editor-row-label-font-weight: normal;
+    --editor-benchmark-color: lightsteelblue;
+    --editor-textarea-color: #fff1d7;
 }
 
 
@@ -55,6 +65,7 @@ main {
 .templateSection {
     position: relative;
     display: none;
+    visibility: hidden;
     text-align: right;
     cursor: default;
 }
@@ -252,7 +263,7 @@ main {
     background-color: #336699
 }
 .scheduleColumnMenuOption_disabled {
-    color: #555;
+    color: #777;
 }
 .scheduleColumnMenuOption_disabled:hover {
     background-color: transparent;
@@ -394,8 +405,7 @@ main {
 */
 .scheduleEditor {
     margin-top: 12px;
-    color: gainsboro;
-    font-size: 11.5px;
+    font-size: 12px;
 }
 
 .scheduleEditorRow {
@@ -405,8 +415,30 @@ main {
 }
 
 .scheduleEditorRow label {
-    color: #00d100;
+    color: var(--editor-row-label-color);
     font-size: 13px;
+    font-weight: var(--editor-row-label-font-weight);
+}
+
+.benchmarkContainer {
+    min-height: 15px;
+}
+.scheduleEditorBenchmark {
+    margin-right: 4px;
+    color: var(--editor-benchmark-color);
+    display: inline-flex;
+    align-items: center;    
+}
+.scheduleEditorBenchmark #removeBenchmark {
+    visibility: hidden;
+    font-size: 11px;
+    height: 12px;
+    margin-left: 2px;
+    border: none;
+    background-color: transparent;
+}
+.scheduleEditorBenchmark:hover #removeBenchmark {
+    visibility: visible;
 }
 
 .scheduleEditorTextarea {
@@ -414,7 +446,8 @@ main {
     resize: none;
     font-family: inherit;
     font-size: inherit;
-    color: gainsboro;
+    color: inherit;
     background-color: transparent;
     padding: 2px 0;
+    color: var(--editor-textarea-color);
 }

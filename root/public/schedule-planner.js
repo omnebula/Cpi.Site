@@ -372,22 +372,24 @@ class SchedulePlanner extends ScheduleController {
             if (!header.prop("holiday")) {
                 const current = $(containers[index]);
 
+                const menuOptions = header.find(".plannerColumnMenuOptions");
+
                 // Enable Add Lessons if we haven't assigned all the courses yet.
                 if (current.children().length < maxCourses) {
-                    header.find("#addLesson").removeClass("scheduleColumnMenuOption_disabled").prop("enabled", true);
+                    menuOptions.find("#addLesson").removeClass("scheduleColumnMenuOption_disabled").prop("enabled", true);
                 }
                 // Else, disable Add Lessons.
                 else {
-                    header.find("#addLesson").addClass("scheduleColumnMenuOption_disabled").prop("enabled", false);
+                    menuOptions.find("#addLesson").addClass("scheduleColumnMenuOption_disabled").prop("enabled", false);
                 }
 
                 // Enable Repeat if there's at least one assigned option.
                 if (current.children().length) {
-                    header.find(".repeatOption").removeClass("scheduleColumnMenuOption_disabled").prop("enabled", true);
+                    menuOptions.find(".activeOption").removeClass("scheduleColumnMenuOption_disabled").prop("enabled", true);
                 }
                 // Else, disable Repeat options.
                 else {
-                    header.find(".repeatOption").addClass("scheduleColumnMenuOption_disabled").prop("enabled", false);
+                    menuOptions.find(".activeOption").addClass("scheduleColumnMenuOption_disabled").prop("enabled", false);
                 }
             }
         }

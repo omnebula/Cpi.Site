@@ -149,8 +149,11 @@ class LessonPage extends CpiPage {
             exclusions[element.id] = true;
         });
 
-        this.#benchmarkPicker.show(exclusions, (benchmarks) => {
-            this.#sendNewBenchmarks(benchmarks);
+        this.#benchmarkPicker.show({
+            exclusions: exclusions,
+            success: (benchmarks) => {
+                this.#sendNewBenchmarks(benchmarks);
+            }
         });
     }
 
@@ -266,234 +269,34 @@ class LessonPage extends CpiPage {
     }
 
     #printLesson() {
-        function setPrint() {
-            const closePrint = () => {
-                document.body.removeChild(this);
-            };
+        const params = {
+            name: $("#lessonName").text(),
+            date: $("#lessonDate").text(),
+            benchmarks: [],
+            details: {}
+        };
 
-            const lesson = {
-                name: $("#lessonName").text(),
-                date: $("#lessonDate").text(),
-                benchmarks: [],
-                details: {}
-            };
-
-            $(".lessonBenchmarkRow").each((key, value) => {
-                const element = $(value);
-                const benchmarkCode = element.find("#lessonBenchmarkCode").text();
-                const benchmarkSynopsis = element.find("#lessonBenchmarkSynopsis").text();
-                lesson.benchmarks.push({
-                    code: benchmarkCode,
-                    synopsis: benchmarkSynopsis
-                });
+        $(".lessonBenchmarkRow").each((key, value) => {
+            const element = $(value);
+            const benchmarkCode = element.find("#lessonBenchmarkCode").text();
+            const benchmarkSynopsis = element.find("#lessonBenchmarkSynopsis").text();
+            params.benchmarks.push({
+                code: benchmarkCode,
+                synopsis: benchmarkSynopsis
             });
+        });
 
-            $(".lessonDetailSection").each((key, value) => {
-                const element = $(value);
-                const detailLabel = element.find("label").text();
-                const detailContent = element.find("textarea").val();
-                lesson.details[detailLabel] = detailContent;
-            });
+        $(".lessonDetailSection").each((key, value) => {
+            const element = $(value);
+            const detailLabel = element.find("label").text();
+            const detailContent = element.find("textarea").val();
+            params.details[detailLabel] = detailContent;
+        });
 
-            this.contentWindow.initPrintout(lesson);
-
-            this.contentWindow.onbeforeunload = closePrint;
-            this.contentWindow.onafterprint = closePrint;
-            this.contentWindow.print();
-        }
-
-        const hideFrame = document.createElement("iframe");
-        hideFrame.onload = setPrint;
-        hideFrame.style.display = "none"; // hide iframe
-        hideFrame.src = "./lesson-printout";
-        document.body.appendChild(hideFrame);
+        LessonApi.PrintLesson(params);
     }
 }
 
-
-class BenchmarkPicker {
-    #benchmarkPicker = $("#benchmarkPicker");
-    #pickerResults;
-    #rowContainer;
-    #rowTemplate;
-    #exclusions;
-    #subjectSelector;
-    #gradeSelector;
-
-    constructor(initialSubject, initialGrade) {
-        // Extract pick list elements.
-        this.#pickerResults = $("#benchmarkPickerResults");
-        this.#rowContainer = this.#pickerResults.find("#benchmarkPickerRowContainer");
-        this.#rowTemplate = this.#rowContainer.find("#benchmarkPickerRow").detach();
-        this.#subjectSelector = $("#benchmarkPickerSearchSubject");
-        this.#gradeSelector = $("#benchmarkPickerSearchGrade");
-
-        // Initialize subject dropdown.
-        for (const current of cpidata.organization.curriculum.search.subjects) {
-            const option = document.createElement("option");
-            option.text = current.name;
-            option.grades = current.grades;
-            this.#subjectSelector.append(option);
-        }
-
-        if (initialSubject) {
-            this.#subjectSelector.val(initialSubject);
-        }
-
-        this.#syncGradeOptions(initialGrade);
-
-        // Initialize option change handlers.
-        this.#subjectSelector.on("change", () => {
-            this.#syncGradeOptions();
-            this.#searchBenchmarks();
-        });
-
-        this.#gradeSelector.on("change", () => {
-            this.#searchBenchmarks();
-        });
-
-        // Initialize keyword input.
-        const keyword = $("#benchmarkPickerSearchKeyword");
-            
-        keyword.on("keypress", (event) => {
-            if (event.which == 13) {
-                this.#searchBenchmarks();
-            }
-        });
-
-        // Initialize show mode.
-        const showMode = $("#benchmarkPickerShowMode");
-
-        showMode.on("click", () => {
-            if (showMode.val() === "Show All") {
-                showMode.val("Show Unassigned");
-            }
-            else {
-                showMode.val("Show All");
-            }
-            this.#searchBenchmarks();
-        });
-    }
-
-    show(exclusions, success) {
-        this.#exclusions = exclusions;
-        this.#searchBenchmarks(success);
-    }
-
-    #syncGradeOptions(initialGrade) {
-        initialGrade = initialGrade || this.#gradeSelector.val();
-
-        this.#gradeSelector.empty();
-
-        const selectedSubject = this.#subjectSelector.find(":selected");
-        if (selectedSubject.length) {
-            for (const grade of selectedSubject[0].grades) {
-                this.#gradeSelector.append(`<option>${grade}</option>`);
-            }
-        }
-
-        if (!initialGrade || (this.#gradeSelector.val(initialGrade).val() != initialGrade)) {
-            this.#gradeSelector.val(this.#gradeSelector.find(":first").text());
-        }
-    }
-
-    #searchBenchmarks(success) {
-        const subject = this.#subjectSelector.val();
-        const grade = this.#gradeSelector.val();
-        const keyword = $("#benchmarkPickerSearchKeyword").val() || "";
-
-        // N.B.: Query the opposite of what the button displays.
-        const showMode = $("#benchmarkPickerShowMode").val() === "Show All" ? "unassigned" : "all";
-
-        Cpi.SendApiRequest({
-            method: "GET",
-            url: `/@/curriculum/search?subject=${subject}&grade=${grade}&keyword=${keyword}&mode=${showMode}`,
-            success: (data) => {
-                this.#populateResults(data, success);
-
-                // Show popup if a success handler was specified, i.e., called from show().
-                if (success) {
-                    this.#showPopup(success);
-                }
-            }
-        });
-    }
-
-    #showPopup(success) {
-        Cpi.ShowPopup(
-            this.#benchmarkPicker,
-            () => { this.#acceptSelection(success); }
-        );                    
-    }
-
-    #populateResults(data, success) {
-        this.#rowContainer.empty();
-
-        for (const current of data) {
-            if (this.#exclusions && this.#exclusions[current.benchmarkId]) {
-                continue;
-            }
-
-            const row = this.#rowTemplate.clone(true);
-            row.attr("referenceUrl", current.referenceUrl)
-                .on("dblclick", () => {
-                    row.find("input[type=checkbox]").prop("checked", true);
-                    this.#benchmarkPicker.find("#popupAccept").trigger("click");
-                });
-
-            const checkbox = row.find("#benchmarkPickerCheckbox");
-            checkbox.attr("id", current.benchmarkId);
-    
-            const code = row.find("#benchmarkPickerCode");
-            code.text(current.standardCode).attr("href", current.referenceUrl);
-            if (current.assigned) {
-                code.css("text-decoration", "line-through");
-            }
-           
-            const synopsis = row.find("#benchmarkPickerSynopsis");
-            synopsis.html(current.synopsis);
-            if (current.assigned) {
-                synopsis.css("color", "#aaa");
-            }
-            synopsis.on("click", () => {
-                checkbox.trigger("click");
-            });
-
-            this.#rowContainer.append(row);
-        }
-
-        this.#pickerResults.scrollTop(0);
-    }
-
-    #acceptSelection(success) {
-        const container = $("#benchmarkPickerListResults");
-        const selection = this.#rowContainer.find(":checkbox:checked");
-
-        if (selection.length > 0) {
-            const results = [];
-
-            for (const current of selection) {
-                const checkbox = $(current);
-                const row = checkbox.parent().parent();
-    
-                const benchmark = {
-                    benchmarkId: checkbox.attr("id"),
-                    standardCode: row.find("#benchmarkPickerCode").text(),
-                    synopsis: row.find("#benchmarkPickerSynopsis").text(),
-                    referenceUrl: row.attr("referenceUrl")
-                };
-    
-                results.push(benchmark);
-
-                row.remove();
-            }
-
-            if (success) {
-                success(results);
-            }
-        }
-    }
-}
 
 
 window.page = new LessonPage();
