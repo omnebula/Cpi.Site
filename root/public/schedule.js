@@ -4,7 +4,6 @@
 * SchedulePage
 */
 class SchedulePage extends CpiPage {
-    #settings;
     #viewTracker;
     #coursePicker;
     #weekNumber;
@@ -12,23 +11,19 @@ class SchedulePage extends CpiPage {
 
     #headers;
     #containers;
+
     #controllers;
     #currentController;
+
     #courseSelector;
+    #courseSelection;
+    #selectedLessonId;
 
     constructor() {
         super();
 
         if (!this.validateLogin()) {
             return;
-        }
-
-        var item = localStorage.getItem("schedulePage");
-        if (item) {
-            this.#settings = JSON.parse(item);
-        }
-        else {
-            this.#settings = {};
         }
 
         // Detect view-only mode.
@@ -43,11 +38,6 @@ class SchedulePage extends CpiPage {
             $("#mySchedule").css("display", "none");
         }
 
-        // Compute the start and end dates.
-        this.#weekNumber = parseInt(this.#viewTracker.searchParams.get("week")) || Cpi.GetCurrentWeekNumber();
-
-        this.#weekDates = Cpi.CalculateWeekDates(this.#weekNumber);
-
         // Initialize navigation controls.
         const selector = $("#selectWeek");
         for (var week = 1; week <= Cpi.GetLastWeekNumber(); ++week) {
@@ -56,7 +46,6 @@ class SchedulePage extends CpiPage {
             option.text(`Week ${week} - ${Cpi.FormatShortDateString(Cpi.CalculateWeekStartDate(week))}`);
             selector.append(option);
         }
-        selector.val(this.#weekNumber);
         selector.on("change", () => {
             const newWeekNumber = selector.val();
             if (this.#weekNumber !== newWeekNumber) {
@@ -64,40 +53,104 @@ class SchedulePage extends CpiPage {
             }
         });
 
-        if (this.#weekNumber > 1) {
-            $("#viewPreviousWeek").on("click", () => { this.navigateToWeek(this.#weekNumber - 1); });
-        }
-        else {
-            $("#viewPreviousWeek").prop("disabled", true);
-        }
-
-        if (this.#weekNumber !== Cpi.GetCurrentWeekNumber()) {
-            $("#viewCurrentWeek").on("click", () => { this.navigateToWeek(); });
-        }
-        else {
-            $("#viewCurrentWeek").prop("disabled", true);
-        }
-
-        if (this.#weekNumber < Cpi.GetLastWeekNumber()) {
-            $("#viewNextWeek").on("click", () => { this.navigateToWeek(this.#weekNumber + 1); });
-        }
-        else {
-            $("#viewNextWeek").prop("disabled", true);
-        }
+        $("#viewPreviousWeek").on("click", () => { this.navigateToWeek(this.#weekNumber - 1); });
+        $("#viewNextWeek").on("click", () => { this.navigateToWeek(this.#weekNumber + 1); });
+        $("#viewCurrentWeek").on("click", () => { this.navigateToWeek(); });
 
         // Initialize column headers.
         this.#headers = $(".scheduleColumnHeader");
         this.#containers = $(".scheduleLessonContainer");
         
+        // Initialize course selector.
+        if (this.viewTracker.isActive) {
+            // If view-only, get course list from server.
+            Cpi.SendApiRequest({
+                method: "GET",
+                url: `/@/account/courses?teacherId=${this.viewTracker.teacherId}`,
+                success: (courses) => {
+                    this.#initCourseSelector(courses);
+                }
+            });
+        }
+        else {
+            // Otherwise, use the current user's list.
+            this.#initCourseSelector(this.accountData.options.courses);
+        }
+    }
+    #initCourseSelector(courses) {
+        this.#courseSelector = $("#selectCourse");
+
+        for (var course of courses) {
+            this.#courseSelector.append(`<option value="${course.courseId}_${course.classId}">${course.courseName}</option>`);
+        }
+
+        this.#courseSelector.on("change", () => {
+            const controllerName = this.#syncCourseSelection() === "all" ? "planner" : "reviewer";
+            this.#activateController(controllerName, true);
+        });
+
+        const tunnelParams = Cpi.GetTunnelParams();
+        if (tunnelParams) {
+            this.selectedLessonId = tunnelParams.lessonId;
+        }
+        
+        // Initialize the controllers.
+        this.#controllers = {
+            planner: new SchedulePlanner(this),
+            reviewer: new ScheduleReviewer(this)
+        };
+
+        this.#activateController("planner", false);
+
+        // Show frame and activate planner mode.
+        Cpi.ShowAppFrame();
+
+        const weekNumber = parseInt(this.#viewTracker.searchParams.get("week")) || Cpi.GetCurrentWeekNumber();
+        this.navigateToWeek(weekNumber);
+
+    }
+    #syncCourseSelection() {
+        const selection = this.#courseSelector.val();
+        if (!selection || !selection.length) {
+            return undefined;
+        }
+
+        const parts = selection.split("_");
+        this.#courseSelection = {
+            courseId: parts[0],
+            classId: parts[1]
+        };
+        
+        return selection;
+    }
+
+    /*
+    * Operations
+    */
+    navigateToWeek(weekNumber) {
+        this.#weekNumber = parseInt((!weekNumber || (weekNumber > Cpi.GetLastWeekNumber())) ? Cpi.GetCurrentWeekNumber() : weekNumber);
+
+        this.#weekDates = Cpi.CalculateWeekDates(this.#weekNumber);
+
+        $("#viewPreviousWeek").prop("disabled", this.#weekNumber === 1);
+
+        $("#viewCurrentWeek").prop("disabled", this.#weekNumber === Cpi.GetCurrentWeekNumber());
+
+        $("#viewNextWeek").prop("disabled", this.#weekNumber >= Cpi.GetLastWeekNumber());
+
         const today = Cpi.GetTodayDate();
         var containerDate = this.#weekDates.start;
 
         for (const current of this.#headers) {
-            const header = $(current);
             const lessonDate = containerDate;
 
+            const lessonContainer = this.containerFromDate(lessonDate);
+            lessonContainer.empty();
+
+            const header = $(current);
             header.prop("lessonDate", lessonDate);
             header.find(".scheduleColumnDate").text(Cpi.FormatShortDateString(lessonDate));
+            header.removeClass("scheduleColumnHeader_today");
 
             // Handle holiday
             const holidayName = Cpi.GetHolidayName(lessonDate);
@@ -107,14 +160,21 @@ class SchedulePage extends CpiPage {
                 header.find(".scheduleColumnDate").addClass("scheduleColumn_holiday");
                 header.find(".scheduleColumnMenu").css("visibility", "hidden");
 
-                const lessonContainer = this.containerFromDate(lessonDate);
                 lessonContainer.prop("holiday", true);
                 lessonContainer.append(`<div class='scheduleHoliday'>${holidayName}</div>`);
             }
             // Else, do regular school day.
             else {
+                header.removeClass("scheduleColumnHeader_holiday").prop("holiday", false);
+                header.find(".scheduleColumnDay").removeClass("scheduleColumn_holiday");
+                header.find(".scheduleColumnDate").removeClass("scheduleColumn_holiday");
+
+                lessonContainer.prop("holiday", false);
+
                 // Initizlize the column header dropdown menu if we're not in view-only mode.
                 if (!this.#viewTracker.isActive) {
+                    header.find(".scheduleColumnMenu").css("visibility", "visible");
+
                     const dropdown = header.find("#scheduleColumnMenuDropdown");
                     function enableColumnMenuDropdown(enable) {
                         dropdown.css("display", enable ? "" : "none");
@@ -133,83 +193,24 @@ class SchedulePage extends CpiPage {
                 }
                 // Else, disable (hide) the header dropdown menu.
                 else {
-                    header.find(".scheduleColumnMenu").css("display", "none");
+                    header.find(".scheduleColumnMenu").css("visibility", "hidden");
                 }
-            }
 
-            // Highlight the current day's header.
-            if (lessonDate.getTime() === today.getTime()) {
-                header.find(".scheduleColumnHeader").addClass("scheduleColumnHeader_today");
+                // Highlight the current day's header.
+                if (lessonDate.getTime() === today.getTime()) {
+                    header.addClass("scheduleColumnHeader_today");
+                }
+
             }
 
             // Move to the next day.
             containerDate = Cpi.DateAdd(containerDate, 1);
         }
 
-        // Initialize course selector.
-        // If view-only...
-        if (this.viewTracker.isActive) {
-            Cpi.SendApiRequest({
-                method: "GET",
-                url: `/@/account/courses?teacherId=${this.viewTracker.teacherId}`,
-                success: (courses) => {
-                    this.#initControllers(courses);
-                }
-            })
-        }
-        else {
-            this.#initControllers(this.accountData.options.courses);
-        }
-    }
-    #initControllers(courses) {
-        this.#courseSelector = $("#selectCourse");
+        $("#selectWeek").val(this.#weekNumber);
+        window.history.replaceState(null, "", `/schedule?week=${this.#weekNumber}${this.#viewTracker.viewParams}`);
 
-        for (var course of courses) {
-            this.#courseSelector.append(`<option value="${course.courseId}_${course.classId}">${course.courseName}</option>`);
-        }
-
-        this.#courseSelector.on("change", () => {
-            const selection = this.#courseSelector.val();
-            if (selection === "all") {
-                this.#settings.courseValue = undefined;
-                this.#saveSettings();
-                this.#activateController("planner");
-            }
-            else {
-                this.#settings.courseValue = selection;
-                this.#saveSettings();
-                this.#activateController("reviewer");
-            }
-        });
-
-        // Initialize the controllers.
-        var initialController = "planner";
-
-        if (this.#settings.courseValue) {
-            this.#courseSelector.val(this.#settings.courseValue);
-            initialController = "reviewer";
-        }
-        
-        this.#controllers = {
-            planner: new SchedulePlanner(this),
-            reviewer: new ScheduleReviewer(this)
-        };
-
-        // Show frame and activate planner mode.
-        Cpi.ShowAppFrame();
-
-        this.#activateController(initialController);
-    }
-
-    /*
-    * Operations
-    */
-    navigateToWeek(weekNumber) {
-        if (!weekNumber) {
-            weekNumber = Cpi.GetCurrentWeekNumber();
-        }
-
-        window.location.href = `/schedule?week=${weekNumber}${this.#viewTracker.viewParams}`;
+        this.#activateController(null, true);
     }
 
     clearContainer(id) {
@@ -277,29 +278,41 @@ class SchedulePage extends CpiPage {
         return this.containerFromId(this.columnIdFromDate(date));
     }
 
-    get selectedCourseValue() {
-        const selection = this.#courseSelector.find(":selected");
-        if (!selection || !selection.length) {
-            return undefined;
+    get selectedLessonId() {
+        return this.#selectedLessonId;
+    }
+    set selectedLessonId(lessonId) {
+        this.#selectedLessonId = lessonId;
+    }
+
+    get courseSelection() {
+        return this.#courseSelection;
+    }
+    setCourseSelection(courseId, classId) {
+        this.#courseSelector.val(`${courseId}_${classId}`);
+        if (this.#syncCourseSelection()) {
+            this.#courseSelector.trigger("change");
         }
-        return selection.val();
     }
 
     /*
     * Private Implementations
     */
-    #activateController(controllerName) {
-        if (this.#currentController) {
-            this.#currentController.deactivate();
+    #activateController(controllerName, refresh) {
+        if (controllerName) {
+            if (this.#currentController) {
+                this.#currentController.deactivate();
+            }
+    
+            this.#currentController = this.#controllers[controllerName];
+            this.#currentController.activate();
         }
 
-        this.#currentController = this.#controllers[controllerName];
+        if (refresh) {
+            this.#currentController.refresh();
+        }
 
-        this.#currentController.activate();
-    }
-
-    #saveSettings() {
-        localStorage.setItem("schedulePage", JSON.stringify(this.#settings));
+        return this.#currentController;
     }
 
 }

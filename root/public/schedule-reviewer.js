@@ -1,12 +1,11 @@
 
 
 class ScheduleReviewer extends ScheduleController {
-    #courseId;
-    #classId;
     #editorTemplate;
     #benchmarkItemTemplate;
     #benchmarkPicker;
     #shadowParent;
+    #courseSelection;
 
     constructor(schedulePage) {
         super(schedulePage);
@@ -17,64 +16,56 @@ class ScheduleReviewer extends ScheduleController {
 
         this.headers.each((key, value) => {
             const header = $(value);
-            const lessonDate = header.prop("lessonDate");
             const menuOptions = header.find(".reviewerColumnMenuOptions");
 
             const addLesson = menuOptions.find("#addLesson");
             addLesson.on("click", () => {
                 if (addLesson.prop("enabled")) {
-                    this.#addLesson(lessonDate);
+                    this.#addLesson(header);
                 }
             });
             const viewLesson = menuOptions.find("#viewLesson");
             viewLesson.on("click", (event) => {
                 if (viewLesson.prop("enabled")) {
-                    this.#viewLesson(lessonDate, event.ctrlKey ? "_blank" : "_self");
+                    this.#viewLesson(header, event.ctrlKey ? "_blank" : "_self");
                 }
             });
             const viewRoadmap = menuOptions.find("#viewRoadmap");
             viewRoadmap.on("click", () => {
                 if (viewRoadmap.prop("enabled")) {
-                    this.#viewRoadmap(lessonDate, event.ctrlKey ? "_blank" : "_self");
+                    this.#viewRoadmap(header, event.ctrlKey ? "_blank" : "_self");
                 }
             });
             const printLesson = menuOptions.find("#printLesson");
             printLesson.on("click", () => {
                 if (printLesson.prop("enabled")) {
-                    this.#printLesson(lessonDate);
+                    this.#printLesson(header);
                 }
             });
             const deleteLesson = menuOptions.find("#deleteLesson");
             deleteLesson.on("click", () => {
                 if (deleteLesson.prop("enabled")) {
-                    this.#deleteLesson(lessonDate);
+                    this.#deleteLesson(header);
                 }
             });
         });
     }
 
-    activate() {
-        const selection = this.schedulePage.selectedCourseValue;
-        if (!selection) {
-            return;
-        }
+    refresh() {
+        if (this.schedulePage.courseSelection) {
+            const quryUrl = this.queryUrl + `&courseId=${this.schedulePage.courseSelection.courseId}&classId=${this.schedulePage.courseSelection.classId}`;
 
-        $(".reviewerColumnMenuOptions").css("display", "block");
-        
-        const parts = selection.split("_");
-        this.#courseId = parts[0];
-        this.#classId = parts[1];
-
-        const quryUrl = this.queryUrl + `&courseId=${this.#courseId}&classId=${this.#classId}`;
-
-        this.fetchLessons(quryUrl, (data) => {
-            // Assume empty columns, i.e., enable add and disable all other menu options.
-            // populateSchedule will adjust as needed.
-            this.headers.find(".reviewerColumnMenuOptions #addLesson").removeClass("scheduleColumnMenuOption_disabled").prop("enabled", true);
-            this.headers.find(".reviewerColumnMenuOptions .activeOption").addClass("scheduleColumnMenuOption_disabled").prop("enabled", false);
+            this.fetchLessons(quryUrl, (data) => {
+                $(".reviewerColumnMenuOptions").css("display", "block");
             
-            this.populateSchedule(data);
-        });
+                // Assume empty columns, i.e., enable add and disable all other menu options.
+                // populateSchedule will adjust as needed.
+                this.headers.find(".reviewerColumnMenuOptions #addLesson").removeClass("scheduleColumnMenuOption_disabled").prop("enabled", true);
+                this.headers.find(".reviewerColumnMenuOptions .activeOption").addClass("scheduleColumnMenuOption_disabled").prop("enabled", false);
+                
+                this.populateSchedule(data);
+            });
+        }
     }
 
     deactivate() {
@@ -121,7 +112,7 @@ class ScheduleReviewer extends ScheduleController {
 
             // Apply autogrow to text areas after adding to document so that it has actual dimensions.
             const textareas = editor.find(".scheduleEditorTextarea");
-            textareas.autogrow({ shadowParent: this.#shadowParent });
+            textareas.autogrow({ shadowParent: this.#shadowParent }).trigger("change");
 
             // Hook into blur event to detect changes
             var changed = false;
@@ -152,6 +143,12 @@ class ScheduleReviewer extends ScheduleController {
                     })
                     .on("change", () => {
                         changed = true;
+                    })
+                    .on("paste", () => {
+                        textarea.trigger("change");
+                    })
+                    .on("cut", () => {
+                        textarea.trigger("change");
                     });
 
                 // Implement label focus, i.e. clicking label focuses textarea.
@@ -209,7 +206,10 @@ class ScheduleReviewer extends ScheduleController {
                     .attr("id", benchmark.benchmarkId)
                     .attr("href", benchmark.referenceUrl)
                     .attr("title", benchmark.synopsis)
-                    .text(benchmark.standardCode);
+                    .text(benchmark.standardCode)
+                    .on("click", (event) => {
+                        event.stopPropagation();
+                    });
 
                 benchmarkItem.find("#removeBenchmark")
                     .on("click", (event) => {
@@ -235,16 +235,13 @@ class ScheduleReviewer extends ScheduleController {
         }
     }
 
-    #addLesson(lessonDate) {
+    #addLesson(header) {
+        const lessonDate = header.prop("lessonDate");
+
         const params = {
             lessonDate: lessonDate,
-            lessons: [
-                {
-                    courseId: this.#courseId,
-                    classId: this.#classId
-                }
-            ]
-        }
+            lessons: [ this.schedulePage.courseSelection ]
+        };
 
         Cpi.SendApiRequest({
             method: "PUT",
@@ -256,21 +253,24 @@ class ScheduleReviewer extends ScheduleController {
         });
     }
 
-    #viewLesson(lessonDate, target) {
+    #viewLesson(header, target) {
+        const lessonDate = header.prop("lessonDate");
         const container = this.containerFromDate(lessonDate);
         const editor = container.find(".scheduleEditor");
         const lessonId = editor.attr("id");
         window.open(`/lesson?id=${lessonId}${this.viewTracker.viewParams}`, target);
     }
 
-    #viewRoadmap(lessonDate, target) {
+    #viewRoadmap(header, target) {
+        const lessonDate = header.prop("lessonDate");
         const container = this.containerFromDate(lessonDate);
         const editor = container.find(".scheduleEditor");
         const lesson = editor.prop("lesson");
         window.open(`/roadmap?subject=${lesson.subjectName}&grade=${lesson.gradeName}${this.viewTracker.viewParams}`, target);
     }
 
-    #printLesson(lessonDate) {
+    #printLesson(header) {
+        const lessonDate = header.prop("lessonDate");
         const container = this.containerFromDate(lessonDate);
         const editor = container.find(".scheduleEditor");
         const lesson = editor.prop("lesson");
@@ -302,7 +302,8 @@ class ScheduleReviewer extends ScheduleController {
         LessonApi.PrintLesson(params);
     }
 
-    #deleteLesson(lessonDate) {
+    #deleteLesson(header) {
+        const lessonDate = header.prop("lessonDate");
         const columnId = this.columnIdFromDate(lessonDate);
         const container = this.containerFromId(columnId);
         const editor = container.find(".scheduleEditor");

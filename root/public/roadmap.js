@@ -39,15 +39,13 @@ class RoadmapPage extends CpiPage
         // Assume user wants to see the summary overlay.
         var initialOverlayName = "Summary";
 
-        // Check if subject and grade were specified by referrer, e.g., from lesson page.
-        const searchSubject = this.viewTracker.searchParams.get("subject");
-        const searchGrade = this.viewTracker.searchParams.get("grade");
-        if (searchSubject && searchGrade) { // all or nothing
-            this.#pageData.benchmarks = {
-                lastSubject: searchSubject,
-                lastGrade: searchGrade,
-                lastScope: "all"
-            };
+        // Check if lesson-id, subject, and grade were specified by referrer, e.g., from lesson page.
+        const tunnelParams = Cpi.GetTunnelParams();
+        if (tunnelParams) {
+            this.#pageData.lessonId = tunnelParams.lessonId;
+            this.#pageData.benchmarks.lastSubject = tunnelParams.subjectName;
+            this.#pageData.benchmarks.lastGrade = tunnelParams.gradeName;
+            this.#pageData.benchmarks.lastScope = "all";
 
             initialOverlayName = "Benchmarks";
         }
@@ -281,13 +279,6 @@ class BenchmarkOverlay extends RoadmapOverlay  {
             // Completely hide the view-progress button div; otherwise the Coverage banner will be misaligned.
             this.element.find("#viewProgress").parent().css("display", "none");
         }
-
-
-        // Referrer Lesson
-        const referrer = new URL(document.referrer);
-        if (referrer.pathname === "/lesson") {
-            this.#referrerLessonId = referrer.searchParams.get("id");
-        }
     }
 
     _activateOverlay() {
@@ -295,7 +286,7 @@ class BenchmarkOverlay extends RoadmapOverlay  {
             super._activateOverlay();
 
             // Disable any subsequent referrer-lesson processing.
-            this.#referrerLessonId = null;
+            this.roadmapPage.pageData.lessonId = null;
         });
     }
 
@@ -413,7 +404,7 @@ class BenchmarkOverlay extends RoadmapOverlay  {
                         
                         lessonColumn.append(lessonBubble);
 
-                        isReferrerLesson = isReferrerLesson || (lesson.id === this.#referrerLessonId);
+                        isReferrerLesson = isReferrerLesson || (lesson.id === this.roadmapPage.pageData.lessonId);
                     }
 
                     if (isReferrerLesson) {

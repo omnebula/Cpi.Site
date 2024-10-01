@@ -69,7 +69,10 @@
                 }
             }
 
-            $self.change(update).keyup(update).keydown({event:'keydown'},update);
+            $self.keyup(update).keydown({event:'keydown'},update);
+            $self.on("change", (event) => {
+                update(event);
+            });
             $(window).resize(update);
 
             update();

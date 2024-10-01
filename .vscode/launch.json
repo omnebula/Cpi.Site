@@ -10,9 +10,10 @@
             "name": "Launch Public",
             "url": "https://local.coreplanit.com",
             "webRoot": "${workspaceFolder}/root/public",
+            "sourceMaps": true,
             "sourceMapPathOverrides": {
                 "/common/*": "${workspaceFolder}/root/common/*",
-                "/*": "${workspaceFolder}/root/common/public/*"
+                "/*": "${weboot}/root/public/*"
             }
         },
         {
@@ -21,6 +22,7 @@
             "name": "Launch Admin",
             "url": "https://admin-local.coreplanit.com",
             "webRoot": "${workspaceFolder}/root/admin",
+            "sourceMaps": true,
             "sourceMapPathOverrides": {
                 "/common/*": "${workspaceFolder}/root/common/*",
                 "/*": "${workspaceFolder}/root/common/admin/*"

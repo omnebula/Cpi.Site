@@ -123,12 +123,20 @@ class LessonPage extends CpiPage {
 
         // Schedule link.
         $("#viewSchedule").on("click", () => {
-            window.open(`/schedule?week=${Cpi.CalculateWeekNumber(data.lessonDate)}${this.#viewTracker.viewParams}`, "_self");
+            Cpi.OpenLocation(
+                `/schedule?week=${Cpi.CalculateWeekNumber(data.lessonDate)}${this.#viewTracker.viewParams}`,
+                "_self",
+                { lessonId: data.lessonId, courseId: data.courseId, classId: data.classId }
+            );
         });
 
         // Roadmap link.
         $("#viewRoadmap").on("click", () => {
-            window.open(`/roadmap?subject=${data.subjectName}&grade=${data.gradeName}${this.#viewTracker.viewParams}`, "_self");
+            Cpi.OpenLocation(
+                `/roadmap?${this.#viewTracker.viewParams}`,
+                "_self",
+                { lessonId: data.lessonId, subjectName: data.subjectName, gradeName: data.gradeName}
+            );
         });
 
         // Benchmarks

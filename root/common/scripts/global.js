@@ -452,6 +452,35 @@ class Cpi {
         document.body.removeChild(link);
     }
 
+
+    /*
+    * Tunnel Params
+    */
+    static GetTunnelParams() {
+        const item = localStorage.getItem("_tp");
+        if (item) {
+            localStorage.removeItem("_tp");
+            return JSON.parse(item);
+        }
+        else {
+            return undefined;
+        }
+    }
+    static SetTunnelParams(tunnelParams) {
+        if (tunnelParams) {
+            localStorage.setItem("_tp", JSON.stringify(tunnelParams));
+        }
+        else {
+            localStorage.removeItem("_tp");
+        }
+    }
+    static OpenLocation(url, target, tunnelParams) {
+        if (tunnelParams) {
+            Cpi.SetTunnelParams(tunnelParams);
+        }
+        window.open(url, target);
+    }
+
     /*
     * Private Data
     */

@@ -13,34 +13,33 @@ class SchedulePlanner extends ScheduleController {
         // Initialize planner-mode column header dropdown menu options.
         this.headers.each((key, value) => {
             const header = $(value);
-            const lessonDate = header.prop("lessonDate");
             const menuOptions = header.find(".plannerColumnMenuOptions");
 
             const addLesson = menuOptions.find("#addLesson");
             addLesson.on("click", () => {
                 if (addLesson.prop("enabled")) {
-                    this.#onAddLesson(lessonDate);
+                    this.#onAddLesson(header);
                 }
             });
     
             const repeatOnce = menuOptions.find("#repeatOnce");
             repeatOnce.on("click", () => {
                 if (repeatOnce.prop("enabled")) {
-                    this.#onRepeatLesson(lessonDate);
+                    this.#onRepeatLesson(header);
                 }
             });
     
             const repeatFill = menuOptions.find("#repeatFill");
             repeatFill.on("click", () => {
                 if (repeatFill.prop("enabled")) {
-                    this.#onRepeatFill(lessonDate);
+                    this.#onRepeatFill(header);
                 }
             });
     
             const deleteAll = menuOptions.find("#deleteAll");
             deleteAll.on("click", () => {
                 if (deleteAll.prop("enabled")) {
-                    this.#onDeleteAll(lessonDate);
+                    this.#onDeleteAll(header);
                 }
             });
     
@@ -55,7 +54,7 @@ class SchedulePlanner extends ScheduleController {
         });
     }
 
-    activate() {
+    refresh() {
         this.fetchLessons(this.queryUrl, (data) => {
             this.populateSchedule(data);
 
@@ -63,15 +62,11 @@ class SchedulePlanner extends ScheduleController {
 
             this.#templateManager.show();
 
-            // Conditionally set the current selection.
-            if (document.referrer && (document.referrer !== "")) {
-                const url = new URL(document.referrer);
-                if (url.pathname === "/lesson") {
-                    const lessonId = url.searchParams.get("id");
-                    if (lessonId) {
-                        this.#selectLesson($(`#${lessonId}`));
-                    }
-                }
+            if (this.schedulePage.selectedLessonId) {
+                this.#selectLesson($(`#${this.schedulePage.selectedLessonId}`));
+                
+                // Only acknowledge selection the first time it's established.
+                this.schedulePage.selectedLessonId = undefined;
             }
         });
     }
@@ -96,52 +91,55 @@ class SchedulePlanner extends ScheduleController {
             }
         }
 
-        for (const current of data) {
+        for (const lesson of data) {
             // Skip if already displayed.
-            if (this.scheduleBody.find(`#${current.lessonId}`).length) {
+            if (this.scheduleBody.find(`#${lesson.lessonId}`).length) {
                 continue;
             }
 
-            const lessonDate = Cpi.ParseLocalDate(current.lessonDate);
+            const lessonDate = Cpi.ParseLocalDate(lesson.lessonDate);
             const containerId = this.columnIdFromDate(lessonDate);
 
-            const lesson = this.#lessonTemplate.clone(true);
+            const bubble = this.#lessonTemplate.clone(true);
 
-            lesson.attr("id", current.lessonId);
-            lesson.attr("courseId", current.courseId);
-            lesson.attr("classId", current.classId);
-            lesson.attr("lessonSequence", current.lessonSequence);
-            lesson.attr("href", `/lesson?id=${current.lessonId}`);
+            bubble.attr("id", lesson.lessonId);
+            bubble.attr("courseId", lesson.courseId);
+            bubble.attr("classId", lesson.classId);
+            bubble.attr("lessonSequence", lesson.lessonSequence);
+            bubble.attr("href", `/lesson?id=${lesson.lessonId}`);
     
             // Init name.
-            lesson.find("#scheduleLessonName").text(current.lessonName);
+            bubble.find("#scheduleLessonName").text(lesson.lessonName);
 
             // Init detail list.
-            this.#initLessonDetails(lesson, current);
+            this.#initLessonDetails(bubble, lesson);
     
             // Init command bar.
             if (!this.viewTracker.isActive) {
-                const commandBar = lesson.find(".scheduleLessonCommandBar");
+                const commandBar = bubble.find(".scheduleLessonCommandBar");
                 commandBar.on("mouseup", (event) => {
                     if (event.which === 1) {    // Left-click only
                         event.stopPropagation();
                     }
                 });
-                commandBar.find("#delete").on("click", (event) => {
+                commandBar.find("#review").on("click", (event) => {
                     event.stopPropagation();
-                    this.#deleteLesson(lesson, containerId);
+                    this.#reviewLesson(lesson);
                 });
                 commandBar.find("#moveUp").on("click", (event) => {
                     event.stopPropagation();
-                    this.#moveLesson(lesson, true);
+                    this.#moveLesson(bubble, true);
                 });
                 commandBar.find("#moveDown").on("click", (event) => {
                     event.stopPropagation();
-                    this.#moveLesson(lesson, false);
+                    this.#moveLesson(bubble, false);
                 });
-        
+                commandBar.find("#delete").on("click", (event) => {
+                    event.stopPropagation();
+                    this.#deleteLesson(bubble, containerId);
+                });
     
-                lesson.on("mouseenter", () => { // Show commmand bar on mouse-enter
+                bubble.on("mouseenter", () => { // Show commmand bar on mouse-enter
                     commandBar.css("display", "flex");
                 })
                 .on("mouseleave", () => {       // Hide command bar on mouse-leave
@@ -149,19 +147,19 @@ class SchedulePlanner extends ScheduleController {
                 });
             }
 
-            lesson.on("mousedown", (event) => {
+            bubble.on("mousedown", (event) => {
                 event.stopPropagation();
-                this.#selectLesson(lesson);
+                this.#selectLesson(bubble);
             })
             .on("mouseup", (event) => {
                 if (event.which === 1) {  // Left click only
                     event.stopPropagation();
-                    window.open(`/lesson?id=${current.lessonId}${this.viewTracker.viewParams}`, event.ctrlKey ? "_blank" : "_self");
+                    window.open(`/lesson?id=${lesson.lessonId}${this.viewTracker.viewParams}`, event.ctrlKey ? "_blank" : "_self");
                 }
             });
 
             // Add to container.
-            this.containerFromId(containerId).append(lesson);
+            this.containerFromId(containerId).append(bubble);
         }
 
         // Update insert-lesson button visibility.
@@ -171,7 +169,8 @@ class SchedulePlanner extends ScheduleController {
     /*
     * Column Header Command Handlers
     */
-    #onAddLesson(lessonDate) {
+    #onAddLesson(header) {
+        const lessonDate = header.prop("lessonDate");
         const containerId = this.columnIdFromDate(lessonDate);
         const lessons = $(`.scheduleContainer #${containerId} .scheduleLesson`);
 
@@ -210,7 +209,9 @@ class SchedulePlanner extends ScheduleController {
         });
     }
 
-    #onRepeatLesson(lessonDate, count) {
+    #onRepeatLesson(header, count) {
+        const lessonDate = header.prop("lessonDate");
+
         count = count || 1;
 
         const params = {
@@ -243,7 +244,9 @@ class SchedulePlanner extends ScheduleController {
         });
     }
 
-    #onRepeatFill(lessonDate) {
+    #onRepeatFill(header) {
+        const lessonDate = header.prop("lessonDate");
+
         var count;
 
         // If source date is a Friday, schedule all 5 days of the following week.
@@ -255,10 +258,11 @@ class SchedulePlanner extends ScheduleController {
             count = 5 - dayOfWeek;
         }
 
-        this.#onRepeatLesson(lessonDate, count);
+        this.#onRepeatLesson(header, count);
     }
 
-    #onDeleteAll(lessonDate) {
+    #onDeleteAll(header) {
+        const lessonDate = header.prop("lessonDate");
         const containerId = this.columnIdFromDate(lessonDate);
         const container = this.containerFromId(containerId);
 
@@ -285,25 +289,16 @@ class SchedulePlanner extends ScheduleController {
     * Lesson Bubble Command Handlers
     */
 
-    #selectLesson(lesson) {
+    #selectLesson(bubble) {
         const scheduleContainer = $("#scheduleContainer");
         scheduleContainer.find(".scheduleLesson_selected").removeClass("scheduleLesson_selected");
-        if (lesson) {
-            lesson.addClass("scheduleLesson_selected");                
+        if (bubble) {
+            bubble.addClass("scheduleLesson_selected");                
         }
     }
 
-    #deleteLesson(lesson, containerId) {
-        const lessonId = lesson.attr("id");
-
-        Cpi.SendApiRequest({
-            method: "DELETE",
-            url: `/@/lesson/${lessonId}`,
-            success: (data, status, xhr) => {
-                lesson.remove();
-                this.#syncColumnMenuOptions(containerId);
-            }
-        })
+    #reviewLesson(lesson) {
+        this.schedulePage.setCourseSelection(lesson.courseId, lesson.classId);
     }
 
     #moveLesson(target, moveUp) {
@@ -347,6 +342,19 @@ class SchedulePlanner extends ScheduleController {
                 other.attr("lessonSequence", targetSequence);
             }
         });
+    }
+
+    #deleteLesson(bubble, containerId) {
+        const lessonId = bubble.attr("id");
+
+        Cpi.SendApiRequest({
+            method: "DELETE",
+            url: `/@/lesson/${lessonId}`,
+            success: (data, status, xhr) => {
+                bubble.remove();
+                this.#syncColumnMenuOptions(containerId);
+            }
+        })
     }
 
     #syncColumnMenuOptions(containerId) {
