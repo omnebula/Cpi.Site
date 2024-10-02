@@ -164,6 +164,12 @@ class Cpi {
     static IsHoliday(date) {
         return Cpi.GetHolidayName(date) !== undefined;
     }
+    static IsValidCalendarDate(targetDate) {
+        const targetTime = targetDate.getTime();
+        const startTime = Cpi.ParseLocalDate(cpidata.organization.calendar.startDate).getTime();
+        const endTime = Cpi.ParseLocalDate(cpidata.organization.calendar.endDate).getTime();
+        return (targetTime >= startTime) && (targetTime <= endTime);
+    }
 
     static GetDayName(dayOfWeek) {
         return Cpi.#DAY_NAMES[dayOfWeek];

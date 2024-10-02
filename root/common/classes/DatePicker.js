@@ -6,6 +6,7 @@ class CalendarPopup {
     #selectedYear;
     #monthNameDiv;
     #dateInput;
+    #enableHolidays;
 
     constructor() {
         // Dynamically insert the calendar popup.
@@ -52,6 +53,7 @@ class CalendarPopup {
 
     show(dateInput, enableHolidays) {
         this.#dateInput = dateInput;
+        this.#enableHolidays = enableHolidays || false;
 
         const date = Cpi.ParseLocalDate(this.#dateInput.val()) || Cpi.GetTodayDate();
 
@@ -59,24 +61,24 @@ class CalendarPopup {
             this.hide();
         });
 
-        this.#showCalendarDates(date, enableHolidays);
+        this.#showCalendarDates(date);
     }
     hide() {
         this.#popup.css("display", "none");
         $(document).off("click");
     }
 
-    #showCalendarDates(date, enableHolidays) {
+    #showCalendarDates(date) {
         this.#selectedDate = date;
         this.#selectedDay = this.#selectedDate.getDate();
         this.#selectedMonth = this.#selectedDate.getMonth();
         this.#selectedYear = this.#selectedDate.getFullYear();
 
-        this.#updateCalendarDates(enableHolidays);
+        this.#updateCalendarDates();
 
         this.#popup.css("display", "inline-block");
     }
-    #updateCalendarDates(enableHolidays) {
+    #updateCalendarDates() {
         // Set the month name.
         this.find("#calPop_monthName").html(`${Cpi.GetMonthName(this.#selectedMonth)}&nbsp;${this.#selectedYear}`);
 
@@ -106,7 +108,7 @@ class CalendarPopup {
                     curColumn.text(curDay)
                         .attr("title", Cpi.FormatShortDateString(curDate));
 
-                    if (Cpi.IsHoliday(curDate) && !enableHolidays) {
+                    if (!Cpi.IsValidCalendarDate(curDate) || (Cpi.IsHoliday(curDate) && !this.#enableHolidays)) {
                         curColumn.addClass("calPop_holidayDate");
                     }
                     else {
