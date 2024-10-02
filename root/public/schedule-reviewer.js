@@ -145,7 +145,7 @@ class ScheduleReviewer extends ScheduleController {
                         changed = true;
                     })
                     .on("paste", () => {
-                        textarea.trigger("change");
+                        setTimeout( () => { textarea.trigger("change"); }, 10);
                     })
                     .on("cut", () => {
                         textarea.trigger("change");
