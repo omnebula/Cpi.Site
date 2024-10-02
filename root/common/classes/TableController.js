@@ -118,7 +118,9 @@ class TableController {
             this.#entityBroker.insertEntity(data, (data) => {
                 // Insert the new table row.
                 const row = this.#dataTable.appendRow(data, (row, data) => { this.#formatNewRow(row, data); });
-                this.#dataTable.sortRows((lhs, rhs) => { return this._compareRows(lhs, rhs)});
+                if (this._compareRows) {
+                    this.#dataTable.sortRows((lhs, rhs) => { return this._compareRows(lhs, rhs)});
+                }
                 this.#dataTable.stripeRows();
 
                 this.setSelectedRow(row, true);
@@ -142,7 +144,9 @@ class TableController {
                         this.#entityBroker.updateEntity(row, editedData, (row, updatedData) => {
                             // Update the table row.
                             this._formatRow(row, updatedData);
-                            this.#dataTable.sortRows((lhs, rhs) => { return this._compareRows(lhs, rhs)});
+                            if (this._compareRows) {
+                                this.#dataTable.sortRows((lhs, rhs) => { return this._compareRows(lhs, rhs)});
+                            }
                             this.#dataTable.stripeRows();
                         });
                     });

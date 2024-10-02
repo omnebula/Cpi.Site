@@ -172,6 +172,19 @@ class Cpi {
         return Cpi.#MONTH_NAMES[monthIndex];
     }
 
+
+    static FormatFullGradeName(gradeName) {
+        switch (gradeName) {
+            case "PK":
+                return "Pre-Kindergarten";
+            case "K":
+                return "Kindergarten";
+            default:
+                return `Grade ${gradeName}`;
+        }
+    }
+
+
     static SendApiRequest(params)
     {
         if (!params.hideSpinner) {

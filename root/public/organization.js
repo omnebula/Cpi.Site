@@ -800,12 +800,6 @@ class CourseOverlay extends ManagerTableOverlay {
         row.find("#courseGradeColumn").text(course.gradeName || "");
     }
 
-    _compareRows(lhs, rhs) {
-        const left = $(lhs).find("#courseNameColumn").text();
-        const right = $(rhs).find("#courseNameColumn").text();
-        return left.localeCompare(right);
-    }
-
     _getEditorData(editor) {
         return {
             courseName: editor.find("#courseName").val(),

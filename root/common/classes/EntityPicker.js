@@ -12,7 +12,16 @@ class EntityPicker {
     show(params) {
         this.#settings.entityBroker.fetchEntitySet(
             (dataSet) => {
-                this.#dataTable.setRows(dataSet, (row, data) => { this.#settings.formatRow(row, data); });
+                this.#dataTable.setRows(dataSet, (row, data) => {
+                    this.#settings.formatRow(row, data);
+
+                    row.on("click", () => {
+                        row.find("input[type=checkbox]").trigger("click");
+                    });
+                    row.find("input[type=checkbox]").on("click", (event) => {
+                        event.stopPropagation();
+                    })
+                });
                 Cpi.ShowPopup(this.#settings.pickerPopup, () => { this.#acceptSelection(params.accept); }, params.cancel);
             },
             params.listUrl

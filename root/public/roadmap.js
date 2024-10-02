@@ -224,16 +224,10 @@ class BenchmarkOverlay extends RoadmapOverlay  {
 
         if (!this.pageData.benchmarks) {
             this.pageData.benchmarks = {
-                lastSubject: this.pageData.lastSubject || localStorage.getItem("lastRoadmapSubject") || "",
-                lastGrade: this.pageData.lastGrade || localStorage.getItem("lastRoadmapGrade") || "",
-                lastScope: this.pageData.lastScope || localStorage.getItem("lastRoadmapScope") || "all"
+                lastSubject: this.pageData.lastSubject || "",
+                lastGrade: this.pageData.lastGrade || "",
+                lastScope: this.pageData.lastScope || "all"
             };
-            this.pageData.lastSubject = undefined;
-            this.pageData.lastGrade = undefined;
-            this.pageData.lastScope = undefined;
-            localStorage.removeItem("lastRoadmapSubject");
-            localStorage.removeItem("lastRoadmapGrade");
-            localStorage.removeItem("lastRoadmapScope");
         }
 
         /*
@@ -299,7 +293,8 @@ class BenchmarkOverlay extends RoadmapOverlay  {
 
             for (const grade of grades) {
                 const option = document.createElement("option");
-                option.value = option.text = grade;
+                option.value = grade;
+                option.text = Cpi.FormatFullGradeName(grade);
                 this.#gradeSelector.append(option);
             }
         }

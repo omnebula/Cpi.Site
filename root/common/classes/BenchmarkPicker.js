@@ -85,7 +85,7 @@ class BenchmarkPicker {
         const selectedSubject = this.#subjectSelector.find(":selected");
         if (selectedSubject.length) {
             for (const grade of selectedSubject[0].grades) {
-                this.#gradeSelector.append(`<option>${grade}</option>`);
+                this.#gradeSelector.append(`<option value="${grade}">${Cpi.FormatFullGradeName(grade)}</option>`);
             }
         }
 
