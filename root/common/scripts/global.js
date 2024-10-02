@@ -200,6 +200,7 @@ class Cpi {
         const prevSuccessHandler = params.success;
         params.success = (data, status, xhr) => {
             Cpi.HideSpinner();
+            Cpi.HideLogin();
             if (prevSuccessHandler) {
                 prevSuccessHandler(data, status, xhr);
             }
@@ -210,7 +211,19 @@ class Cpi {
             Cpi.HideSpinner();
             switch (xhr.status) {
                 case 401:  // denied
-                    Cpi.ShowLogin();
+                    Cpi.ShowLogin({
+                        success: () => {
+                            // If we have cpidata, then we were previously logged in
+                            // and the session timed out - just rerun the request.
+                            if (window.cpidata) {
+                                $.ajax(params);
+                            }
+                            // Otherwie, reload the whol epage to make sure we get everything.
+                            else {
+                                window.location.reload();
+                            }
+                        }
+                    });
                     break;
                 default:
                     if (prevErrorHandler) {
@@ -246,17 +259,24 @@ class Cpi {
         if (!popupParams.url) {
             popupParams.url = "/@/account/login";
         }
-        if (!popupParams.success) {
-            popupParams.success = (data, status, xhr) => {
-                Cpi.UpdateLoginAccountData(data);
+
+        const prevPopupSuccess = popupParams.success;
+        popupParams.success = (data, status, xhr) => {
+            Cpi.UpdateLoginAccountData(data);
+            if (prevPopupSuccess) {
+                prevPopupSuccess(data, status, xhr);
+            }
+            else {
                 window.location.reload();
-            };
+            }
         }
+
         if (!popupParams.error) {
             popupParams.error = (xhr, status, data) => {
                 Cpi.ShowAlert(data);
             }
         }
+
         if (!popupParams.submit) {
             popupParams.submit = (loginParams) => {
                 $.ajax({
@@ -303,7 +323,7 @@ class Cpi {
     }
     static HideLogin() {
         if (Cpi.#LoginFrame) {
-            Cpi.#LoginFrame.css("display", none);
+            Cpi.#LoginFrame.css("display", "none");
         }
     }
     static UpdateLoginAccountData(accountData) {
