@@ -58,7 +58,7 @@
 }
 
 
-.pickerInput, .pickerSelect {
+.benchmarkPicker .pickerInput, .benchmarkPicker .pickerSelect {
     color: #ddd;
     background-color: transparent;
     outline: none;
@@ -69,28 +69,28 @@
     font-family: inherit;    
 }
 
-.pickerRow {
+.benchmarkPicker .pickerRow {
     margin: 0 18px 18px 18px;
 }
 
-.pickerInput {
+.benchmarkPicker .pickerInput {
     padding: 4px 8px;
     border: 1px solid var(--input-button-background-color);
 }
-.pickerSelect {
+.benchmarkPicker .pickerSelect {
     padding: 3px 8px;
     border: 0;
     background-color: var(--input-button-background-color);
 }
-.pickerSelect:active {
+.benchmarkPicker .pickerSelect:active {
     border-color: lightsteelblue;
     background-color: #272727;
 }
-.pickerSelect:focus {
+.benchmarkPicker .pickerSelect:focus {
     border-color: lightsteelblue;
     background-color: #272727;
 }
-.pickerButton {
+.benchmarkPicker .pickerButton {
     padding: 5px 0;
     width: 150px;
 }
