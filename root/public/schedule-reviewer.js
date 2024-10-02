@@ -79,20 +79,13 @@ class ScheduleReviewer extends ScheduleController {
 
     populateSchedule(data) {
         for (const lesson of data) {
-            const editor = this.#editorTemplate.clone(true);
+            const columnId = this.columnIdFromDate(Cpi.ParseLocalDate(lesson.lessonDate));
 
+            const editor = this.#editorTemplate.clone(true);
             editor.attr("id", lesson.lessonId);
             editor.prop("lesson", lesson);
 
             // Benchmarks
-            const benchmarkContainer = editor.find(".benchmarkContainer");
-            benchmarkContainer.on("click", () => {
-                this.#showBenchmarkPicker(editor, lesson);
-            });
-            benchmarkContainer.parent().find("label").on("click", () => {
-                this.#showBenchmarkPicker(editor, lesson);
-            });
-
             this.#initBenchmarks(editor, lesson.lessonId, lesson.benchmarks);
 
             // Initialize details.
@@ -102,10 +95,6 @@ class ScheduleReviewer extends ScheduleController {
                 textarea.val(value);
             }
                 
-            // Menu
-            const columnId = this.columnIdFromDate(Cpi.ParseLocalDate(lesson.lessonDate));
-            this.#enableActiveOptions(columnId, true);
-
             // Insert editor into container.
             const container = this.containerFromId(columnId);
             container.append(editor);
@@ -114,52 +103,73 @@ class ScheduleReviewer extends ScheduleController {
             const textareas = editor.find(".scheduleEditorTextarea");
             textareas.autogrow({ shadowParent: this.#shadowParent }).trigger("change");
 
-            // Hook into blur event to detect changes
-            var changed = false;
-            textareas.each((key, value) => {
-                const textarea = $(value);
+            // Disable modifying commands if we're in view-only mode.
+            if (this.viewTracker.isActive) {
+                textareas.prop("readonly", true);
+            }
+            else {
+                // Initialize menu options.
+                this.#enableActiveOptions(columnId, true);
 
-                textarea
-                    .on("blur", () => {
-                        if (changed) {
-                            const params = { details: {} };
-                            textareas.each((key, value) => {
-                                const textarea = $(value);
-                                const id = textarea.attr("id");
-                                const val = textarea.val();
-                                params.details[id] = val;
-                            });
-
-                            Cpi.SendApiRequest({
-                                method: "PATCH", 
-                                url: `/@/lesson/${lesson.lessonId}?noecho`,
-                                data: JSON.stringify(params),
-                                hideSpinner: true,
-                                success: () => {
-                                    changed = false;
-                                }
-                            })
-                        }
-                    })
-                    .on("change", () => {
-                        changed = true;
-                    })
-                    .on("paste", () => {
-                        setTimeout( () => { textarea.trigger("change"); }, 10);
-                    })
-                    .on("cut", () => {
-                        textarea.trigger("change");
-                    });
-
-                // Implement label focus, i.e. clicking label focuses textarea.
-                // Note that the normal "for" attribute doesn't work because of
-                // duplicate textarea ids
-                const row = textarea.parent();
-                const label = row.find("label");
-                label.on("click", () => {
-                    textarea.focus();
+                // Initialize benchmark picker invocation.
+                const benchmarkContainer = editor.find(".benchmarkContainer");
+                benchmarkContainer.on("click", () => {
+                    this.#showBenchmarkPicker(editor, lesson);
                 });
-            });
+                benchmarkContainer.parent().find("label").on("click", () => {
+                    this.#showBenchmarkPicker(editor, lesson);
+                });
+
+                // Initialize detail modification actions (blur).
+                // Hook into blur event to detect changes
+                var changed = false;
+                textareas.each((key, value) => {
+                    const textarea = $(value);
+
+                    textarea
+                        .prop("readonly", false)
+                        .on("blur", () => {
+                            if (changed) {
+                                const params = { details: {} };
+                                textareas.each((key, value) => {
+                                    const textarea = $(value);
+                                    const id = textarea.attr("id");
+                                    const val = textarea.val();
+                                    params.details[id] = val;
+                                });
+
+                                Cpi.SendApiRequest({
+                                    method: "PATCH", 
+                                    url: `/@/lesson/${lesson.lessonId}?noecho`,
+                                    data: JSON.stringify(params),
+                                    hideSpinner: true,
+                                    success: () => {
+                                        changed = false;
+                                    }
+                                })
+                            }
+                        })
+                        .on("change", () => {
+                            changed = true;
+                        })
+                        .on("paste", () => {
+                            setTimeout( () => { textarea.trigger("change"); }, 10);
+                        })
+                        .on("cut", () => {
+                            textarea.trigger("change");
+                        });
+
+                    // Implement label focus, i.e. clicking label focuses textarea.
+                    // Note that the normal "for" attribute doesn't work because of
+                    // duplicate textarea ids
+                    const row = textarea.parent();
+                    const label = row.find("label");
+                    label.on("click", () => {
+                        textarea.focus();
+                    });
+                });
+                
+            }
         }
     }
 
@@ -211,26 +221,31 @@ class ScheduleReviewer extends ScheduleController {
                         event.stopPropagation();
                     });
 
-                benchmarkItem.find("#removeBenchmark")
-                    .on("click", (event) => {
-                        const params = {
-                            lessonId: lessonId,
-                            benchmarkId: benchmark.benchmarkId
-                        };
-                
-                        Cpi.SendApiRequest({
-                            method: "DELETE",
-                            url: "/@/lesson/benchmark",
-                            data: JSON.stringify(params),
-                            success: (data, status, xhr) => {
-                                benchmarkItem.remove();
-                            }
-                        });
-
-                        event.stopPropagation();
-                    });
-
                 benchmarkContainer.append(benchmarkItem);
+
+                if (this.viewTracker.isActive) {
+                    benchmarkItem.addClass("scheduleEditorBenchmark_inactive");
+                }
+                else {
+                    benchmarkItem.find("#removeBenchmark")
+                        .on("click", (event) => {
+                            const params = {
+                                lessonId: lessonId,
+                                benchmarkId: benchmark.benchmarkId
+                            };
+                    
+                            Cpi.SendApiRequest({
+                                method: "DELETE",
+                                url: "/@/lesson/benchmark",
+                                data: JSON.stringify(params),
+                                success: (data, status, xhr) => {
+                                    benchmarkItem.remove();
+                                }
+                            });
+
+                            event.stopPropagation();
+                        });
+                }
             }
         }
     }

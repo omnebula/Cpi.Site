@@ -423,7 +423,7 @@ main {
 .benchmarkContainer {
     min-height: 15px;
 }
-.scheduleEditorBenchmark {
+.scheduleEditorBenchmark, .scheduleEditorBenchmark_inactive {
     margin-right: 4px;
     color: var(--editor-benchmark-color);
     display: inline-flex;
@@ -437,8 +437,9 @@ main {
     border: none;
     background-color: transparent;
 }
-.scheduleEditorBenchmark:hover #removeBenchmark {
-    visibility: visible;
+
+.scheduleEditorBenchmark_inactive:hover #removeBenchmark {
+    visibility: hidden;
 }
 
 .scheduleEditorTextarea {
