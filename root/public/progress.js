@@ -11,7 +11,7 @@ class ProgressPage extends CpiPage {
         }
 
         const overlays = [
-            new TeacherOverlay()
+            new BenchmarkOverlay()
         ];
         this.#overlayController = new OverlayController(overlays, "progressOverlayName");
 
@@ -20,18 +20,18 @@ class ProgressPage extends CpiPage {
 }
 
 
-class TeacherOverlay extends TableOverlay {
+class BenchmarkOverlay extends TableOverlay {
     constructor() {
         super({
-            overlayName: "Teachers",
-            table: $("#teacherTable"),
-            toggleButtons: [ $("#viewTeacherSchedule"), $("#viewTeacherRoadmap") ],
+            overlayName: "Benchmarks",
+            table: $("#benchmarkTable"),
+            toggleButtons: [ $("#viewBenchmarkSchedule"), $("#viewBenchmarkRoadmap") ],
         });
 
-        $("#viewTeacherSchedule").on("click", (event) => {
+        $("#viewBenchmarkSchedule").on("click", (event) => {
             this.#viewAccountDetail("schedule", event.ctrlKey);
         });
-        $("#viewTeacherRoadmap").on("click", (event) => {
+        $("#viewBenchmarkRoadmap").on("click", (event) => {
             this.#viewAccountDetail("roadmap", event.ctrlKey);
         });
 
@@ -41,15 +41,15 @@ class TeacherOverlay extends TableOverlay {
     refreshRows() {
         Cpi.SendApiRequest({
             method: "GET",
-            url: "/@/lesson/progress?type=teacher",
+            url: "/@/lesson/progress?type=benchmark",
             success: (data, status, xhr) => {
                 this.setRows(data);
 
                 // Conditionally set the current selection.
                 const url = new URL(document.referrer);
-                const teacherId = url.searchParams.get("tid");
-                if (teacherId) {
-                    const row = this.findRows(`#${teacherId}`);
+                const benchmarkId = url.searchParams.get("tid");
+                if (benchmarkId) {
+                    const row = this.findRows(`#${benchmarkId}`);
                     if (row) {
                         this.setSelectedRow(row);
                     }
@@ -58,22 +58,22 @@ class TeacherOverlay extends TableOverlay {
         });
     }
 
-    _formatRow(row, teacher) {
-        row.attr("id", teacher.id);
+    _formatRow(row, benchmark) {
+        row.attr("id", benchmark.id);
 
-        row.find("#teacherNameColumn").text(`${teacher.lastName}, ${teacher.firstName}`);
+        row.find("#benchmarkNameColumn").text(`${benchmark.lastName}, ${benchmark.firstName}`);
 
-        const percentage = (teacher.benchmarks.assigned / teacher.benchmarks.total) * 100;
+        const percentage = (benchmark.benchmarks.assigned / benchmark.benchmarks.total) * 100;
         row.find("#statsPercentage").text(`${percentage.toFixed(1)}%`);
-        row.find("#statsTotals").text(`(${teacher.benchmarks.assigned}/${teacher.benchmarks.total})`);
+        row.find("#statsTotals").text(`(${benchmark.benchmarks.assigned}/${benchmark.benchmarks.total})`);
     }
 
     #viewAccountDetail(pathname, openNewTab) {
         const row = this.tableController.getSelectedRow();
         if (row) {
-            const teacherId = row.attr("id");
-            const teacherName = row.find("#teacherNameColumn").text();
-            window.open(`/${pathname}?tid=${teacherId}&tname=${teacherName}&orig=progress`, openNewTab ? "_blank" : "_self");
+            const benchmarkId = row.attr("id");
+            const benchmarkName = row.find("#benchmarkNameColumn").text();
+            window.open(`/${pathname}?tid=${benchmarkId}&tname=${benchmarkName}&orig=progress`, openNewTab ? "_blank" : "_self");
         }
     }
 }
