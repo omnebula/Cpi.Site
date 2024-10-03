@@ -2,7 +2,6 @@
 
 class SchedulePlanner extends ScheduleController {
     #lessonTemplate;
-    #templateManager;
 
     constructor(schedulePage) {
         super(schedulePage);
@@ -45,9 +44,6 @@ class SchedulePlanner extends ScheduleController {
     
         });
 
-        // Initialize template manager.
-        this.#templateManager = new TemplateManager(this);
-
         // Initialize click handler to unselect a lessson when user clicks empty space.
         $(".appFrame").on("mousedown", () => {
             this.#selectLesson(undefined);
@@ -56,11 +52,10 @@ class SchedulePlanner extends ScheduleController {
 
     refresh() {
         this.fetchLessons(this.queryUrl, (data) => {
+            this.clearAllContainers();
             this.populateSchedule(data);
 
             $(".plannerColumnMenuOptions").css("display", "block");
-
-            this.#templateManager.show();
 
             if (this.schedulePage.selectedLessonId) {
                 this.#selectLesson($(`#${this.schedulePage.selectedLessonId}`));
@@ -76,21 +71,9 @@ class SchedulePlanner extends ScheduleController {
 
         // Hide planner-mode column dropdown menus.
         $(".plannerColumnMenuOptions").css("display", "none");
-
-        // Hide the templates menu.
-        this.#templateManager.hide();
     }
 
-    populateSchedule(data, clear) {
-        if (clear) {
-            for (const current of this.containers) {
-                const container = $(current);
-                if (!container.prop("holiday")) {
-                    container.empty();
-                }
-            }
-        }
-
+    populateSchedule(data) {
         for (const lesson of data) {
             // Skip if already displayed.
             if (this.scheduleBody.find(`#${lesson.lessonId}`).length) {

@@ -87,7 +87,7 @@
                                                 <div id="repeatFill" class="scheduleColumnMenuOption activeOption">Repeat fill</div>
                                             </div>
                                             <div class="scheduleColumnMenuGroup">
-                                                <div id="deleteAll" class="scheduleColumnMenuOption activeOption">Delete all</div>
+                                                <div id="deleteAll" class="scheduleColumnMenuOption activeOption">Delete lessons</div>
                                             </div>
                                         </div>
                                         <div class="reviewerColumnMenuOptions">
@@ -117,7 +117,7 @@
                                                 <div id="repeatFill" class="scheduleColumnMenuOption activeOption">Repeat fill</div>
                                             </div>
                                             <div class="scheduleColumnMenuGroup">
-                                                <div id="deleteAll" class="scheduleColumnMenuOption activeOption">Delete all</div>
+                                                <div id="deleteAll" class="scheduleColumnMenuOption activeOption">Delete lessons</div>
                                             </div>
                                         </div>
                                         <div class="reviewerColumnMenuOptions">
@@ -147,7 +147,7 @@
                                                 <div id="repeatFill" class="scheduleColumnMenuOption activeOption">Repeat fill</div>
                                             </div>
                                             <div class="scheduleColumnMenuGroup">
-                                                <div id="deleteAll" class="scheduleColumnMenuOption activeOption">Delete all</div>
+                                                <div id="deleteAll" class="scheduleColumnMenuOption activeOption">Delete lessons</div>
                                             </div>
                                         </div>
                                         <div class="reviewerColumnMenuOptions">
@@ -177,7 +177,7 @@
                                                 <div id="repeatFill" class="scheduleColumnMenuOption activeOption">Repeat fill</div>
                                             </div>
                                             <div class="scheduleColumnMenuGroup">
-                                                <div id="deleteAll" class="scheduleColumnMenuOption activeOption">Delete all</div>
+                                                <div id="deleteAll" class="scheduleColumnMenuOption activeOption">Delete lessons</div>
                                             </div>
                                         </div>
                                         <div class="reviewerColumnMenuOptions">
@@ -207,7 +207,7 @@
                                                 <div id="repeatFill" class="scheduleColumnMenuOption activeOption">Repeat fill</div>
                                             </div>
                                             <div class="scheduleColumnMenuGroup">
-                                                <div id="deleteAll" class="scheduleColumnMenuOption activeOption">Delete all</div>
+                                                <div id="deleteAll" class="scheduleColumnMenuOption activeOption">Delete lessons</div>
                                             </div>
                                         </div>
                                         <div class="reviewerColumnMenuOptions">
@@ -365,8 +365,12 @@
                 </div>
             </div>
             <div class="popupRow templateManagerPopupButtons">
-                <input id="renameTemplate" class="inputButton templatePopupButton" type="button" value="Rename Template"/>
-                <input id="deleteTemplate" class="inputButton templatePopupButton" type="button" value="Delete Template"/>
+                <div class="templateManagerPopupButtonGroup">
+                    <input id="moveTemplateUp" class="inputButton templatePopupButton templatePopupButton_short" type="button" value="Up"/><input id="moveTemplateDown" class="inputButton templatePopupButton templatePopupButton_short" type="button" value="Down"/>
+                </div>
+                <div class="templateManagerPopupButtonGroup">
+                    <input id="renameTemplate" class="inputButton templatePopupButton" type="button" value="Rename"/><input id="deleteTemplate" class="inputButton templatePopupButton" type="button" value="Delete"/>
+                </div>
             </div>
         </div>
 

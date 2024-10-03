@@ -3,6 +3,47 @@
     width: 800px;
     height: 420px;
 }
+
+.benchmarkPicker .pickerInput, .benchmarkPicker .pickerSelect {
+    color: #ddd;
+    background-color: transparent;
+    outline: none;
+    border-radius: 8px;
+    box-sizing: border-box;
+    border: 1px solid #777;    
+    font-size: inherit;
+    font-family: inherit;    
+}
+
+/*
+.benchmarkPicker .pickerRow {
+    margin: 0 18px 18px 18px;
+}
+    */
+
+.benchmarkPicker .pickerInput {
+    padding: 4px 8px;
+    border: 1px solid var(--input-button-background-color);
+}
+.benchmarkPicker .pickerSelect {
+    padding: 3px 8px;
+    border: 0;
+    background-color: var(--input-button-background-color);
+}
+.benchmarkPicker .pickerSelect:active {
+    border-color: lightsteelblue;
+    background-color: #272727;
+}
+.benchmarkPicker .pickerSelect:focus {
+    border-color: lightsteelblue;
+    background-color: #272727;
+}
+.benchmarkPicker .pickerButton {
+    padding: 5px 0;
+    width: 150px;
+}
+
+
 .benchmarkPickerSearch {
     margin-bottom: 18px;
 }
@@ -55,42 +96,4 @@
     width: 100%;
     padding-right: 6px;
     color: #eee;
-}
-
-
-.benchmarkPicker .pickerInput, .benchmarkPicker .pickerSelect {
-    color: #ddd;
-    background-color: transparent;
-    outline: none;
-    border-radius: 8px;
-    box-sizing: border-box;
-    border: 1px solid #777;    
-    font-size: inherit;
-    font-family: inherit;    
-}
-
-.benchmarkPicker .pickerRow {
-    margin: 0 18px 18px 18px;
-}
-
-.benchmarkPicker .pickerInput {
-    padding: 4px 8px;
-    border: 1px solid var(--input-button-background-color);
-}
-.benchmarkPicker .pickerSelect {
-    padding: 3px 8px;
-    border: 0;
-    background-color: var(--input-button-background-color);
-}
-.benchmarkPicker .pickerSelect:active {
-    border-color: lightsteelblue;
-    background-color: #272727;
-}
-.benchmarkPicker .pickerSelect:focus {
-    border-color: lightsteelblue;
-    background-color: #272727;
-}
-.benchmarkPicker .pickerButton {
-    padding: 5px 0;
-    width: 150px;
 }

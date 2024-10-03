@@ -4,7 +4,7 @@
 * Template Manager
 */
 class TemplateManager {
-    #schedulePlanner;
+    #schedulePage;
     #templateSection;
     #templateDropdown;
     #templateContainer;
@@ -12,8 +12,8 @@ class TemplateManager {
     #savePopup;
     #managerPopup;
 
-    constructor(schedulePlanner) {
-        this.#schedulePlanner = schedulePlanner;
+    constructor(schedulePage) {
+        this.#schedulePage = schedulePage;
 
         this.#templateSection = $("#templateSection");
         this.#templateDropdown = this.#templateSection.find("#templateDropdown");
@@ -31,19 +31,12 @@ class TemplateManager {
             this.#showTemplateManager();
         });
 
-        if (!this.schedulePage.viewTracker.isActive) {
-            this.#templateSection.css("display", "inline-block");
-        }
-
         this.#savePopup = new SavePopup(this);
         this.#managerPopup = new ManagerPopup(this);
     }
 
-    get schedulePlanner() {
-        return this.#schedulePlanner;
-    }
     get schedulePage() {
-        return this.#schedulePlanner.schedulePage;
+        return this.#schedulePage;
     }
 
     static FormatTemplateId(templateName) {
@@ -51,10 +44,10 @@ class TemplateManager {
     }
 
     show() {
-        this.#templateSection.css("visibility", "visible");
+        this.#templateSection.css("display", "inline-block");
     }
     hide() {
-        this.#templateSection.css("visibility", "hidden");
+        this.#templateSection.css("display", "none");
     }
 
     #openTemplateMenu() {
@@ -96,7 +89,8 @@ class TemplateManager {
             method: "POST",
             url: `/@/lesson/schedule/template?action=apply&name=${templateName}&week=${this.schedulePage.weekNumber}`,
             success: (data) => {
-                this.schedulePlanner.populateSchedule(data, true);
+                this.schedule
+                this.schedulePage.refresh(data);
             }
         });
     }
@@ -208,6 +202,8 @@ class ManagerPopup extends TemplatePopup {
     #table;
     #renameButton;
     #deleteButton;
+    #moveUpButton;
+    #moveDownButton;
 
     constructor(templateManager) {
         super(templateManager);
@@ -217,22 +213,35 @@ class ManagerPopup extends TemplatePopup {
 
         this.#renameButton = this.#popup.find("#renameTemplate");
         this.#renameButton.on("click", () => {
-            this.#renameTemplate()
+            this.#renameTemplate();
         });
 
         this.#deleteButton = this.#popup.find("#deleteTemplate");
         this.#deleteButton.on("click", () => {
-            this.#deleteTemplate()
+            this.#deleteTemplate();
+        });
+
+        this.#moveUpButton = this.#popup.find("#moveTemplateUp");
+        this.#moveUpButton.on("click", () => {
+            this.#moveTemplateUp();
+        });
+
+        this.#moveDownButton = this.#popup.find("#moveTemplateDown");
+        this.#moveDownButton.on("click", () => {
+            this.#moveTemplateDown();
         });
     }
 
     show() {
+        var index = 0;
         this.#table.refresh(
             this.schedulePage.accountData.templates.schedule,
             (row, templateName) => {
                 row.on("click", () => {
                     this.#syncButtons();
                 });
+
+                row.prop("templateIndex", index++);
 
                 const nameInput = row.find("#templateName");
                 nameInput.val(templateName)
@@ -343,11 +352,61 @@ class ManagerPopup extends TemplatePopup {
         }
     }
 
+    #moveTemplateUp() {
+        const selection = this.#getSelectedRow();
+        if (selection) {
+            this.#sendMoveRequest(selection, -1);
+        }
+    }
+    #moveTemplateDown() {
+        const selection = this.#getSelectedRow();
+        if (selection) {
+            this.#sendMoveRequest(selection, 1);
+        }
+    }
+    #sendMoveRequest(selection, direction) {
+        const selectedName = selection.find("#templateName").val();
+        const target = direction < 0 ? selection.prev() : selection.next();
+
+        var selectedIndex;
+        const newTemplates = [];
+        for (var index = 0; index < this.schedulePage.accountData.templates.schedule.length; ++index) {
+            const templateName = this.schedulePage.accountData.templates.schedule[index];
+
+            if (templateName === selectedName) {
+                selectedIndex = index;
+            }
+            else {
+                newTemplates.push(templateName);
+            }
+        }
+
+        newTemplates.splice(selectedIndex + direction, 0, selectedName);
+
+        Cpi.SendApiRequest({
+            method: "POST",
+            url: `/@/lesson/schedule/template?action=reorder`,
+            data: JSON.stringify(newTemplates),
+            success: () => {
+                selection.detach();
+
+                if (direction < 0) {
+                    target.before(selection);
+                }
+                else {
+                    target.after(selection);
+                }
+
+                this.schedulePage.accountData.templates.schedule = newTemplates;
+                this.schedulePage.persistAccountData();
+            }
+        });
+    }
+
     #syncButtons() {
         const container = this.#popup.find("#templatePopupRowContainer");
-        const enableButtons = (container.find(".templatePopupRow_selected").length > 0)
-        this.#renameButton.prop("disabled", !enableButtons);
-        this.#deleteButton.prop("disabled", !enableButtons);
+        const enableButtons = container.find(".templatePopupRow_selected").length > 0;
+        this.#popup.find(".templatePopupButton").prop("disabled", !enableButtons);
     }
 
     #getSelectedRow() {

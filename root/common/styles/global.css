@@ -191,7 +191,7 @@ input[type=submit], textarea {
 
 .inputButton, .inputAcceptButton, .inputCancelButton {
     border-radius: 8px;
-    padding: 8px 16px;
+    padding: 6px 16px;
     color: var(--input-button-color);
     background-color: var(--input-button-background-color);
     border: 0;
@@ -388,7 +388,7 @@ input[type=submit], textarea {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding: 12px;
+    padding: 9px;
     background-color: #272727;
     margin-bottom: 24px;
     align-items: center;    
@@ -554,7 +554,7 @@ main {
 }
 .navigationButton {
     width:80px;
-    padding: 5px 0;
+    padding: 6px 15px;
     color: #ddd;
 }
 .navigationButton:hover :not(:disabled) {
@@ -565,7 +565,7 @@ main {
     color: #ddd;
     background-color: var(--input-button-background-color);
     display: inline-block;
-    padding: 4px 16px;
+    padding: 4px 15px 5px 15px;;
     border: 1px solid #336699;
     border: none;
 }
@@ -584,6 +584,7 @@ main {
 
 #viewProgress {
     width: 160px;
+    height: 100%;
     display: none;
 }
 

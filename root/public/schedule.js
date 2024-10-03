@@ -5,6 +5,7 @@
 */
 class SchedulePage extends CpiPage {
     #viewTracker;
+    #templateManager;
     #coursePicker;
     #weekNumber;
     #weekDates;
@@ -26,12 +27,16 @@ class SchedulePage extends CpiPage {
             return;
         }
 
+        // Initialize template manager.
+        this.#templateManager = new TemplateManager(this);
+
         // Detect view-only mode.
         this.#viewTracker = new ViewTracker();
 
         if (this.#viewTracker.isActive) {
             $("#mySchedule").css("display", "inline-block");
             $(".siteCurrentMenuOption").css("display", "none");
+            this.#templateManager.hide();
         }
         else {
             $(document.documentElement).addClass("theme-normal");
@@ -127,6 +132,10 @@ class SchedulePage extends CpiPage {
     /*
     * Operations
     */
+    refresh(data) {
+        this.#currentController.refresh(data);
+    }
+
     navigateToWeek(weekNumber) {
         this.#weekNumber = parseInt((!weekNumber || (weekNumber > Cpi.GetLastWeekNumber())) ? Cpi.GetCurrentWeekNumber() : weekNumber);
 

@@ -64,8 +64,6 @@ main {
 
 .templateSection {
     position: relative;
-    display: none;
-    visibility: hidden;
     text-align: right;
     cursor: default;
 }
@@ -88,7 +86,7 @@ main {
 }
 
 .templateLabel, .templateOption {
-    padding: 5px 12px;
+    padding: 4px 12px 5px 12px;
     text-align: right;
     white-space: nowrap;
 }
@@ -123,12 +121,10 @@ main {
     width: 400px;
 }
 .templateManagerList {
-    height: 105px;
+    height: 156px;
     overflow-x: hidden;
     overflow-y: auto;
-    padding: 10px;
     border: 1px solid #666;
-    border-radius: 8px;
 }
 .templateManagerList:hover {
     border-color: var(--input-text-border-color-hover);
@@ -170,11 +166,22 @@ main {
 }
 
 .templateManagerPopupButtons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.templateManagerPopupButtonGroup {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
 }
 .templatePopupButton {
     padding-top: 5px;
     padding-bottom: 5px;
-    width: 150px;
+    width: 84px;
+}
+.templatePopupButton_short {
+    width: 64px;
 }
 
 
@@ -423,7 +430,7 @@ main {
 .benchmarkContainer {
     min-height: 15px;
 }
-.scheduleEditorBenchmark, .scheduleEditorBenchmark_inactive {
+.scheduleEditorBenchmark {
     margin-right: 4px;
     color: var(--editor-benchmark-color);
     display: inline-flex;
@@ -438,6 +445,9 @@ main {
     background-color: transparent;
 }
 
+.scheduleEditorBenchmark:hover #removeBenchmark {
+    visibility: visible;
+}
 .scheduleEditorBenchmark_inactive:hover #removeBenchmark {
     visibility: hidden;
 }

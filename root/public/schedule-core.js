@@ -66,6 +66,13 @@ class ScheduleController {
         return this.schedulePage.containerFromDate(date);
     }
 
+    clearContainer(id) {
+        this.schedulePage.clearContainer(id);
+    }
+    clearAllContainers() {
+        this.schedulePage.clearAllContainers();
+    }
+
     get queryUrl() {
         var url = `/@/lessons?start=${Cpi.FormatIsoDateString(this.weekDates.start)}&end=${Cpi.FormatIsoDateString(this.weekDates.end)}`;
         if (this.viewTracker.isActive) {
