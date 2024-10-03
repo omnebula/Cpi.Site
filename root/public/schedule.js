@@ -189,7 +189,7 @@ class SchedulePage extends CpiPage {
                         dropdown.css("display", enable ? "" : "none");
                     }
     
-                    header.find(".scheduleColumnMenuIcon").on("mouseenter", () => {
+                    header.find(".scheduleColumnMenu").on("mouseenter", () => {
                         enableColumnMenuDropdown(true);
                     });
 
@@ -298,7 +298,9 @@ class SchedulePage extends CpiPage {
         return this.#courseSelection;
     }
     setCourseSelection(courseId, classId) {
-        this.#courseSelector.val(`${courseId}_${classId}`);
+        const val = courseId && classId ? `${courseId}_${classId}` : "all";
+
+        this.#courseSelector.val(val);
         if (this.#syncCourseSelection()) {
             this.#courseSelector.trigger("change");
         }

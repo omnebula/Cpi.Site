@@ -30,6 +30,12 @@ class ScheduleReviewer extends ScheduleController {
                     this.#viewLesson(header, event.ctrlKey ? "_blank" : "_self");
                 }
             });
+            const viewCourses = menuOptions.find("#viewCourses");
+            viewCourses.on("click", () => {
+                if (viewCourses.prop("enabled")) {
+                    this.#viewCourses(header);
+                }
+            });
             const viewRoadmap = menuOptions.find("#viewRoadmap");
             viewRoadmap.on("click", () => {
                 if (viewRoadmap.prop("enabled")) {
@@ -283,6 +289,15 @@ class ScheduleReviewer extends ScheduleController {
         const editor = container.find(".scheduleEditor");
         const lessonId = editor.attr("id");
         window.open(`/lesson?id=${lessonId}${this.viewTracker.viewParams}`, target);
+    }
+
+    #viewCourses(header) {
+        const lessonDate = header.prop("lessonDate");
+        const container = this.containerFromDate(lessonDate);
+        const editor = container.find(".scheduleEditor");
+
+        this.schedulePage.selectedLessonId = editor.attr("id");
+        this.schedulePage.setCourseSelection();
     }
 
     #viewRoadmap(header, target) {
