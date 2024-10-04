@@ -152,13 +152,14 @@ class LessonPage extends CpiPage {
     }
 
     #showBenchmarkPicker() {
-        const exclusions = {};
-        $(".lessonBenchmarkRow").each((key, element) => {
-            exclusions[element.id] = true;
+        const assignments = {};
+        $(".lessonBenchmarkRow").each((key, value) => {
+            const element = $(value);
+            assignments[element.attr("id")] = element.find("#lessonBenchmarkCode").text();
         });
 
         this.#benchmarkPicker.show({
-            exclusions: exclusions,
+            assignments: assignments,
             success: (benchmarks) => {
                 this.#sendNewBenchmarks(benchmarks);
             }
@@ -166,6 +167,8 @@ class LessonPage extends CpiPage {
     }
 
     #addBenchmarks(benchmarks) {
+        this.#benchmarkRowContainer.empty();
+
         for (const current of benchmarks) {
             const row = this.#benchmarkRowTemplate.clone(true);
             const lessonBenchmarkCode = row.find("#lessonBenchmarkCode");
@@ -209,19 +212,15 @@ class LessonPage extends CpiPage {
     #sendNewBenchmarks(benchmarks) {
         const params = {
             lessonId: this.#lessonId,
-            benchmarks: []
+            benchmarks: benchmarks
         };
-
-        for (const current of benchmarks) {
-            params.benchmarks.push(current.benchmarkId);
-        }
 
         Cpi.SendApiRequest({
             method: "PUT",
             url: "/@/lesson/benchmark",
             data: JSON.stringify(params),
             success: (data, status, xhr) => {
-                this.#addBenchmarks(benchmarks);
+                this.#addBenchmarks(data);
             }
         });
     }

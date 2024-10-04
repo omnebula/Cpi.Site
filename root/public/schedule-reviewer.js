@@ -88,100 +88,99 @@ class ScheduleReviewer extends ScheduleController {
 
     populateSchedule(data) {
         for (const lesson of data) {
-            if ((lesson.courseId === this.schedulePage.courseSelection.courseId) &&
-                ((lesson.classId === this.schedulePage.courseSelection.classId))) {
+            if ((lesson.courseId === this.schedulePage.courseSelection.courseId) && ((lesson.classId === this.schedulePage.courseSelection.classId))) {
 
-                    const columnId = this.columnIdFromDate(Cpi.ParseLocalDate(lesson.lessonDate));
+                const columnId = this.columnIdFromDate(Cpi.ParseLocalDate(lesson.lessonDate));
 
-                    const editor = this.#editorTemplate.clone(true);
-                    editor.attr("id", lesson.lessonId);
-                    editor.prop("lesson", lesson);
-        
-                    // Benchmarks
-                    this.#initBenchmarks(editor, lesson.lessonId, lesson.benchmarks);
-        
-                    // Initialize details.
-                    for (const key in lesson.details) {
-                        const value = lesson.details[key];
-                        const textarea = editor.find(`#${key}`);
-                        textarea.val(value);
-                    }
-                        
-                    // Insert editor into container.
-                    const container = this.containerFromId(columnId);
-                    container.append(editor);
-        
-                    // Apply autogrow to text areas after adding to document so that it has actual dimensions.
-                    const textareas = editor.find(".scheduleEditorTextarea");
-                    textareas.autogrow({ shadowParent: this.#shadowParent }).trigger("change");
-        
-                    // Disable modifying commands if we're in view-only mode.
-                    if (this.viewTracker.isActive) {
-                        textareas.prop("readonly", true);
-                    }
-                    else {
-                        // Initialize menu options.
-                        this.#enableActiveOptions(columnId, true);
-        
-                        // Initialize benchmark picker invocation.
-                        const benchmarkContainer = editor.find(".benchmarkContainer");
-                        benchmarkContainer.on("click", () => {
-                            this.#showBenchmarkPicker(editor, lesson);
-                        });
-                        benchmarkContainer.parent().find("label").on("click", () => {
-                            this.#showBenchmarkPicker(editor, lesson);
-                        });
-        
-                        // Initialize detail modification actions (blur).
-                        // Hook into blur event to detect changes
-                        var changed = false;
-                        textareas.each((key, value) => {
-                            const textarea = $(value);
-        
-                            textarea
-                                .prop("readonly", false)
-                                .on("blur", () => {
-                                    if (changed) {
-                                        const params = { details: {} };
-                                        textareas.each((key, value) => {
-                                            const textarea = $(value);
-                                            const id = textarea.attr("id");
-                                            const val = textarea.val();
-                                            params.details[id] = val;
-                                        });
-        
-                                        Cpi.SendApiRequest({
-                                            method: "PATCH", 
-                                            url: `/@/lesson/${lesson.lessonId}?noecho`,
-                                            data: JSON.stringify(params),
-                                            hideSpinner: true,
-                                            success: () => {
-                                                changed = false;
-                                            }
-                                        })
-                                    }
-                                })
-                                .on("change", () => {
-                                    changed = true;
-                                })
-                                .on("paste", () => {
-                                    setTimeout( () => { textarea.trigger("change"); }, 10);
-                                })
-                                .on("cut", () => {
-                                    textarea.trigger("change");
-                                });
-        
-                            // Implement label focus, i.e. clicking label focuses textarea.
-                            // Note that the normal "for" attribute doesn't work because of
-                            // duplicate textarea ids
-                            const row = textarea.parent();
-                            const label = row.find("label");
-                            label.on("click", () => {
-                                textarea.focus();
+                const editor = this.#editorTemplate.clone(true);
+                editor.attr("id", lesson.lessonId);
+                editor.prop("lesson", lesson);
+    
+                // Benchmarks
+                this.#initBenchmarks(editor, lesson.lessonId, lesson.benchmarks);
+    
+                // Initialize details.
+                for (const key in lesson.details) {
+                    const value = lesson.details[key];
+                    const textarea = editor.find(`#${key}`);
+                    textarea.val(value);
+                }
+                    
+                // Insert editor into container.
+                const container = this.containerFromId(columnId);
+                container.append(editor);
+    
+                // Apply autogrow to text areas after adding to document so that it has actual dimensions.
+                const textareas = editor.find(".scheduleEditorTextarea");
+                textareas.autogrow({ shadowParent: this.#shadowParent }).trigger("change");
+    
+                // Disable modifying commands if we're in view-only mode.
+                if (this.viewTracker.isActive) {
+                    textareas.prop("readonly", true);
+                }
+                else {
+                    // Initialize menu options.
+                    this.#enableActiveOptions(columnId, true);
+    
+                    // Initialize benchmark picker invocation.
+                    const benchmarkContainer = editor.find(".benchmarkContainer");
+                    benchmarkContainer.on("click", () => {
+                        this.#showBenchmarkPicker(editor, lesson);
+                    });
+                    benchmarkContainer.parent().find("label").on("click", () => {
+                        this.#showBenchmarkPicker(editor, lesson);
+                    });
+    
+                    // Initialize detail modification actions (blur).
+                    // Hook into blur event to detect changes
+                    var changed = false;
+                    textareas.each((key, value) => {
+                        const textarea = $(value);
+    
+                        textarea
+                            .prop("readonly", false)
+                            .on("blur", () => {
+                                if (changed) {
+                                    const params = { details: {} };
+                                    textareas.each((key, value) => {
+                                        const textarea = $(value);
+                                        const id = textarea.attr("id");
+                                        const val = textarea.val();
+                                        params.details[id] = val;
+                                    });
+    
+                                    Cpi.SendApiRequest({
+                                        method: "PATCH", 
+                                        url: `/@/lesson/${lesson.lessonId}?noecho`,
+                                        data: JSON.stringify(params),
+                                        hideSpinner: true,
+                                        success: () => {
+                                            changed = false;
+                                        }
+                                    })
+                                }
+                            })
+                            .on("change", () => {
+                                changed = true;
+                            })
+                            .on("paste", () => {
+                                setTimeout( () => { textarea.trigger("change"); }, 10);
+                            })
+                            .on("cut", () => {
+                                textarea.trigger("change");
                             });
+    
+                        // Implement label focus, i.e. clicking label focuses textarea.
+                        // Note that the normal "for" attribute doesn't work because of
+                        // duplicate textarea ids
+                        const row = textarea.parent();
+                        const label = row.find("label");
+                        label.on("click", () => {
+                            textarea.focus();
                         });
-                        
-                    }
+                    });
+                    
+                }
             }
         }
     }
@@ -191,9 +190,15 @@ class ScheduleReviewer extends ScheduleController {
             this.#benchmarkPicker = new BenchmarkPicker();
         }
 
+        const assignments = [];
+        for (const benchmark of lesson.benchmarks) {
+            assignments[benchmark.benchmarkId] = benchmark.standardCode;
+        }
+
         this.#benchmarkPicker.show({
             initialSubject: lesson.subjectName,
             initialGrade: lesson.gradeName,
+            assignments: assignments,
             success: (benchmarks) => {
                 this.#sendNewBenchmarks(editor, lesson.lessonId, benchmarks);
             }
@@ -202,19 +207,15 @@ class ScheduleReviewer extends ScheduleController {
     #sendNewBenchmarks(editor, lessonId, benchmarks) {
         const params = {
             lessonId: lessonId,
-            benchmarks: []
+            benchmarks: benchmarks
         };
-
-        for (const current of benchmarks) {
-            params.benchmarks.push(current.benchmarkId);
-        }
 
         Cpi.SendApiRequest({
             method: "PUT",
             url: "/@/lesson/benchmark",
             data: JSON.stringify(params),
-            success: (data) => {
-                this.#initBenchmarks(editor, lessonId, benchmarks);
+            success: (results) => {
+                this.#initBenchmarks(editor, lessonId, results);
             }
         });
     }
@@ -222,6 +223,8 @@ class ScheduleReviewer extends ScheduleController {
     #initBenchmarks(editor, lessonId, benchmarks) {
         if (benchmarks && benchmarks.length) {
             const benchmarkContainer = editor.find(".benchmarkContainer");
+            benchmarkContainer.empty();
+                        
             for (const benchmark of benchmarks) {
                 const benchmarkItem = this.#benchmarkItemTemplate.clone(true);
 

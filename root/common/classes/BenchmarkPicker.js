@@ -5,7 +5,7 @@ class BenchmarkPicker {
     #pickerResults;
     #rowContainer;
     #rowTemplate;
-    #exclusions;
+    #assignments;
     #subjectSelector;
     #gradeSelector;
 
@@ -65,7 +65,7 @@ class BenchmarkPicker {
             this.#initializeSubject(params.initialSubject, params.initialGrade);
         }
 
-        this.#exclusions = params.exclusions;
+        this.#assignments = params.assignments;
         this.#searchBenchmarks(params.success);
     }
 
@@ -106,7 +106,7 @@ class BenchmarkPicker {
             method: "GET",
             url: `/@/curriculum/search?subject=${subject}&grade=${grade}&keyword=${keyword}&mode=${showMode}`,
             success: (data) => {
-                this.#populateResults(data, success);
+                this.#populateResults(data);
 
                 // Show popup if a success handler was specified, i.e., called from show().
                 if (success) {
@@ -123,14 +123,10 @@ class BenchmarkPicker {
         );                    
     }
 
-    #populateResults(data, success) {
+    #populateResults(data) {
         this.#rowContainer.empty();
 
         for (const current of data) {
-            if (this.#exclusions && this.#exclusions[current.benchmarkId]) {
-                continue;
-            }
-
             const row = this.#rowTemplate.clone(true);
             row.attr("referenceUrl", current.referenceUrl)
                 .on("dblclick", () => {
@@ -140,7 +136,19 @@ class BenchmarkPicker {
 
             const checkbox = row.find("#benchmarkPickerCheckbox");
             checkbox.attr("id", current.benchmarkId);
-    
+            checkbox.on("click", () => {
+                if (checkbox.prop("checked")) {
+                    this.#assignments[current.benchmarkId] = current.standardCode;
+                }
+                else {
+                    delete this.#assignments[current.benchmarkId];
+                }
+            });
+
+            if (this.#assignments && this.#assignments[current.benchmarkId]) {
+                checkbox.prop("checked", true);
+            }
+ 
             const code = row.find("#benchmarkPickerCode");
             code.text(current.standardCode).attr("href", current.referenceUrl);
             if (current.assigned) {
@@ -163,29 +171,13 @@ class BenchmarkPicker {
     }
 
     #acceptSelection(success) {
-        const container = $("#benchmarkPickerListResults");
-        const selection = this.#rowContainer.find(":checkbox:checked");
-
-        if (selection.length > 0) {
+        if (success) {
             const results = [];
-
-            for (const current of selection) {
-                const checkbox = $(current);
-                const row = checkbox.parent().parent();
-    
-                const benchmark = {
-                    benchmarkId: checkbox.attr("id"),
-                    standardCode: row.find("#benchmarkPickerCode").text(),
-                    synopsis: row.find("#benchmarkPickerSynopsis").text(),
-                    referenceUrl: row.attr("referenceUrl")
-                };
-    
-                results.push(benchmark);
-
-                row.remove();
+            for (const benchmarkId in this.#assignments) {
+                results.push(benchmarkId);
             }
 
-            if (success) {
+            if (results.length) {
                 success(results);
             }
         }
