@@ -131,6 +131,7 @@ class BenchmarkPicker {
             row.attr("referenceUrl", current.referenceUrl)
                 .on("dblclick", () => {
                     row.find("input[type=checkbox]").prop("checked", true);
+                    this.#assignments[current.benchmarkId] = current.standardCode;
                     this.#benchmarkPicker.find("#popupAccept").trigger("click");
                 });
 
