@@ -39,12 +39,24 @@ class LessonPage extends CpiPage {
                 event.stopPropagation();
             });
 
+            $(".lessonDetailTextFrame")
+                .on("mouseenter", (event) => {
+                    $(event.currentTarget).addClass("lessonDetailTextFrame_hover");
+                })
+                .on("mouseleave", (event) => {
+                    $(event.currentTarget).removeClass("lessonDetailTextFrame_hover");
+                });
+
             $(".lessonDetailText")
                 .on("change", () => {
                     this.#detailChanged = true;
                 })
-                .on("blur", () => {
+                .on("focus", (event) => {
+                    $(event.currentTarget).parent().addClass("lessonDetailTextFrame_focus");
+                })
+                .on("blur", (event) => {
                     this.#sendUpdatedDetails();
+                    $(event.currentTarget).parent().removeClass("lessonDetailTextFrame_focus");
                 })
                 .on("keydown", (event) => {
                     if (event.ctrlKey && (event.keyCode === 13)) {

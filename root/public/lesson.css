@@ -208,11 +208,28 @@ main {
     flex-direction: column;
 }
 
+.lessonDetailTextFrame {
+    padding: 10px;
+    border-radius: 8px;
+    display: block;
+    border: 1px solid var(--input-text-border-color);
+    background-color: var(--input-text-background-color);
+}
+.lessonDetailTextFrame_hover {
+    border-color: var(--input-text-border-color-hover);
+}
+.lessonDetailTextFrame_focus {
+    border-color: var(--input-text-border-color-focus);
+}
+
+
 .lessonDetailText {
     outline: none;
+    border: none;
     resize: none;
-    padding: 16px;
+    width: 100%;
     font-size: 13px;
-    height: 100px;
     font-family: inherit;
+    color: var(--input-text-color);
+    background-color: transparent;
 }
