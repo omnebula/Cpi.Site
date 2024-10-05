@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/common/styles/DatePicker.css" type="text/css" />
     <link rel="stylesheet" href="/common/styles/CoursePicker.css" type="text/css" />
     <link rel="stylesheet" href="/common/styles/BenchmarkPicker.css" type="text/css" />
+    <link rel="stylesheet" href="/common/styles/BumpPicker.css" type="text/css" />
     <link rel="stylesheet" href="./schedule.css" type="text/css" />
     <script type="text/javascript" src="/common/data/static.js"></script>
     <script type="text/javascript" src="/common/scripts/jquery.min.js"></script>
@@ -17,6 +18,7 @@
     <script type="text/javascript" src="/common/classes/DatePicker.js"></script>
     <script type="text/javascript" src="/common/classes/CoursePicker.js"></script>
     <script type="text/javascript" src="/common/classes/BenchmarkPicker.js"></script>
+    <script type="text/javascript" src="/common/classes/BumpPicker.js"></script>
     <script type="text/javascript" src="/common/classes/LessonApi.js"></script>
     <script type="text/javascript" src="./schedule-core.js"></script>
     <script type="text/javascript" src="./schedule-template.js"></script>
@@ -87,6 +89,7 @@
                                                 <div id="repeatFill" class="scheduleColumnMenuOption activeOption">Repeat fill</div>
                                             </div>
                                             <div class="scheduleColumnMenuGroup">
+                                                <div id="bumpAll" class="scheduleColumnMenuOption activeOption">Bump lessons</div>
                                                 <div id="deleteAll" class="scheduleColumnMenuOption activeOption">Delete lessons</div>
                                             </div>
                                         </div>
@@ -97,6 +100,7 @@
                                                 <div id="viewCourses" class="scheduleColumnMenuOption activeOption">View courses</div>
                                                 <div class="scheduleColumnMenuGroup">
                                                     <div id="printLesson" class="scheduleColumnMenuOption activeOption">Print lesson</div>
+                                                    <div id="bumpLesson" class="scheduleColumnMenuOption activeOption">Bump lesson</div>
                                                     <div id="deleteLesson" class="scheduleColumnMenuOption activeOption">Delete lesson</div>
                                                 </div>
                                             </div>
@@ -118,6 +122,7 @@
                                                 <div id="repeatFill" class="scheduleColumnMenuOption activeOption">Repeat fill</div>
                                             </div>
                                             <div class="scheduleColumnMenuGroup">
+                                                <div id="bumpAll" class="scheduleColumnMenuOption activeOption">Bump lessons</div>
                                                 <div id="deleteAll" class="scheduleColumnMenuOption activeOption">Delete lessons</div>
                                             </div>
                                         </div>
@@ -128,6 +133,7 @@
                                                 <div id="viewCourses" class="scheduleColumnMenuOption activeOption">View courses</div>
                                                 <div class="scheduleColumnMenuGroup">
                                                     <div id="printLesson" class="scheduleColumnMenuOption activeOption">Print lesson</div>
+                                                    <div id="bumpLesson" class="scheduleColumnMenuOption activeOption">Bump lesson</div>
                                                     <div id="deleteLesson" class="scheduleColumnMenuOption activeOption">Delete lesson</div>
                                                 </div>
                                             </div>
@@ -149,6 +155,7 @@
                                                 <div id="repeatFill" class="scheduleColumnMenuOption activeOption">Repeat fill</div>
                                             </div>
                                             <div class="scheduleColumnMenuGroup">
+                                                <div id="bumpAll" class="scheduleColumnMenuOption activeOption">Bump lessons</div>
                                                 <div id="deleteAll" class="scheduleColumnMenuOption activeOption">Delete lessons</div>
                                             </div>
                                         </div>
@@ -159,6 +166,7 @@
                                                 <div id="viewCourses" class="scheduleColumnMenuOption activeOption">View courses</div>
                                                 <div class="scheduleColumnMenuGroup">
                                                     <div id="printLesson" class="scheduleColumnMenuOption activeOption">Print lesson</div>
+                                                    <div id="bumpLesson" class="scheduleColumnMenuOption activeOption">Bump lesson</div>
                                                     <div id="deleteLesson" class="scheduleColumnMenuOption activeOption">Delete lesson</div>
                                                 </div>
                                             </div>
@@ -180,6 +188,7 @@
                                                 <div id="repeatFill" class="scheduleColumnMenuOption activeOption">Repeat fill</div>
                                             </div>
                                             <div class="scheduleColumnMenuGroup">
+                                                <div id="bumpAll" class="scheduleColumnMenuOption activeOption">Bump lessons</div>
                                                 <div id="deleteAll" class="scheduleColumnMenuOption activeOption">Delete lessons</div>
                                             </div>
                                         </div>
@@ -190,6 +199,7 @@
                                                 <div id="viewCourses" class="scheduleColumnMenuOption activeOption">View courses</div>
                                                 <div class="scheduleColumnMenuGroup">
                                                     <div id="printLesson" class="scheduleColumnMenuOption activeOption">Print lesson</div>
+                                                    <div id="bumpLesson" class="scheduleColumnMenuOption activeOption">Bump lesson</div>
                                                     <div id="deleteLesson" class="scheduleColumnMenuOption activeOption">Delete lesson</div>
                                                 </div>
                                             </div>
@@ -211,6 +221,7 @@
                                                 <div id="repeatFill" class="scheduleColumnMenuOption activeOption">Repeat fill</div>
                                             </div>
                                             <div class="scheduleColumnMenuGroup">
+                                                <div id="bumpAll" class="scheduleColumnMenuOption activeOption">Bump lessons</div>
                                                 <div id="deleteAll" class="scheduleColumnMenuOption activeOption">Delete lessons</div>
                                             </div>
                                         </div>
@@ -221,6 +232,7 @@
                                                 <div id="viewCourses" class="scheduleColumnMenuOption activeOption">View courses</div>
                                                 <div class="scheduleColumnMenuGroup">
                                                     <div id="printLesson" class="scheduleColumnMenuOption activeOption">Print lesson</div>
+                                                    <div id="bumpLesson" class="scheduleColumnMenuOption activeOption">Bump lesson</div>
                                                     <div id="deleteLesson" class="scheduleColumnMenuOption activeOption">Delete lesson</div>
                                                 </div>
                                             </div>
@@ -248,7 +260,7 @@
                                         <label>Benchmarks</label>
                                         <div class="benchmarkContainer">
                                             <div class="scheduleEditorBenchmark">
-                                                <a id="benchmarkCode" class="" target="_blank"></a><img id="removeBenchmark" src="/common/images/red-delete-icon.png"/>
+                                                <a id="benchmarkCode" class="scheduleEditorBenchmarkCode" target="_blank"></a><img id="removeBenchmark" src="/common/images/red-delete-icon.png"/>
                                             </div>
                                         </div>
                                     </div>
@@ -286,41 +298,6 @@
 		</div>
 	</div>
     <div class="popupFrame">
-
-        <div id="coursePicker" class="popupBox coursePicker">
-            <div class="popupCaption pickerCaption">
-                <div id="popupCaptionTitle" class="popupCaptionTitle">
-                    <input id="selectAll" type="button" class="inputButton popupCaptionButton pickerSelectButton" value="Select All"/>
-                    <input id="deselectAll" type="button" class="inputButton popupCaptionButton pickerSelectButton" value="Deselect All"/>
-                </div>
-                <div>
-                    <input id="popupAccept" class="inputAcceptButton popupCaptionButton" type="button" value="Accept"/>
-                    <input id="popupCancel" class="inputCancelButton popupCaptionButton" type="button" value="Cancel"/>
-                </div>
-            </div>
-            <div class="popupRow pickerRow pickerDateRow">
-                <div class="inputCell pickerDateCell">
-                    <label class="popupLabel courseDateLabel">Lesson Date:</label><input id="lessonDate" class="inputTextBox courseLessonDate" type="text" autocomplete="off"/>
-                </div>
-            </div>
-            <div class="popupRow pickerRow">
-                <table id="courseTable" class="scrollTable listTable courseTable" cellpadding="0" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th class="listTableHeader" colspan="2">Course</th>
-                            <th class="listTableHeader classNameColumn">Class</th>
-                        </tr>
-                    </thead>
-                    <tbody id="courseTableBody" class="courseTableBody">
-                        <tr id="courseRow" class="listRow">
-                            <td class="pickerListColumn pickerSelectColumn"><input class="pickerCheckbox" type="checkbox"/></td>
-                            <td id="courseName" class="pickerListColumn pickerToggleColumn courseNameColumn"></td>
-                            <td id="className" class="pickerListColumn pickerToggleColumn classNameColumn"></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
 
         <div id="saveTemplatePopup" class="popupBox saveTemplatePopup">
             <div class="popupCaption">
@@ -410,6 +387,21 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+
+        <div id="bumpPicker" class="popupBox bumpPicker">
+            <div class="popupCaption">
+                <div id="popupCaptionTitle" class="popupCaptionTitle">
+                    <div id="popupCaptionTitle" class="popupCaptionTitle">Bump Lessons</div>
+                </div>
+                <div>
+                    <input id="popupAccept" class="inputAcceptButton popupCaptionButton" type="button" value="Accept"/>
+                    <input id="popupCancel" class="inputCancelButton popupCaptionButton" type="button" value="Cancel"/>
+                </div>
+            </div>
+            <div class="popupRow bumpDateRow">
+                <label class="inputLabel">Target date: </label><input id="bumpDate" class="inputTextBox bumpDate" type="text" autocomplete="off"/>
             </div>
         </div>
 

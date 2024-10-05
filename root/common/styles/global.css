@@ -394,7 +394,7 @@ input[type=submit], textarea {
     align-items: center;    
 }
 .popupCaptionTitle {
-    font-size: 16px;
+    font-size: 15px;
     color: lightyellow;
 }
 .popupCaptionButton {

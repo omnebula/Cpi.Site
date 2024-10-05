@@ -5,7 +5,6 @@ class ScheduleReviewer extends ScheduleController {
     #benchmarkItemTemplate;
     #benchmarkPicker;
     #shadowParent;
-    #courseSelection;
 
     constructor(schedulePage) {
         super(schedulePage);
@@ -46,6 +45,12 @@ class ScheduleReviewer extends ScheduleController {
             printLesson.on("click", () => {
                 if (printLesson.prop("enabled")) {
                     this.#printLesson(header);
+                }
+            });
+            const bumpLesson = menuOptions.find("#bumpLesson");
+            bumpLesson.on("click", () => {
+                if (bumpLesson.prop("enabled")) {
+                    this.#bumpLesson(header);
                 }
             });
             const deleteLesson = menuOptions.find("#deleteLesson");
@@ -191,8 +196,10 @@ class ScheduleReviewer extends ScheduleController {
         }
 
         const assignments = [];
-        for (const benchmark of lesson.benchmarks) {
-            assignments[benchmark.benchmarkId] = benchmark.standardCode;
+        const benchmarkItems = editor.find(".scheduleEditorBenchmarkCode");
+        for (const current of benchmarkItems) {
+            const benchmark = $(current);
+            assignments[benchmark.attr("id")] = benchmark.text();
         }
 
         this.#benchmarkPicker.show({
@@ -243,8 +250,6 @@ class ScheduleReviewer extends ScheduleController {
                     benchmarkItem.addClass("scheduleEditorBenchmark_inactive");
                 }
                 else {
-                    benchmarkItem.removeClass("scheduleEditorBenchmark_inactive");
-
                     benchmarkItem.find("#removeBenchmark")
                         .on("click", (event) => {
                             const params = {
@@ -359,6 +364,10 @@ class ScheduleReviewer extends ScheduleController {
                 this.#enableActiveOptions(columnId, false);
             }
         })
+    }
+
+    #bumpLesson(header) {
+        this.schedulePage.bumpLessons(header, this.schedulePage.courseSelection.courseId, this.schedulePage.courseSelection.classId);
     }
 
     #enableActiveOptions(columnId, enable) {

@@ -10,10 +10,8 @@
             "name": "Launch Public",
             "url": "https://local.coreplanit.com",
             "webRoot": "${workspaceFolder}/root/public",
-            "sourceMaps": true,
-            "sourceMapPathOverrides": {
-                "/common/*": "${workspaceFolder}/root/common/*",
-                "/*": "${weboot}/root/public/*"
+            "pathMapping": {
+                "/common": "${workspaceFolder}/root/common"
             }
         },
         {

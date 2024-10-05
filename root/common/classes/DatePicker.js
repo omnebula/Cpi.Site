@@ -1,3 +1,71 @@
+
+
+class DatePicker {
+    static #CalendarPopup;
+
+    #dateInput;
+    #exclusions;
+
+    constructor(dateInput, enableHolidays) {
+        if (!DatePicker.#CalendarPopup) {
+            DatePicker.#CalendarPopup = new CalendarPopup;
+        }
+
+        this.#dateInput = dateInput;
+        this.#dateInput.on("keydown", (event) => {
+            switch (event.keyCode) {
+                case 13:
+                case 9:
+                case 27:
+                    DatePicker.#CalendarPopup.hide();
+                    break;
+                case 40:
+                    DatePicker.#CalendarPopup.show(this.#dateInput, enableHolidays, this.#exclusions);
+                    break;
+            }
+        });
+
+        this.#dateInput.on("click", (event) => {
+            DatePicker.#CalendarPopup.show(this.#dateInput, enableHolidays, this.#exclusions);
+        });
+
+        this.#dateInput.on("blur", () => {
+            var string = this.#dateInput.val();
+            this.dateVal(new Date(string));
+        });
+    }
+
+    val(string) {
+         return string ? this.#dateInput.val(string) : this.#dateInput.val();
+    }
+    dateVal(date) {
+        if (date) {
+            var string = Cpi.FormatShortDateString(date);
+            if (string === "Invalid Date") {
+                string = "";
+            }
+            return this.#dateInput.val(string);
+        }
+        else {
+            return Cpi.ParseLocalDate(this.#dateInput.val());
+        }
+    }
+
+    setExclusions(exclusions) {
+        if (exclusions) {
+            this.#exclusions = {};
+            for (const current of exclusions) {
+                this.#exclusions[Cpi.FormatIsoDateString(current)] = true;
+            }
+        }
+        else {
+            this.#exclusions = undefined;
+        }
+    }
+}
+
+
+
 class CalendarPopup {
     #popup;
     #selectedDate;
@@ -51,7 +119,7 @@ class CalendarPopup {
         return this.#popup.find(predicate);
     }
 
-    show(dateInput, enableHolidays) {
+    show(dateInput, enableHolidays, exclusions) {
         this.#dateInput = dateInput;
         this.#enableHolidays = enableHolidays || false;
 
@@ -61,24 +129,24 @@ class CalendarPopup {
             this.hide();
         });
 
-        this.#showCalendarDates(date);
+        this.#showCalendarDates(date, exclusions);
     }
     hide() {
         this.#popup.css("display", "none");
         $(document).off("click");
     }
 
-    #showCalendarDates(date) {
+    #showCalendarDates(date, exclusions) {
         this.#selectedDate = date;
         this.#selectedDay = this.#selectedDate.getDate();
         this.#selectedMonth = this.#selectedDate.getMonth();
         this.#selectedYear = this.#selectedDate.getFullYear();
 
-        this.#updateCalendarDates();
+        this.#updateCalendarDates(exclusions);
 
         this.#popup.css("display", "inline-block");
     }
-    #updateCalendarDates() {
+    #updateCalendarDates(exclusions) {
         // Set the month name.
         this.find("#calPop_monthName").html(`${Cpi.GetMonthName(this.#selectedMonth)}&nbsp;${this.#selectedYear}`);
 
@@ -108,8 +176,12 @@ class CalendarPopup {
                     curColumn.text(curDay)
                         .attr("title", Cpi.FormatShortDateString(curDate));
 
-                    if (!Cpi.IsValidCalendarDate(curDate) || (Cpi.IsHoliday(curDate) && !this.#enableHolidays)) {
-                        curColumn.addClass("calPop_holidayDate");
+                    if (!Cpi.IsValidCalendarDate(curDate) ||
+                        (Cpi.IsHoliday(curDate) && !this.#enableHolidays) ||
+                        (exclusions && exclusions[Cpi.FormatIsoDateString(curDate)])) {
+
+                            curColumn.addClass("calPop_holidayDate");
+
                     }
                     else {
                         curColumn.addClass("calPop_activeDate")
@@ -117,10 +189,10 @@ class CalendarPopup {
                                 this.#selectColumn(curColumn);
                             });
 
-                        if (Cpi.IsEqualDate(curDate, today)) {
+                        if (Cpi.IsDateEqual(curDate, today)) {
                             curColumn.addClass("calPop_todayDate");
                         }
-                        if (Cpi.IsEqualDate(curDate, this.#selectedDate)) {
+                        if (Cpi.IsDateEqual(curDate, this.#selectedDate)) {
                             curColumn.addClass("calPop_selectedDate");
                         }
                     }
@@ -167,42 +239,4 @@ class CalendarPopup {
     </div>
 `;
 
-}
-
-
-class DatePicker {
-    static #CalendarPopup;
-
-    constructor(dateInput, enableHolidays) {
-        if (!DatePicker.#CalendarPopup) {
-            DatePicker.#CalendarPopup = new CalendarPopup;
-        }
-
-        dateInput.on("keydown", (event) => {
-            switch (event.keyCode) {
-                case 13:
-                case 9:
-                case 27:
-                    DatePicker.#CalendarPopup.hide();
-                    break;
-                case 40:
-                    DatePicker.#CalendarPopup.show(dateInput, enableHolidays);
-                    break;
-            }
-        });
-
-        dateInput.on("click", (event) => {
-            DatePicker.#CalendarPopup.show(dateInput, enableHolidays);
-        });
-
-        dateInput.on("blur", () => {
-            var string = dateInput.val();
-            const date = new Date(string);
-            string = Cpi.FormatShortDateString(date);
-            if (string === "Invalid Date") {
-                string = "";
-            }
-            dateInput.val(string);
-        });
-    }
 }

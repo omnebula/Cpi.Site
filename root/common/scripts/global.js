@@ -63,11 +63,11 @@ class Cpi {
     }
 
     static DateAdd(date, days) {
-        const newDate = new Date(date);
+        const newDate = Cpi.ParseLocalDate(date);
         newDate.setDate(newDate.getDate() + days);
         return newDate;
     }
-    static IsEqualDate(lhs, rhs) {
+    static IsDateEqual(lhs, rhs) {
         return lhs.getTime() === rhs.getTime();
     }
 
@@ -169,6 +169,10 @@ class Cpi {
         const startTime = Cpi.ParseLocalDate(cpidata.organization.calendar.startDate).getTime();
         const endTime = Cpi.ParseLocalDate(cpidata.organization.calendar.endDate).getTime();
         return (targetTime >= startTime) && (targetTime <= endTime);
+    }
+    static IsWeekend(date) {
+        const dayOfWeek = date.getDay();
+        return (dayOfWeek === 0) || (dayOfWeek === 6);
     }
 
     static GetDayName(dayOfWeek) {

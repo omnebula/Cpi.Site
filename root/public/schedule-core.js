@@ -6,17 +6,6 @@ class ScheduleController {
     }
 
     /*
-    * Operations
-    */
-
-    activate() {
-    }
-
-    deactivate() {
-        this.schedulePage.clearAllContainers();
-    }
-
-    /*
     * Accessors
     */
 
@@ -64,6 +53,20 @@ class ScheduleController {
     }
     containerFromDate(date) {
         return this.schedulePage.containerFromDate(date);
+    }
+
+    /*
+    * Operations
+    */
+
+    activate() {
+    }
+
+    deactivate() {
+        this.schedulePage.clearAllContainers();
+    }
+    
+    populateSchedule(lessons) {
     }
 
     clearContainer(id) {

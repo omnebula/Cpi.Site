@@ -20,6 +20,8 @@ class SchedulePage extends CpiPage {
     #courseSelection;
     #selectedLessonId;
 
+    #bumpPicker;
+
     constructor() {
         super();
 
@@ -235,6 +237,36 @@ class SchedulePage extends CpiPage {
                 container.empty();
             }
         });
+    }
+
+    bumpLessons(header, courseId, classId) {
+        if (!this.#bumpPicker) {
+            this.#bumpPicker = new BumpPicker();
+        }
+
+        this.#bumpPicker.show({
+            from: Cpi.FormatIsoDateString(header.prop("lessonDate")),
+            accept: (results) => {
+                const params = {
+                    week: this.#weekNumber,
+                    from: results.from,
+                    offset: results.offset,
+                    courseId: courseId,
+                    classId: classId
+                }
+       
+                Cpi.SendApiRequest({
+                    method: "POST",
+                    url: "/@/lesson/bump",
+                    data: JSON.stringify(params),
+                    success: (lessons) => {
+                        this.clearAllContainers();
+                        this.#currentController.populateSchedule(lessons);
+                    }
+                });
+            }
+        });
+
     }
 
 

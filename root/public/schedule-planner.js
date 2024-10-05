@@ -35,6 +35,13 @@ class SchedulePlanner extends ScheduleController {
                 }
             });
     
+            const bumpAll = menuOptions.find("#bumpAll");
+            bumpAll.on("click", () => {
+                if (bumpAll.prop("enabled")) {
+                    this.#onBumpAll(header);
+                }
+            });
+
             const deleteAll = menuOptions.find("#deleteAll");
             deleteAll.on("click", () => {
                 if (deleteAll.prop("enabled")) {
@@ -242,6 +249,10 @@ class SchedulePlanner extends ScheduleController {
         }
 
         this.#onRepeatLesson(header, count);
+    }
+
+    #onBumpAll(header) {
+        this.schedulePage.bumpLessons(header);
     }
 
     #onDeleteAll(header) {
