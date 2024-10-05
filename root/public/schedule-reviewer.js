@@ -124,9 +124,6 @@ class ScheduleReviewer extends ScheduleController {
                     textareas.prop("readonly", true);
                 }
                 else {
-                    // Initialize menu options.
-                    this.#enableActiveOptions(columnId, true);
-    
                     // Initialize benchmark picker invocation.
                     const benchmarkContainer = editor.find(".benchmarkContainer");
                     benchmarkContainer.on("click", () => {
@@ -187,6 +184,18 @@ class ScheduleReviewer extends ScheduleController {
                     
                 }
             }
+        }
+
+        this.#syncMenuOptions();
+    }
+
+    #syncMenuOptions() {
+        for (var columnId = 0; columnId < 5; ++columnId) {
+            const container = this.containerFromId(columnId);
+            const editor = container.find(".scheduleEditor");
+            const enable = editor.length > 0;
+
+            this.#enableActiveOptions(columnId, enable);
         }
     }
 
