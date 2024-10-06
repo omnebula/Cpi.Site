@@ -27,5 +27,23 @@ class LessonApi {
         hideFrame.src = "./lesson-printout";
         document.body.appendChild(hideFrame);
     }
-    
+
+    static DeleteLesson(lessonId, success) {
+        Cpi.ShowAlert({
+            caption: "Confirm Delete",
+            message: `Are you sure you want to delete this lesson?`,
+            accept: () => {
+                Cpi.SendApiRequest({
+                    method: "DELETE",
+                    url: `/@/lesson/${lessonId}`,
+                    success: (data, status, xhr) => {
+                        success(data, status, xhr);
+                    }
+                })
+            },
+            acceptLabel: "Delete",
+            closeLabel: "Cancel",
+            maxMessageWidth: "fit-content"
+        });
+    }
 }

@@ -257,26 +257,36 @@ class SchedulePlanner extends ScheduleController {
 
     #onDeleteAll(header) {
         const lessonDate = header.prop("lessonDate");
-        const containerId = this.columnIdFromDate(lessonDate);
-        const container = this.containerFromId(containerId);
 
-        const lessonIds = [];
-        const bubbles = container.find(".scheduleLesson");
-        bubbles.each((key, value) => {
-            lessonIds.push(value.id);
-        });
-
-        if (lessonIds.length) {
-            Cpi.SendApiRequest({
-                method: "DELETE",
-                url: `/@/lesson`,
-                data: JSON.stringify(lessonIds),
-                success: (data, status, xhr) => {
-                    container.empty();
-                    this.#syncColumnMenuOptions(containerId);
+        Cpi.ShowAlert({
+            caption: "Confirm Delete",
+            message: `Are you sure you want to delete all lessons on ${Cpi.FormatShortDateString(lessonDate)}?`,
+            accept: () => {
+                const containerId = this.columnIdFromDate(lessonDate);
+                const container = this.containerFromId(containerId);
+        
+                const lessonIds = [];
+                const bubbles = container.find(".scheduleLesson");
+                bubbles.each((key, value) => {
+                    lessonIds.push(value.id);
+                });
+        
+                if (lessonIds.length) {
+                    Cpi.SendApiRequest({
+                        method: "DELETE",
+                        url: `/@/lesson`,
+                        data: JSON.stringify(lessonIds),
+                        success: (data, status, xhr) => {
+                            container.empty();
+                            this.#syncColumnMenuOptions(containerId);
+                        }
+                    });
                 }
-            });
-        }
+            },
+            acceptLabel: "Delete",
+            closeLabel: "Cancel",
+            maxMessageWidth: "fit-content"
+        });
     }
 
     /*
@@ -340,15 +350,11 @@ class SchedulePlanner extends ScheduleController {
 
     #deleteLesson(bubble, containerId) {
         const lessonId = bubble.attr("id");
-
-        Cpi.SendApiRequest({
-            method: "DELETE",
-            url: `/@/lesson/${lessonId}`,
-            success: (data, status, xhr) => {
-                bubble.remove();
-                this.#syncColumnMenuOptions(containerId);
-            }
-        })
+        
+        LessonApi.DeleteLesson(lessonId, () => {
+            bubble.remove();
+            this.#syncColumnMenuOptions(containerId);
+        });
     }
 
     #syncColumnMenuOptions(containerId) {

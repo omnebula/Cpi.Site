@@ -358,7 +358,15 @@ class Cpi {
         }
 
         alertFrame.find("#alertCaption").html(caption || "Alert");
-        alertFrame.find("#alertMessage").html(message);
+
+        const alertMessage = alertFrame.find("#alertMessage");
+        alertMessage.html(message);
+        if (params.maxMessageWidth) {
+            alertMessage.css("max-width", params.maxMessageWidth);
+        }
+        else {
+            alertMessage.css("max-width", "");
+        }
 
         alertFrame.find("#popupCancel")
             .val(params.closeLabel || "close")

@@ -365,14 +365,10 @@ class ScheduleReviewer extends ScheduleController {
         const editor = container.find(".scheduleEditor");
         const lessonId = editor.attr("id");
 
-        Cpi.SendApiRequest({
-            method: "DELETE",
-            url: `/@/lesson/${lessonId}`,
-            success: () => {
-                editor.remove();
-                this.#enableActiveOptions(columnId, false);
-            }
-        })
+        LessonApi.DeleteLesson(lessonId, () => {
+            editor.remove();
+            this.#enableActiveOptions(columnId, false);
+        });
     }
 
     #bumpLesson(header) {

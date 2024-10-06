@@ -89,8 +89,8 @@ class EntityBroker {
                         success: success
                     });
                 },
-                acceptLabel: "delete",
-                closeLabel: "cancel"
+                acceptLabel: "Delete",
+                closeLabel: "Cancel"
             });
         }
     }
