@@ -263,11 +263,12 @@ class SchedulePlanner extends ScheduleController {
     }
 
     #onPrintAll(header) {
-        const lessonDate = Cpi.FormatIsoDateString(header.prop("lessonDate"));
+        const lessonDate = header.prop("lessonDate");
+        const lessonDateString = Cpi.FormatIsoDateString(lessonDate);
 
         Cpi.SendApiRequest({
             method: "GET",
-            url: `/@/lessons?start=${lessonDate}&end=${lessonDate}&format=full`,
+            url: `/@/lessons?start=${lessonDateString}&end=${lessonDateString}&format=full`,
             success: (results) => {
                 const lessons = [];
 
@@ -286,14 +287,18 @@ class SchedulePlanner extends ScheduleController {
                         });
                     }
 
-                    lesson.details["Objectives"] = current.details["objectives"];
-                    lesson.details["Activities"] = current.details["activities"];
-                    lesson.details["Materials"] = current.details["materials"];
+                    for (const key in window.cpidata.organization.settings.lessons.details) {
+                        const label = window.cpidata.organization.settings.lessons.details[key];
+                        lesson.details[label] = current.details[key] || "";
+                    }
 
                     lessons.push(lesson);
                 }
-            
-                LessonApi.PrintLesson(lessons);
+
+                LessonApi.PrintLesson({
+                    title: `All courses - ${Cpi.FormatShortDateString(lessonDate)}`,
+                    lessons: lessons
+                });
             }
         });        
     }

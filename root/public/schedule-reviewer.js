@@ -329,12 +329,12 @@ class ScheduleReviewer extends ScheduleController {
         const lessonDate = header.prop("lessonDate");
         const container = this.containerFromDate(lessonDate);
         const editor = container.find(".scheduleEditor");
-        const lesson = editor.prop("lesson");
+        const lessonData = editor.prop("lesson");
         const benchmarkContainer = editor.find(".benchmarkContainer");
 
-        const params = {
-            name: lesson.lessonName,
-            date: lesson.lessonDate,
+        const lesson = {
+            name: lessonData.lessonName,
+            date: lessonData.lessonDate,
             benchmarks: [],
             details: {}
         };
@@ -342,7 +342,7 @@ class ScheduleReviewer extends ScheduleController {
         benchmarkContainer.find(".scheduleEditorBenchmark").each((key, value) => {
             const element = $(value);
             const benchmarkCode = element.find("a");
-            params.benchmarks.push({
+            lesson.benchmarks.push({
                 code: benchmarkCode.text(),
                 synopsis: benchmarkCode.attr("title")
             });
@@ -352,10 +352,13 @@ class ScheduleReviewer extends ScheduleController {
             const element = $(value);
             const detailLabel = element.find("label").text();
             const detailContent = element.find("textarea").val();
-            params.details[detailLabel] = detailContent;
+            lesson.details[detailLabel] = detailContent;
         });
 
-        LessonApi.PrintLesson(params);
+        LessonApi.PrintLesson({
+            title: `${lesson.name} - ${lesson.date}`,
+            lessons: [ lesson ]
+        });
     }
 
     #deleteLesson(header) {

@@ -591,6 +591,10 @@ class CpiPage {
         $("body").append($.parseHTML(this.#spinnerHtml)[1]);
     }
 
+    get cpidata() {
+        return window.cpidata;
+    }
+
     get accountData() {
         return this.#accountData;
     }

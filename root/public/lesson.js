@@ -288,9 +288,9 @@ class LessonPage extends CpiPage {
     }
 
     #printLesson() {
-        const params = {
+        const lesson = {
             name: $("#lessonName").text(),
-            date: $("#lessonDate").text(),
+            date: Cpi.FormatShortDateString($("#lessonDate").text()),
             benchmarks: [],
             details: {}
         };
@@ -299,7 +299,7 @@ class LessonPage extends CpiPage {
             const element = $(value);
             const benchmarkCode = element.find("#lessonBenchmarkCode").text();
             const benchmarkSynopsis = element.find("#lessonBenchmarkSynopsis").text();
-            params.benchmarks.push({
+            lesson.benchmarks.push({
                 code: benchmarkCode,
                 synopsis: benchmarkSynopsis
             });
@@ -309,10 +309,13 @@ class LessonPage extends CpiPage {
             const element = $(value);
             const detailLabel = element.find("label").text();
             const detailContent = element.find("textarea").val();
-            params.details[detailLabel] = detailContent;
+            lesson.details[detailLabel] = detailContent;
         });
 
-        LessonApi.PrintLesson(params);
+        LessonApi.PrintLesson({
+            title: `${lesson.name} - ${lesson.date}`,
+            lessons: [ lesson ]
+        });
     }
 }
 

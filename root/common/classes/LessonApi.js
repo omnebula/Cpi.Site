@@ -2,20 +2,17 @@
 
 class LessonApi {
     static PrintLesson(params) {
-        const lessons = Array.isArray(params) ? params : [ params ];
-
         const currentTitle = document.title;
-
         function setPrint() {
             const openPrint = () => {
-                document.title = `${params.name} - ${Cpi.FormatShortDateString(params.date)}`;
+                document.title = params.title;
             };
             const closePrint = () => {
                 document.body.removeChild(this);
                 document.title = currentTitle;
             };
 
-            this.contentWindow.initPrintout(lessons);
+            this.contentWindow.initPrintout(params.lessons);
 
             this.contentWindow.onbeforeunload = closePrint;
             this.contentWindow.onbeforeprint = openPrint;
