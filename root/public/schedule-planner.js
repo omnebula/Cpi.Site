@@ -34,11 +34,18 @@ class SchedulePlanner extends ScheduleController {
                     this.#onRepeatFill(header);
                 }
             });
-    
+
             const bumpAll = menuOptions.find("#bumpAll");
             bumpAll.on("click", () => {
                 if (bumpAll.prop("enabled")) {
                     this.#onBumpAll(header);
+                }
+            });
+
+            const printAll = menuOptions.find("#printAll");
+            printAll.on("click", () => {
+                if (printAll.prop("enabled")) {
+                    this.#onPrintAll(header);
                 }
             });
 
@@ -253,6 +260,42 @@ class SchedulePlanner extends ScheduleController {
 
     #onBumpAll(header) {
         this.schedulePage.bumpLessons(header);
+    }
+
+    #onPrintAll(header) {
+        const lessonDate = Cpi.FormatIsoDateString(header.prop("lessonDate"));
+
+        Cpi.SendApiRequest({
+            method: "GET",
+            url: `/@/lessons?start=${lessonDate}&end=${lessonDate}&format=full`,
+            success: (results) => {
+                const lessons = [];
+
+                for (const current of results) {
+                    const lesson = {
+                        name: current.lessonName,
+                        date: current.lessonDate,
+                        benchmarks: [],
+                        details: {}
+                    };
+                
+                    for (const benchmark of current.benchmarks) {
+                        lesson.benchmarks.push({
+                            code: benchmark.standardCode,
+                            synopsis: benchmark.synopsis
+                        });
+                    }
+
+                    lesson.details["Objectives"] = current.details["objectives"];
+                    lesson.details["Activities"] = current.details["activities"];
+                    lesson.details["Materials"] = current.details["materials"];
+
+                    lessons.push(lesson);
+                }
+            
+                LessonApi.PrintLesson(lessons);
+            }
+        });        
     }
 
     #onDeleteAll(header) {

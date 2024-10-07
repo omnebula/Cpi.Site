@@ -65,7 +65,7 @@ class ScheduleReviewer extends ScheduleController {
     refresh() {
         if (this.schedulePage.courseSelection) {
            
-            const quryUrl = this.queryUrl + `&courseId=${this.schedulePage.courseSelection.courseId}&classId=${this.schedulePage.courseSelection.classId}`;
+            const quryUrl = this.queryUrl + `&courseId=${this.schedulePage.courseSelection.courseId}&classId=${this.schedulePage.courseSelection.classId}&format=full`;
 
             this.fetchLessons(quryUrl, (data) => {
                 $(".reviewerColumnMenuOptions").css("display", "block");

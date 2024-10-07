@@ -77,7 +77,7 @@ class ScheduleController {
     }
 
     get queryUrl() {
-        var url = `/@/lessons?start=${Cpi.FormatIsoDateString(this.weekDates.start)}&end=${Cpi.FormatIsoDateString(this.weekDates.end)}`;
+        var url = `/@/lessons?week=${this.weekNumber}`;
         if (this.viewTracker.isActive) {
             url += `&teacherId=${this.viewTracker.teacherId}`;
         }

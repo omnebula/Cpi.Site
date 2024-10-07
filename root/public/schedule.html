@@ -76,7 +76,7 @@
 
                 <div class="schedulePanel">
                     <div id="scheduleHeader" class="scheduleHeader">
-                        <div class="scheduleColumn">
+                        <div id="0" class="scheduleColumn">
                             <div class="scheduleColumnHeader">
                                 <div class="scheduleColumnName"><span class="scheduleColumnDay">MON</span><span class="scheduleColumnDate"></span></div>
                                 <div class="scheduleColumnMenu">
@@ -89,7 +89,14 @@
                                                 <div id="repeatFill" class="scheduleColumnMenuOption activeOption">Repeat to end</div>
                                             </div>
                                             <div class="scheduleColumnMenuGroup">
+                                                <div id="printAll" class="scheduleColumnMenuOption activeOption">Print lessons</div>
+                                            </div>
+                                            <div class="scheduleColumnMenuGroup">
+                                                <!--div id="copyAll" class="scheduleColumnMenuOption activeOption">Copy lessons</div-->
+                                                <!--div id="moveAll" class="scheduleColumnMenuOption activeOption">Move lessons</div-->
                                                 <div id="bumpAll" class="scheduleColumnMenuOption activeOption">Bump lessons</div>
+                                            </div>
+                                            <div class="scheduleColumnMenuGroup">
                                                 <div id="deleteAll" class="scheduleColumnMenuOption activeOption">Delete lessons</div>
                                             </div>
                                         </div>
@@ -98,146 +105,52 @@
                                             <div class="scheduleColumnMenuGroup">
                                                 <div id="viewLesson" class="scheduleColumnMenuOption activeOption">View detail</div>
                                                 <div id="viewCourses" class="scheduleColumnMenuOption activeOption">View courses</div>
-                                                <div class="scheduleColumnMenuGroup">
-                                                    <div id="printLesson" class="scheduleColumnMenuOption activeOption">Print lesson</div>
-                                                    <div id="bumpLesson" class="scheduleColumnMenuOption activeOption">Bump lesson</div>
-                                                    <div id="deleteLesson" class="scheduleColumnMenuOption activeOption">Delete lesson</div>
-                                                </div>
+                                            </div>
+                                            <div class="scheduleColumnMenuGroup">
+                                                <div id="printLesson" class="scheduleColumnMenuOption activeOption">Print lesson</div>
+                                            </div>
+                                            <div class="scheduleColumnMenuGroup">
+                                                <!--div id="copyLesson" class="scheduleColumnMenuOption activeOption">Copy lesson</div-->
+                                                <!--div id="moveLesson" class="scheduleColumnMenuOption activeOption">Move lesson</div-->
+                                                <div id="bumpLesson" class="scheduleColumnMenuOption activeOption">Bump lesson</div>
+                                            </div>
+                                            <div class="scheduleColumnMenuGroup">
+                                                <div id="deleteLesson" class="scheduleColumnMenuOption activeOption">Delete lesson</div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="scheduleColumn">
+                        <div id="1" class="scheduleColumn">
                             <div class="scheduleColumnHeader">
                                 <div class="scheduleColumnName"><span class="scheduleColumnDay">TUE</span><span class="scheduleColumnDate"></span></div>
                                 <div class="scheduleColumnMenu">
                                     <img class="scheduleColumnMenuIcon" src="/common/images/schedule-menu-icon.svg"/>
-                                    <div id="scheduleColumnMenuDropdown" class="scheduleColumnMenuDropdown">
-                                        <div class="plannerColumnMenuOptions">
-                                            <div id="addLesson" class="scheduleColumnMenuOption">Add lessons</div>
-                                            <div class="scheduleColumnMenuGroup">
-                                                <div id="repeatOnce" class="scheduleColumnMenuOption activeOption">Repeat once</div>
-                                                <div id="repeatFill" class="scheduleColumnMenuOption activeOption">Repeat to end</div>
-                                            </div>
-                                            <div class="scheduleColumnMenuGroup">
-                                                <div id="bumpAll" class="scheduleColumnMenuOption activeOption">Bump lessons</div>
-                                                <div id="deleteAll" class="scheduleColumnMenuOption activeOption">Delete lessons</div>
-                                            </div>
-                                        </div>
-                                        <div class="reviewerColumnMenuOptions">
-                                            <div id="addLesson" class="scheduleColumnMenuOption">Add lesson</div>
-                                            <div class="scheduleColumnMenuGroup">
-                                                <div id="viewLesson" class="scheduleColumnMenuOption activeOption">View detail</div>
-                                                <div id="viewCourses" class="scheduleColumnMenuOption activeOption">View courses</div>
-                                                <div class="scheduleColumnMenuGroup">
-                                                    <div id="printLesson" class="scheduleColumnMenuOption activeOption">Print lesson</div>
-                                                    <div id="bumpLesson" class="scheduleColumnMenuOption activeOption">Bump lesson</div>
-                                                    <div id="deleteLesson" class="scheduleColumnMenuOption activeOption">Delete lesson</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="scheduleColumn">
+                        <div id="2" class="scheduleColumn">
                             <div class="scheduleColumnHeader">
                                 <div class="scheduleColumnName"><span class="scheduleColumnDay">WED</span><span class="scheduleColumnDate"></span></div>
                                 <div class="scheduleColumnMenu">
                                     <img class="scheduleColumnMenuIcon" src="/common/images/schedule-menu-icon.svg"/>
-                                    <div id="scheduleColumnMenuDropdown" class="scheduleColumnMenuDropdown">
-                                        <div class="plannerColumnMenuOptions">
-                                            <div id="addLesson" class="scheduleColumnMenuOption">Add lessons</div>
-                                            <div class="scheduleColumnMenuGroup">
-                                                <div id="repeatOnce" class="scheduleColumnMenuOption activeOption">Repeat once</div>
-                                                <div id="repeatFill" class="scheduleColumnMenuOption activeOption">Repeat to end</div>
-                                            </div>
-                                            <div class="scheduleColumnMenuGroup">
-                                                <div id="bumpAll" class="scheduleColumnMenuOption activeOption">Bump lessons</div>
-                                                <div id="deleteAll" class="scheduleColumnMenuOption activeOption">Delete lessons</div>
-                                            </div>
-                                        </div>
-                                        <div class="reviewerColumnMenuOptions">
-                                            <div id="addLesson" class="scheduleColumnMenuOption">Add lesson</div>
-                                            <div class="scheduleColumnMenuGroup">
-                                                <div id="viewLesson" class="scheduleColumnMenuOption activeOption">View detail</div>
-                                                <div id="viewCourses" class="scheduleColumnMenuOption activeOption">View courses</div>
-                                                <div class="scheduleColumnMenuGroup">
-                                                    <div id="printLesson" class="scheduleColumnMenuOption activeOption">Print lesson</div>
-                                                    <div id="bumpLesson" class="scheduleColumnMenuOption activeOption">Bump lesson</div>
-                                                    <div id="deleteLesson" class="scheduleColumnMenuOption activeOption">Delete lesson</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="scheduleColumn">
+                        <div id="3" class="scheduleColumn">
                             <div class="scheduleColumnHeader">
                                 <div class="scheduleColumnName"><span class="scheduleColumnDay">THU</span><span class="scheduleColumnDate"></span></div>
                                 <div class="scheduleColumnMenu">
                                     <img class="scheduleColumnMenuIcon" src="/common/images/schedule-menu-icon.svg"/>
-                                    <div id="scheduleColumnMenuDropdown" class="scheduleColumnMenuDropdown">
-                                        <div class="plannerColumnMenuOptions">
-                                            <div id="addLesson" class="scheduleColumnMenuOption">Add lessons</div>
-                                            <div class="scheduleColumnMenuGroup">
-                                                <div id="repeatOnce" class="scheduleColumnMenuOption activeOption">Repeat once</div>
-                                                <div id="repeatFill" class="scheduleColumnMenuOption activeOption">Repeat to end</div>
-                                            </div>
-                                            <div class="scheduleColumnMenuGroup">
-                                                <div id="bumpAll" class="scheduleColumnMenuOption activeOption">Bump lessons</div>
-                                                <div id="deleteAll" class="scheduleColumnMenuOption activeOption">Delete lessons</div>
-                                            </div>
-                                        </div>
-                                        <div class="reviewerColumnMenuOptions">
-                                            <div id="addLesson" class="scheduleColumnMenuOption">Add lesson</div>
-                                            <div class="scheduleColumnMenuGroup">
-                                                <div id="viewLesson" class="scheduleColumnMenuOption activeOption">View detail</div>
-                                                <div id="viewCourses" class="scheduleColumnMenuOption activeOption">View courses</div>
-                                                <div class="scheduleColumnMenuGroup">
-                                                    <div id="printLesson" class="scheduleColumnMenuOption activeOption">Print lesson</div>
-                                                    <div id="bumpLesson" class="scheduleColumnMenuOption activeOption">Bump lesson</div>
-                                                    <div id="deleteLesson" class="scheduleColumnMenuOption activeOption">Delete lesson</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="scheduleColumn">
+                        <div id="4" class="scheduleColumn">
                             <div class="scheduleColumnHeader">
                                 <div class="scheduleColumnName"><span class="scheduleColumnDay">FRI</span><span class="scheduleColumnDate"></span></div>
                                 <div class="scheduleColumnMenu">
                                     <img class="scheduleColumnMenuIcon" src="/common/images/schedule-menu-icon.svg"/>
-                                    <div id="scheduleColumnMenuDropdown" class="scheduleColumnMenuDropdown">
-                                        <div class="plannerColumnMenuOptions">
-                                            <div id="addLesson" class="scheduleColumnMenuOption">Add lessons</div>
-                                            <div class="scheduleColumnMenuGroup">
-                                                <div id="repeatOnce" class="scheduleColumnMenuOption activeOption">Repeat once</div>
-                                                <div id="repeatFill" class="scheduleColumnMenuOption activeOption">Repeat to end</div>
-                                            </div>
-                                            <div class="scheduleColumnMenuGroup">
-                                                <div id="bumpAll" class="scheduleColumnMenuOption activeOption">Bump lessons</div>
-                                                <div id="deleteAll" class="scheduleColumnMenuOption activeOption">Delete lessons</div>
-                                            </div>
-                                        </div>
-                                        <div class="reviewerColumnMenuOptions">
-                                            <div id="addLesson" class="scheduleColumnMenuOption">Add lesson</div>
-                                            <div class="scheduleColumnMenuGroup">
-                                                <div id="viewLesson" class="scheduleColumnMenuOption activeOption">View detail</div>
-                                                <div id="viewCourses" class="scheduleColumnMenuOption activeOption">View courses</div>
-                                                <div class="scheduleColumnMenuGroup">
-                                                    <div id="printLesson" class="scheduleColumnMenuOption activeOption">Print lesson</div>
-                                                    <div id="bumpLesson" class="scheduleColumnMenuOption activeOption">Bump lesson</div>
-                                                    <div id="deleteLesson" class="scheduleColumnMenuOption activeOption">Delete lesson</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>

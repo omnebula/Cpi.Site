@@ -2,6 +2,8 @@
 
 class LessonApi {
     static PrintLesson(params) {
+        const lessons = Array.isArray(params) ? params : [ params ];
+
         const currentTitle = document.title;
 
         function setPrint() {
@@ -13,7 +15,7 @@ class LessonApi {
                 document.title = currentTitle;
             };
 
-            this.contentWindow.initPrintout(params);
+            this.contentWindow.initPrintout(lessons);
 
             this.contentWindow.onbeforeunload = closePrint;
             this.contentWindow.onbeforeprint = openPrint;

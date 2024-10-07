@@ -66,6 +66,15 @@ class SchedulePage extends CpiPage {
 
         // Initialize column headers.
         this.#headers = $(".scheduleColumnHeader");
+
+        const headerDropMenu = $("#scheduleColumnMenuDropdown").detach();
+        const scheduleColumnMenus = $(".scheduleColumnMenu");
+        for (const menu of scheduleColumnMenus) {
+            const dropMenu = headerDropMenu.clone(true);
+            $(menu).append(dropMenu);
+        }
+
+        // INitialize column containers.
         this.#containers = $(".scheduleLessonContainer");
         
         // Initialize course selector.

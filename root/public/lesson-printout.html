@@ -15,12 +15,18 @@
         }
 
         body {
-            padding: 0.5in 0.5in;
+            padding: 0 0.5in;
             font-family: Verdana, Geneva, Tahoma, sans-serif;
             width: 8in;
         }
 
+        .printPage {
+            break-after: always;
+            page-break-after: always;
+        }
+
         header {
+            padding-top: 0.5in;
             display: flex;
             flex-direction: row;
             justify-content: space-between;
@@ -65,30 +71,39 @@
     </style>
 
     <script>
-        window.initPrintout = (lesson) => {
-            $("#lessonName").text(lesson.name);
-            $("#lessonDate").text(lesson.date);
+        window.initPrintout = (lessons) => {
+            const body = $("body");
+            const printPageTemplate = $(".printPage").detach();
 
-            const benchmarkContainer = $("#benchmarkContainer");
-            const benchmarkTemplate = benchmarkContainer.find("#benchmarkRow").detach();
-            for (const benchmark of lesson.benchmarks) {
-                const benchmarkRow = benchmarkTemplate.clone(true);
-                benchmarkRow.find("#benchmarkCode").text(benchmark.code);
-                benchmarkRow.find("#benchmarkSynopsis").html(benchmark.synopsis);
-                benchmarkContainer.append(benchmarkRow);
-            }
+            for (const lesson of lessons) {
+                const printPage = printPageTemplate.clone(true);
 
-            const sectionContainer = $("#sectionContainer");
-            const sectionTemplate = sectionContainer.find("#detailSection").detach();
-            for (const detailLabel in lesson.details) {
-                const detailSection = sectionTemplate.clone(true);
+                printPage.find("#lessonName").text(lesson.name);
+                printPage.find("#lessonDate").text(lesson.date);
 
-                detailSection.find("#detailLabel").text(detailLabel);
+                const benchmarkContainer = printPage.find("#benchmarkContainer");
+                const benchmarkTemplate = benchmarkContainer.find("#benchmarkRow").detach();
+                for (const benchmark of lesson.benchmarks) {
+                    const benchmarkRow = benchmarkTemplate.clone(true);
+                    benchmarkRow.find("#benchmarkCode").text(benchmark.code);
+                    benchmarkRow.find("#benchmarkSynopsis").html(benchmark.synopsis);
+                    benchmarkContainer.append(benchmarkRow);
+                }
 
-                const detailContent = lesson.details[detailLabel];
-                detailSection.find("#detailContent").text(detailContent);
+                const sectionContainer = printPage.find("#sectionContainer");
+                const sectionTemplate = sectionContainer.find("#detailSection").detach();
+                for (const detailLabel in lesson.details) {
+                    const detailSection = sectionTemplate.clone(true);
 
-                sectionContainer.append(detailSection);
+                    detailSection.find("#detailLabel").text(detailLabel);
+
+                    const detailContent = lesson.details[detailLabel];
+                    detailSection.find("#detailContent").text(detailContent);
+
+                    sectionContainer.append(detailSection);
+                }
+
+                body.append(printPage);
             }
         }
     </script>
@@ -96,40 +111,43 @@
 </head>
 
 <body>
-    <header>
-        <div>
-            <img src="/common/images/logo-graphic.svg" class="siteLogoGraphic"><img src="/common/images/logo-text.svg" class="siteLogoText">
-        </div>
-        <div class="lessonTitle">
-            Lesson Plan&nbsp;&bull;&nbsp;<span id="lessonName"></span>&nbsp;&bull;&nbsp;<span id="lessonDate"></span>
-        </div>
-    </header>
-    <main>
-        <div class="lessonSection">
-            <div class="sectionLabel">Benchmarks</div>
-            <div class="sectionContent">
-                <table cellpadding="0" cellspacing="0">
-                    <tbody id="benchmarkContainer">
-                        <tr id="benchmarkRow">
-                            <td id="benchmarkCode" class="benchmarkCode"></td>
-                            <td id="benchmarkSynopsis"></td>
-                        </tr>
-                    </tbody>
-                </table>
+    <div class="printPage">
+        <header>
+            <div>
+                <img src="/common/images/logo-graphic.svg" class="siteLogoGraphic"><img src="/common/images/logo-text.svg" class="siteLogoText">
             </div>
-        </div>
-        <div id="sectionContainer">
-            <div id="detailSection" class="lessonSection">
-                <div id="detailLabel" class="sectionLabel"></div>
-                <div id="detailContent" class="sectionContent"></div>
+            <div class="lessonTitle">
+                Lesson Plan&nbsp;&bull;&nbsp;<span id="lessonName"></span>&nbsp;&bull;&nbsp;<span id="lessonDate"></span>
             </div>
-        </div>
-    </main>
+        </header>
+        <main>
+            <div class="lessonSection">
+                <div class="sectionLabel">Benchmarks</div>
+                <div class="sectionContent">
+                    <table cellpadding="0" cellspacing="0">
+                        <tbody id="benchmarkContainer">
+                            <tr id="benchmarkRow">
+                                <td id="benchmarkCode" class="benchmarkCode"></td>
+                                <td id="benchmarkSynopsis"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="sectionContainer">
+                <div id="detailSection" class="lessonSection">
+                    <div id="detailLabel" class="sectionLabel"></div>
+                    <div id="detailContent" class="sectionContent"></div>
+                </div>
+            </div>
+        </main>
+    </div>
 
     <script>
         const searchParams = new URLSearchParams(window.location.search);
         if (searchParams.has("test")) {
-            window.initPrintout({
+            window.initPrintout([
+            {
                 name: "Grade 1 Math",
                 date: "Tue Sep 24, 2024",
                 benchmarks: [
@@ -147,7 +165,27 @@
                     "Activities": "inueterauit enim iam opinio, perniciosa rei publicae uobisque periculosa, quae non modo apud populum romanum sed etiam exteras nationes omnium sermone percrebruit: his iuciis, quae nunc sunt, pecuniosum hominem, quamuis sit nocens, neminem posse damnari.",
                     "Materials/Resources": "nunc in ipso iudicio, cum sint parati qui contionibus ac legibus hanc inuidiam senatus inflammare conentur, reus in iudicium adductus est, G. Verres, homo uita atque factis iam omnium opinione damnatus, pecuniae magnitudine sua spe ac praedicatione absolutus."
                 }
-            });
+            },
+            {
+                name: "Grade 1 Math",
+                date: "Tue Sep 24, 2024",
+                benchmarks: [
+                    {
+                        code: "MA.2.AR.2.1",
+                        synopsis: "Determine and explain whether equations involving addition and subtraction are true or false."
+                    },
+                    {
+                        code: "SS.2.A.1.1",
+                        synopsis: "Examine primary and secondary sources."
+                    }
+                ],
+                details: {
+                    "Objectives": "quod erat optandum maxime iudices et quod unum ad inuidiam uestri ordinis infamiamque iudiciorum sedandam maxime pertinebat, id non humano consilio sed prope diuinitus datum atque oblatum uobis summo rei publicae tempore uidetur.",
+                    "Activities": "inueterauit enim iam opinio, perniciosa rei publicae uobisque periculosa, quae non modo apud populum romanum sed etiam exteras nationes omnium sermone percrebruit: his iuciis, quae nunc sunt, pecuniosum hominem, quamuis sit nocens, neminem posse damnari.",
+                    "Materials/Resources": "nunc in ipso iudicio, cum sint parati qui contionibus ac legibus hanc inuidiam senatus inflammare conentur, reus in iudicium adductus est, G. Verres, homo uita atque factis iam omnium opinione damnatus, pecuniae magnitudine sua spe ac praedicatione absolutus."
+                }
+            }            
+        ]);
         }
     </script>
 </body>
