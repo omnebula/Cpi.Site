@@ -1,0 +1,60 @@
+#calendarPopup {
+    padding: 16px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    display: none;
+    position: fixed;
+    z-index: 20;
+    background-color: #101010;
+}
+
+#calendarPopup button {
+    color: #777;
+    border: 1px solid #777;
+    background-color: transparent;
+}
+#calendarPopup button:hover {
+    color: #fff;
+    border-color: #fff;
+}
+#calendarPopup button:active {
+    color: #333;
+    background-color: #ddd;
+}
+
+
+#calendarPopup th, #calendarPopup td {
+    width: 20%;
+    text-align: center;
+    padding: 2px 0;
+}
+
+#calPop_monthName {
+    color: lightsteelblue;
+    width: 100px;
+    cursor: default;
+}
+
+#calPop_dayHeader th {
+    color: orange;
+    border-bottom: 1px solid #ddd;
+}
+
+.calPop_selectedDate {
+    background-color: #336699;
+}
+.calPop_activeDate {
+    color: #eee;
+    border: 1px solid transparent;
+}
+.calPop_activeDate:hover{
+    color: #fff;
+    background-color: steelblue;
+}
+.calPop_todayDate {
+    border: 1px solid lightsteelblue;
+}
+.calPop_holidayDate {
+    color: #888;
+    border: 1px solid transparent;
+}

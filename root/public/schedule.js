@@ -20,7 +20,7 @@ class SchedulePage extends CpiPage {
     #courseSelection;
     #selectedLessonId;
 
-    #bumpPicker;
+    #datePicker;
 
     constructor() {
         super();
@@ -147,6 +147,10 @@ class SchedulePage extends CpiPage {
         this.#currentController.refresh(data);
     }
 
+    navigateToDate(date) {
+        const weekNumber = Cpi.CalculateWeekNumber(date);
+        this.navigateToWeek(weekNumber);
+    }
     navigateToWeek(weekNumber) {
         this.#weekNumber = parseInt((!weekNumber || (weekNumber > Cpi.GetLastWeekNumber())) ? Cpi.GetCurrentWeekNumber() : weekNumber);
 
@@ -248,34 +252,11 @@ class SchedulePage extends CpiPage {
         });
     }
 
-    bumpLessons(header, courseId, classId) {
-        if (!this.#bumpPicker) {
-            this.#bumpPicker = new BumpPicker();
+    pickDate(params) {
+        if (!this.#datePicker) {
+            this.#datePicker = new DatePicker();
         }
-
-        this.#bumpPicker.show({
-            from: Cpi.FormatIsoDateString(header.prop("lessonDate")),
-            accept: (results) => {
-                const params = {
-                    week: this.#weekNumber,
-                    from: results.from,
-                    offset: results.offset,
-                    courseId: courseId,
-                    classId: classId
-                }
-       
-                Cpi.SendApiRequest({
-                    method: "POST",
-                    url: "/@/lesson/bump",
-                    data: JSON.stringify(params),
-                    success: (lessons) => {
-                        this.clearAllContainers();
-                        this.#currentController.populateSchedule(lessons);
-                    }
-                });
-            }
-        });
-
+        this.#datePicker.show(params);
     }
 
 
@@ -345,6 +326,10 @@ class SchedulePage extends CpiPage {
         if (this.#syncCourseSelection()) {
             this.#courseSelector.trigger("change");
         }
+    }
+
+    get currentController() {
+        return this.#currentController;
     }
 
     /*

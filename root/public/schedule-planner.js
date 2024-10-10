@@ -35,6 +35,20 @@ class SchedulePlanner extends ScheduleController {
                 }
             });
 
+            const copyAll = menuOptions.find("#copyAll");
+            copyAll.on("click", () => {
+                if (copyAll.prop("enabled")) {
+                    this.#onCopyAll(header);
+                }
+            });
+
+            const cutAll = menuOptions.find("#cutAll");
+            cutAll.on("click", () => {
+                if (cutAll.prop("enabled")) {
+                    this.#onCutAll(header);
+                }
+            });
+
             const bumpAll = menuOptions.find("#bumpAll");
             bumpAll.on("click", () => {
                 if (bumpAll.prop("enabled")) {
@@ -222,7 +236,7 @@ class SchedulePlanner extends ScheduleController {
             data: JSON.stringify(params),
             success: (data) => {
                 // Check if the target date is in the current week.
-                const targetDate = Cpi.ParseLocalDate(data.targetDate);
+                const targetDate = Cpi.ParseLocalDate(data.toDate);
                 const targetWeek = Cpi.CalculateWeekNumber(targetDate);
                 if (targetWeek !== Cpi.GetCurrentWeekNumber()) {
                     this.schedulePage.navigateToWeek(targetWeek);
@@ -258,8 +272,50 @@ class SchedulePlanner extends ScheduleController {
         this.#onRepeatLesson(header, count);
     }
 
+    #onCopyAll(header) {
+        this.#transferLessons(header, "copy", "Copy Lesson");
+    }
+
+    #onCutAll(header) {
+        this.#transferLessons(header, "cut", "Move Lesson");
+
+    }
+    #transferLessons(header, action, title) {
+        const columnId = header.attr("id");
+        const container = this.containerFromId(columnId);
+
+        const lessons = [];
+        container.find(".scheduleLesson").each((key, value) => {
+            const bubble = $(value);
+            const lessonId = bubble.attr("id");
+            lessons.push(lessonId);
+        });
+
+        if (lessons.length > 0) {
+            this.schedulePage.pickDate({
+                title: title,
+                from: header.prop("lessonDate"),
+                accept: (pickResults) => {
+                    const params = {
+                        lessons: lessons,
+                        to: pickResults.to,
+                    }
+    
+                    Cpi.SendApiRequest({
+                        method: "POST",
+                        url: `/@/lesson/move?action=${action}`,
+                        data: JSON.stringify(params),
+                        success: () => {
+                            this.schedulePage.navigateToDate(pickResults.to);
+                        }
+                    });
+                }
+            });    
+        }
+    }
+
     #onBumpAll(header) {
-        this.schedulePage.bumpLessons(header);
+        this.bumpLessons(header);
     }
 
     #onPrintAll(header) {

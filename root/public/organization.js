@@ -224,8 +224,8 @@ class CalendarOverlay extends OverlayContext {
         this.#calendarEditController = new CalendarEditController(this);
         this.#holidayTableController = new HolidayTableController();
 
-        new DatePicker($("#calendarStartDate"));
-        new DatePicker($("#calendarEndDate"));
+        new DateInput($("#calendarStartDate"));
+        new DateInput($("#calendarEndDate"));
 
         $("#addCalendar").on("click", () => {
             this.#setOverlayData(undefined);
@@ -346,8 +346,8 @@ class HolidayTableController extends TableController {
             editor: $("#holidayEditor")
         });
 
-        new DatePicker($("#holidayEditor #startDate"), true);
-        new DatePicker($("#holidayEditor #endDate"), true);
+        new DateInput($("#holidayEditor #startDate"), true);
+        new DateInput($("#holidayEditor #endDate"), true);
 
         $("#uploadHolidays").on("click", () => {
             Cpi.UploadFile(

@@ -24,7 +24,7 @@ class CoursePicker {
         });
 
         // Lesson Date.
-        new DatePicker(this.#popup.find("#lessonDate"));
+        new DateInput(this.#popup.find("#lessonDate"));
 
         // Init table contents
         const courseRowTemplate = this.#courseContainer.find("#courseRow").detach();

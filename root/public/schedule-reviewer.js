@@ -47,6 +47,18 @@ class ScheduleReviewer extends ScheduleController {
                     this.#printLesson(header);
                 }
             });
+            const copyLesson = menuOptions.find("#copyLesson");
+            copyLesson.on("click", () => {
+                if (copyLesson.prop("enabled")) {
+                    this.#copyLesson(header);
+                }
+            });
+            const cutLesson = menuOptions.find("#cutLesson");
+            cutLesson.on("click", () => {
+                if (cutLesson.prop("enabled")) {
+                    this.#cutLesson(header);
+                }
+            });
             const bumpLesson = menuOptions.find("#bumpLesson");
             bumpLesson.on("click", () => {
                 if (bumpLesson.prop("enabled")) {
@@ -302,16 +314,14 @@ class ScheduleReviewer extends ScheduleController {
 
     #viewLesson(header, target) {
         const lessonDate = header.prop("lessonDate");
-        const container = this.containerFromDate(lessonDate);
-        const editor = container.find(".scheduleEditor");
+        const editor = this.editorFromDate(lessonDate);
         const lessonId = editor.attr("id");
         window.open(`/lesson?id=${lessonId}${this.viewTracker.viewParams}`, target);
     }
 
     #viewCourses(header) {
         const lessonDate = header.prop("lessonDate");
-        const container = this.containerFromDate(lessonDate);
-        const editor = container.find(".scheduleEditor");
+        const editor = this.editorFromDate(lessonDate);
 
         this.schedulePage.selectedLessonId = editor.attr("id");
         this.schedulePage.setCourseSelection();
@@ -319,16 +329,14 @@ class ScheduleReviewer extends ScheduleController {
 
     #viewRoadmap(header, target) {
         const lessonDate = header.prop("lessonDate");
-        const container = this.containerFromDate(lessonDate);
-        const editor = container.find(".scheduleEditor");
+        const editor = this.editorFromDate(lessonDate);
         const lesson = editor.prop("lesson");
         window.open(`/roadmap?subject=${lesson.subjectName}&grade=${lesson.gradeName}${this.viewTracker.viewParams}`, target);
     }
 
     #printLesson(header) {
         const lessonDate = header.prop("lessonDate");
-        const container = this.containerFromDate(lessonDate);
-        const editor = container.find(".scheduleEditor");
+        const editor = this.editorFromDate(lessonDate);
         const lessonData = editor.prop("lesson");
         const benchmarkContainer = editor.find(".benchmarkContainer");
 
@@ -361,21 +369,52 @@ class ScheduleReviewer extends ScheduleController {
         });
     }
 
+    #copyLesson(header) {
+        this.#transferLesson(header, "copy", "Copy Lesson");
+    }
+    #cutLesson(header) {
+        this.#transferLesson(header, "cut", "Move Lesson");
+    }
+    #transferLesson(header, action, title) {
+        const columnId = header.attr("id");
+        const editor = this.editorFromId(columnId);
+
+        this.schedulePage.pickDate({
+            title: title,
+            from: header.prop("lessonDate"),
+            accept: (results) => {
+                const lesson = editor.prop("lesson");
+                const params = {
+                    lessons: [ lesson.lessonId ],
+                    to: results.to,
+                }
+
+                Cpi.SendApiRequest({
+                    method: "POST",
+                    url: `/@/lesson/move?action=${action}`,
+                    data: JSON.stringify(params),
+                    success: (lessons) => {
+                        this.schedulePage.navigateToDate(results.to);
+                    }
+                });
+            }
+        })
+    }
+
+    #bumpLesson(header) {
+        this.bumpLessons(header, this.schedulePage.courseSelection.courseId, this.schedulePage.courseSelection.classId);
+    }
+
     #deleteLesson(header) {
         const lessonDate = header.prop("lessonDate");
         const columnId = this.columnIdFromDate(lessonDate);
-        const container = this.containerFromId(columnId);
-        const editor = container.find(".scheduleEditor");
+        const editor = this.editorFromDate(lessonDate);
         const lessonId = editor.attr("id");
 
         LessonApi.DeleteLesson(lessonId, () => {
             editor.remove();
             this.#enableActiveOptions(columnId, false);
         });
-    }
-
-    #bumpLesson(header) {
-        this.schedulePage.bumpLessons(header, this.schedulePage.courseSelection.courseId, this.schedulePage.courseSelection.classId);
     }
 
     #enableActiveOptions(columnId, enable) {
