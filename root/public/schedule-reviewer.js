@@ -15,60 +15,40 @@ class ScheduleReviewer extends ScheduleController {
 
         this.headers.each((key, value) => {
             const header = $(value);
-            const menuOptions = header.find(".reviewerColumnMenuOptions");
 
-            const addLesson = menuOptions.find("#addLesson");
-            addLesson.on("click", () => {
-                if (addLesson.prop("enabled")) {
-                    this.#addLesson(header);
-                }
-            });
-            const viewLesson = menuOptions.find("#viewLesson");
-            viewLesson.on("click", (event) => {
-                if (viewLesson.prop("enabled")) {
-                    this.#viewLesson(header, event.ctrlKey ? "_blank" : "_self");
-                }
-            });
-            const viewCourses = menuOptions.find("#viewCourses");
-            viewCourses.on("click", () => {
-                if (viewCourses.prop("enabled")) {
-                    this.#viewCourses(header);
-                }
-            });
-            const viewRoadmap = menuOptions.find("#viewRoadmap");
-            viewRoadmap.on("click", () => {
-                if (viewRoadmap.prop("enabled")) {
-                    this.#viewRoadmap(header, event.ctrlKey ? "_blank" : "_self");
-                }
-            });
-            const printLesson = menuOptions.find("#printLesson");
-            printLesson.on("click", () => {
-                if (printLesson.prop("enabled")) {
-                    this.#printLesson(header);
-                }
-            });
-            const copyLesson = menuOptions.find("#copyLesson");
-            copyLesson.on("click", () => {
-                if (copyLesson.prop("enabled")) {
-                    this.#copyLesson(header);
-                }
-            });
-            const cutLesson = menuOptions.find("#cutLesson");
-            cutLesson.on("click", () => {
-                if (cutLesson.prop("enabled")) {
-                    this.#cutLesson(header);
-                }
-            });
+            const optionHandlers = {
+                addLesson: () => { this.#addLesson(header); },
+                viewLesson: () => { this.#viewLesson(header, event.ctrlKey ? "_blank" : "_self"); },
+                viewCourses: () => { this.#viewCourses(header); },
+                viewRoadmap: () => { this.#viewRoadmap(header, event.ctrlKey ? "_blank" : "_self"); },
+                printLesson: () => { this.#printLesson(header); },
+                copyLesson: () => { this.#copyLesson(header); },
+                cutLesson: () => { this.#cutLesson(header); },
+                bumpLesson: () => { this.#bumpLesson(header); },
+                clearLesson: () => { this.#clearLesson(header); },
+                deleteLesson: () => { this.#deleteLesson(header); }
+            };
+
+            const menuOptions = header.find(".reviewerColumnMenuOptions");
+            for (const key in optionHandlers) {
+                menuOptions.find(`#${key}`).on("click", (event) => {
+                    if (event.currentTarget.enabled) {
+                        const handler = optionHandlers[key];
+                        handler(header);
+                    }
+                });
+            }
+
             const bumpLesson = menuOptions.find("#bumpLesson");
             bumpLesson.on("click", () => {
                 if (bumpLesson.prop("enabled")) {
-                    this.#bumpLesson(header);
+                    
                 }
             });
             const deleteLesson = menuOptions.find("#deleteLesson");
             deleteLesson.on("click", () => {
                 if (deleteLesson.prop("enabled")) {
-                    this.#deleteLesson(header);
+                    
                 }
             });
         });
@@ -403,6 +383,38 @@ class ScheduleReviewer extends ScheduleController {
 
     #bumpLesson(header) {
         this.bumpLessons(header, this.schedulePage.courseSelection.courseId, this.schedulePage.courseSelection.classId);
+    }
+
+    #clearLesson(header) {
+       
+        Cpi.ShowAlert({
+            caption: "Confirm Clear",
+            message: `Are you sure you want to clear this lesson?`,
+            accept: () => {
+                const columnId = header.attr("id");
+                const editor = this.editorFromId(columnId);
+                const lessonId = editor.attr("id");
+                const lessonIds = [ lessonId ];
+
+                if (lessonIds.length) {
+                    Cpi.SendApiRequest({
+                        method: "POST",
+                        url: `/@/lesson/clear`,
+                        data: JSON.stringify(lessonIds),
+                        success: (data, status, xhr) => {
+                            const benchmarkContainer = editor.find(".benchmarkContainer");
+                            benchmarkContainer.empty();
+                            editor.find("textarea").each((key, value) => {
+                                $(value).val("");
+                            });                
+                        }
+                    });
+                }
+            },
+            acceptLabel: "Clear",
+            closeLabel: "Cancel",
+            maxMessageWidth: "fit-content"
+        });
     }
 
     #deleteLesson(header) {

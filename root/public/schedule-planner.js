@@ -12,64 +12,28 @@ class SchedulePlanner extends ScheduleController {
         // Initialize planner-mode column header dropdown menu options.
         this.headers.each((key, value) => {
             const header = $(value);
+
+            const optionHandlers = {
+                addLesson: () => { this.#onAddLesson(header); },
+                repeatOnce: () => { this.#onRepeatLesson(header); },
+                repeatFill: () => { this.#onRepeatFill(header); },
+                printAll: () => { this.#onPrintAll(header); },
+                copyAll: () => { this.#onCopyAll(header); },
+                cutAll: () => { this.#onCutAll(header); },
+                bumpAll: () => { this.#onBumpAll(header); },
+                clearAll: () => { this.#onClearAll(header); },
+                deleteAll: () => { this.#onDeleteAll(header); }
+            };
+
             const menuOptions = header.find(".plannerColumnMenuOptions");
-
-            const addLesson = menuOptions.find("#addLesson");
-            addLesson.on("click", () => {
-                if (addLesson.prop("enabled")) {
-                    this.#onAddLesson(header);
-                }
-            });
-    
-            const repeatOnce = menuOptions.find("#repeatOnce");
-            repeatOnce.on("click", () => {
-                if (repeatOnce.prop("enabled")) {
-                    this.#onRepeatLesson(header);
-                }
-            });
-    
-            const repeatFill = menuOptions.find("#repeatFill");
-            repeatFill.on("click", () => {
-                if (repeatFill.prop("enabled")) {
-                    this.#onRepeatFill(header);
-                }
-            });
-
-            const copyAll = menuOptions.find("#copyAll");
-            copyAll.on("click", () => {
-                if (copyAll.prop("enabled")) {
-                    this.#onCopyAll(header);
-                }
-            });
-
-            const cutAll = menuOptions.find("#cutAll");
-            cutAll.on("click", () => {
-                if (cutAll.prop("enabled")) {
-                    this.#onCutAll(header);
-                }
-            });
-
-            const bumpAll = menuOptions.find("#bumpAll");
-            bumpAll.on("click", () => {
-                if (bumpAll.prop("enabled")) {
-                    this.#onBumpAll(header);
-                }
-            });
-
-            const printAll = menuOptions.find("#printAll");
-            printAll.on("click", () => {
-                if (printAll.prop("enabled")) {
-                    this.#onPrintAll(header);
-                }
-            });
-
-            const deleteAll = menuOptions.find("#deleteAll");
-            deleteAll.on("click", () => {
-                if (deleteAll.prop("enabled")) {
-                    this.#onDeleteAll(header);
-                }
-            });
-    
+            for (const key in optionHandlers) {
+                menuOptions.find(`#${key}`).on("click", (event) => {
+                    if (event.currentTarget.enabled) {
+                        const handler = optionHandlers[key];
+                        handler(header);
+                    }
+                });
+            }
         });
 
         // Initialize click handler to unselect a lessson when user clicks empty space.
@@ -357,6 +321,41 @@ class SchedulePlanner extends ScheduleController {
                 });
             }
         });        
+    }
+
+    #onClearAll(header) {
+        const lessonDate = header.prop("lessonDate");
+
+        Cpi.ShowAlert({
+            caption: "Confirm Clear",
+            message: `Are you sure you want to clear all lessons on ${Cpi.FormatShortDateString(lessonDate)}?`,
+            accept: () => {
+                const containerId = this.columnIdFromDate(lessonDate);
+                const container = this.containerFromId(containerId);
+        
+                const lessonIds = [];
+                const bubbles = container.find(".scheduleLesson");
+                bubbles.each((key, value) => {
+                    lessonIds.push(value.id);
+                });
+        
+                if (lessonIds.length) {
+                    Cpi.SendApiRequest({
+                        method: "POST",
+                        url: `/@/lesson/clear`,
+                        data: JSON.stringify(lessonIds),
+                        success: (data, status, xhr) => {
+                            for (const current of bubbles) {
+                                $(current).find("#scheduleLessonDetailList").empty();
+                            }
+                        }
+                    });
+                }
+            },
+            acceptLabel: "Clear",
+            closeLabel: "Cancel",
+            maxMessageWidth: "fit-content"
+        });
     }
 
     #onDeleteAll(header) {

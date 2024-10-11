@@ -583,9 +583,7 @@ Cpi.InitSiteTheme();
 
 class CpiPage {
     constructor() {
-        if (this.#detectVersionChange()) {
-            return;
-        }
+        this.#initDevMode();
 
         // Dynamically insert the spinner panel.
         $("body").append($.parseHTML(this.#spinnerHtml)[1]);
@@ -667,16 +665,18 @@ class CpiPage {
         });
     }
 
-    /*
-    * Versioning (Keep this around until soft-launch).
-    */
-    #detectVersionChange() {
-        const pathname = location.pathname;
-        if (pathname) {
-            const key = `${pathname.replace(/\//g, "_")}_version`;
-            localStorage.removeItem(key);
-        }
-        return false;
+    #initDevMode() {
+        $("footer").on("click", (event) => {
+            if (event.ctrlKey) {
+                Cpi.SendApiRequest({
+                    method: "POST",
+                    url: "/@/dev/clear-lesson-schedule",
+                    success: () => {
+                        window.location.reload();
+                    }
+                });
+            }
+        })
     }
 
     /*
