@@ -39,15 +39,20 @@ class RoadmapPage extends CpiPage
         // Assume user wants to see the summary overlay.
         var initialOverlayName = "Summary";
 
+        const subject = this.#viewTracker.searchParams.get("subject");
+        const grade = this.#viewTracker.searchParams.get("grade");
+        if (subject && grade) {
+            initialOverlayName = "Benchmarks";
+
+            this.#pageData.benchmarks.lastSubject = subject;
+            this.#pageData.benchmarks.lastGrade = grade;
+            this.#pageData.benchmarks.lastScope = "all";
+        }
+
         // Check if lesson-id, subject, and grade were specified by referrer, e.g., from lesson page.
         const tunnelParams = Cpi.GetTunnelParams();
         if (tunnelParams) {
             this.#pageData.lessonId = tunnelParams.lessonId;
-            this.#pageData.benchmarks.lastSubject = tunnelParams.subjectName;
-            this.#pageData.benchmarks.lastGrade = tunnelParams.gradeName;
-            this.#pageData.benchmarks.lastScope = "all";
-
-            initialOverlayName = "Benchmarks";
         }
 
         const overlays = [

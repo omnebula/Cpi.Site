@@ -57,13 +57,13 @@ class ScheduleReviewer extends ScheduleController {
     refresh() {
         if (this.schedulePage.courseSelection) {
            
-            const quryUrl = this.queryUrl + `&courseId=${this.schedulePage.courseSelection.courseId}&classId=${this.schedulePage.courseSelection.classId}&format=full`;
+            const courseSelection = this.schedulePage.courseSelection;
+            const quryUrl = this.queryUrl + `&courseId=${courseSelection.courseId}&classId=${courseSelection.classId}&format=full`;
 
             this.fetchLessons(quryUrl, (data) => {
                 $(".reviewerColumnMenuOptions").css("display", "block");
             
-                // Assume empty columns, i.e., enable add and disable all other menu options.
-                // populateSchedule will adjust as needed.
+                // Assume empty columns, i.e., enable add and disable all other menu options; populateSchedule will adjust as needed.
                 this.headers.find(".reviewerColumnMenuOptions #addLesson").removeClass("scheduleColumnMenuOption_disabled").prop("enabled", true);
                 this.headers.find(".reviewerColumnMenuOptions .activeOption").addClass("scheduleColumnMenuOption_disabled").prop("enabled", false);
                 

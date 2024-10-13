@@ -134,20 +134,28 @@ class LessonPage extends CpiPage {
         $(".navigationTitleGroup").css("visibility", "visible");
 
         // Schedule link.
-        $("#viewSchedule").on("click", () => {
+        $("#viewCourseSchedule").on("click", () => {
             Cpi.OpenLocation(
                 `/schedule?week=${Cpi.CalculateWeekNumber(data.lessonDate)}${this.#viewTracker.viewParams}`,
                 "_self",
-                { lessonId: data.lessonId, courseId: data.courseId, classId: data.classId }
+                { lessonId: data.lessonId }
+            );
+        });
+
+        $("#viewLessonSchedule").on("click", () => {
+            Cpi.OpenLocation(
+                `/schedule?week=${Cpi.CalculateWeekNumber(data.lessonDate)}&crid=${data.courseId}&clid=${data.classId}&${this.#viewTracker.viewParams}`,
+                "_self",
+                { lessonId: data.lessonId }
             );
         });
 
         // Roadmap link.
-        $("#viewRoadmap").on("click", () => {
+        $("#viewLessonRoadmap").on("click", () => {
             Cpi.OpenLocation(
-                `/roadmap?${this.#viewTracker.viewParams}`,
+                `/roadmap?subject=${data.subjectName}&grade=${data.gradeName}${this.#viewTracker.viewParams}`,
                 "_self",
-                { lessonId: data.lessonId, subjectName: data.subjectName, gradeName: data.gradeName}
+                { lessonId: data.lessonId }
             );
         });
 

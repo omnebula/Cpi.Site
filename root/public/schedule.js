@@ -74,7 +74,7 @@ class SchedulePage extends CpiPage {
             $(menu).append(dropMenu);
         }
 
-        // INitialize column containers.
+        // Initialize column containers.
         this.#containers = $(".scheduleLessonContainer");
         
         // Initialize course selector.
@@ -95,7 +95,6 @@ class SchedulePage extends CpiPage {
     }
     #initCourseSelector(courses) {
         this.#courseSelector = $("#selectCourse");
-
         for (var course of courses) {
             this.#courseSelector.append(`<option value="${course.courseId}_${course.classId}">${course.courseName}</option>`);
         }
@@ -109,19 +108,36 @@ class SchedulePage extends CpiPage {
         if (tunnelParams) {
             this.selectedLessonId = tunnelParams.lessonId;
         }
-        
+
         // Initialize the controllers.
         this.#controllers = {
             planner: new SchedulePlanner(this),
             reviewer: new ScheduleReviewer(this)
         };
 
-        this.#activateController("planner", false);
+        var initialController = "planner";
+        this.#courseSelection = undefined;
 
-        // Show frame and activate planner mode.
+        const courseId = this.searchParams.get("crid");
+        const classId = this.searchParams.get("clid");
+        if (courseId && classId) {
+            const selection = this.#courseSelector.val(`${courseId}_${classId}`).val();
+            if (selection && selection !== "") {
+                initialController = "reviewer";
+
+                this.#courseSelection = {
+                    courseId: courseId,
+                    classId: classId
+                };
+            }
+        }
+        
+        this.#activateController(initialController, false);
+
+        // Show frame and navigate to specified week.
         Cpi.ShowAppFrame();
 
-        const weekNumber = parseInt(this.#viewTracker.searchParams.get("week")) || Cpi.GetCurrentWeekNumber();
+        const weekNumber = parseInt(this.searchParams.get("week")) || Cpi.GetCurrentWeekNumber();
         this.navigateToWeek(weekNumber);
 
     }
@@ -131,11 +147,16 @@ class SchedulePage extends CpiPage {
             return undefined;
         }
 
-        const parts = selection.split("_");
-        this.#courseSelection = {
-            courseId: parts[0],
-            classId: parts[1]
-        };
+        if (selection === "all") {
+            this.#courseSelection = undefined;            
+        }
+        else {
+            const parts = selection.split("_");
+            this.#courseSelection = {
+                courseId: parts[0],
+                classId: parts[1]
+            };
+        }
         
         return selection;
     }
@@ -232,7 +253,6 @@ class SchedulePage extends CpiPage {
         }
 
         $("#selectWeek").val(this.#weekNumber);
-        window.history.replaceState(null, "", `/schedule?week=${this.#weekNumber}${this.#viewTracker.viewParams}`);
 
         this.#activateController(null, true);
     }
@@ -279,6 +299,10 @@ class SchedulePage extends CpiPage {
             this.#coursePicker = new CoursePicker(this);
         }
         return this.#coursePicker;
+    }
+
+    get searchParams() {
+        return this.viewTracker.searchParams;
     }
 
     columnIdFromDate(date) {
@@ -346,6 +370,10 @@ class SchedulePage extends CpiPage {
         }
 
         if (refresh) {
+            const courseParams = this.#courseSelection ? `&crid=${this.#courseSelection.courseId}&clid=${this.#courseSelection.classId}` : "";
+            const url = `/schedule?week=${this.#weekNumber}${courseParams}${this.#viewTracker.viewParams}`;
+            window.history.replaceState(null, "", url);
+
             this.#currentController.refresh();
         }
 
