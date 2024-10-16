@@ -10,10 +10,6 @@
 .listRow {
     color: var(--list-row-color);
 }
-.listRow:hover {
-    color: white;
-    background-color: steelblue;
-}
 .listRow_selected {
     color: white;
     background-color: #336699;

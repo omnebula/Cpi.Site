@@ -49,13 +49,7 @@ class BenchmarkPicker {
         // Initialize show mode.
         const showMode = $("#benchmarkPickerShowMode");
 
-        showMode.on("click", () => {
-            if (showMode.val() === "Show All") {
-                showMode.val("Show Unassigned");
-            }
-            else {
-                showMode.val("Show All");
-            }
+        showMode.on("change", () => {
             this.#searchBenchmarks();
         });
     }
@@ -98,9 +92,7 @@ class BenchmarkPicker {
         const subject = this.#subjectSelector.val();
         const grade = this.#gradeSelector.val();
         const keyword = $("#benchmarkPickerSearchKeyword").val() || "";
-
-        // N.B.: Query the opposite of what the button displays.
-        const showMode = $("#benchmarkPickerShowMode").val() === "Show All" ? "unassigned" : "all";
+        const showMode = $("#benchmarkPickerShowMode").val();
 
         Cpi.SendApiRequest({
             method: "GET",
@@ -178,9 +170,7 @@ class BenchmarkPicker {
                 results.push(benchmarkId);
             }
 
-            if (results.length) {
-                success(results);
-            }
+            success(results);
         }
     }
 }

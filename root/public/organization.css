@@ -88,7 +88,7 @@ p {
     color: var(--holiday-list-row-color-active);
 }
 .holidayListRow_active:hover {
-    background-color: steelblue;
+    background-color: var(--list-row-color-hover);
     color: white;
 }
 

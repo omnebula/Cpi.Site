@@ -36,6 +36,7 @@
     --input-button-background-color-disabled: #555;
 
     --list-row-color: black;
+    --list-row-color-hover: #444;
 
     --footer-color: #aaa;
     --footer-background-color: #e4e4e4;
@@ -75,6 +76,7 @@
     --input-button-background-color-disabled: #555;
 
     --list-row-color: #eee;
+    --list-row-color-hover: #444;
 
     --footer-color: #555;
     --footer-background-color: #171717;
@@ -251,7 +253,7 @@ input[type=submit], textarea {
 }
 .listRow:hover {
     color: white;
-    background-color: steelblue;
+    background-color: var(--list-row-color-hover);
 }
 .listRow_selected {
     color: white;

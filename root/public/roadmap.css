@@ -32,10 +32,12 @@
 #Summary .listColumn {
     padding: 10px 0;
 }
+/*
 #Summary .listRow:hover {
     color: white;
     background-color: steelblue;
 }
+*/
 #Summary .listRow_selected {
     color: white;
     background-color: #336699;
@@ -43,6 +45,8 @@
 
 #Benchmarks .listColumn {
     padding: 16px 0;
+}
+#Benchmarks .listRow:hover {
 }
 
 
@@ -152,6 +156,10 @@
 .lessonColumn {
     width: 240px;
     text-align: center;
+    border: 1px solid transparent;
+}
+.lessonColumn:hover {
+    background-color: #333;
 }
 
 .lessonBubble {
@@ -161,6 +169,7 @@
     white-space: nowrap;
     width: fit-content;
     background-color: var(--lesson-bubble-background-color);
+    margin: auto;
 }
 .lessonLink {
     color: #ddd;

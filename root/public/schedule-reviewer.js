@@ -229,7 +229,7 @@ class ScheduleReviewer extends ScheduleController {
     }
 
     #initBenchmarks(editor, lessonId, benchmarks) {
-        if (benchmarks && benchmarks.length) {
+        if (benchmarks) {
             const benchmarkContainer = editor.find(".benchmarkContainer");
             benchmarkContainer.empty();
                         

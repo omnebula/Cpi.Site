@@ -284,10 +284,12 @@
             <div class="popupRow pickerRow benchmarkPickerSearch">
                 <div class="benchmarkPickerSearchBar">
                     <select id="benchmarkPickerSearchSubject" class="pickerSelect benchmarkPickerSearchSubject"></select>
-                    <select id="benchmarkPickerSearchGrade" class="pickerSelect benchmarkPickerSearchGrade">
-                    </select>
+                    <select id="benchmarkPickerSearchGrade" class="pickerSelect benchmarkPickerSearchGrade"></select>
                     <input id="benchmarkPickerSearchKeyword" class="pickerInput benchmarkPickerSearchKeyword" type="text" placeholder="Keywords" autocomplete="off"/>
-                    <input id="benchmarkPickerShowMode" class="inputButton pickerButton" type="button" value="Show All"/>
+                    <select id="benchmarkPickerShowMode" class="pickerSelect benchmarkPickerShowMode">
+                        <option value="unassigned">View unassigned</option>
+                        <option value="all">View all</option>
+                    </select>
                 </div>
             </div>
             <div id="benchmarkPickerResults" class="popupRow pickerRow benchmarkPickerResults">
