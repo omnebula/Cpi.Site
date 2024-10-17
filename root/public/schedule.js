@@ -45,6 +45,11 @@ class SchedulePage extends CpiPage {
             $("#mySchedule").css("display", "none");
         }
 
+        // Initialize click handler to unselect a lessson when user clicks empty space.
+        $(".appFrame").on("mousedown", () => {
+            this.#currentController.selectLesson(undefined);
+        });
+
         // Initialize navigation controls.
         const selector = $("#selectWeek");
         for (var week = 1; week <= Cpi.GetLastWeekNumber(); ++week) {

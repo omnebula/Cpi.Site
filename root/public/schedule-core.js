@@ -102,6 +102,13 @@ class ScheduleController {
             url: url,
             success: (data, status, xhr) => {
                 success(data, status, xhr);
+
+                if (this.schedulePage.selectedLessonId) {
+                    this.schedulePage.currentController.selectLesson(this.schedulePage.selectedLessonId);
+                    
+                    // Only acknowledge selection the first time it's established.
+                    this.schedulePage.selectedLessonId = undefined;
+                }
             }
         });
     }

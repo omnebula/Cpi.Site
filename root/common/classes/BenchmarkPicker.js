@@ -59,6 +59,8 @@ class BenchmarkPicker {
             this.#initializeSubject(params.initialSubject, params.initialGrade);
         }
 
+        $("#benchmarkPickerSearchKeyword").val("");
+
         this.#assignments = params.assignments;
         this.#searchBenchmarks(params.success);
     }

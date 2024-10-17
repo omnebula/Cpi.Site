@@ -466,6 +466,8 @@ class BenchmarkOverlay extends RoadmapOverlay  {
                                 if (!lessonColumn.find(`#${lesson.lessonId}`).length) {
                                     const lessonBubble = this.#createLessonBubble(lesson);
                                     lessonColumn.append(lessonBubble);
+
+                                    lessonColumn.parent().find("#benchmarkSynopsis").addClass("benchmarkSynopsis_assigned");
                                 }
                             }
                         }

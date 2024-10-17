@@ -83,6 +83,18 @@ class ScheduleReviewer extends ScheduleController {
         this.#shadowParent.empty();
     }
 
+    selectLesson(lessonId) {
+        $(".reviewerSelectedContainer").removeClass("reviewerSelectedContainer");
+
+        if (lessonId) {
+            const editor = $(`#${lessonId}`);
+            if (editor.length) {
+                const container = editor.parent();
+                container.addClass("reviewerSelectedContainer");
+            }
+        }
+    }
+
     populateSchedule(data) {
         for (const lesson of data) {
             if ((lesson.courseId === this.schedulePage.courseSelection.courseId) && ((lesson.classId === this.schedulePage.courseSelection.classId))) {

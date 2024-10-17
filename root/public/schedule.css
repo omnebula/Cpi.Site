@@ -5,6 +5,8 @@
     --editor-row-label-font-weight: bold;
     --editor-benchmark-color: steelblue;
     --editor-textarea-color: #101010;
+
+    --reviewer-container-selected: #ddd;    
 }
 .theme-dark {
     --schedule-lesson-background-color: #101010;
@@ -13,19 +15,21 @@
     --editor-row-label-font-weight: normal;
     --editor-benchmark-color: lightsteelblue;
     --editor-textarea-color: #fff1d7;
+
+    --reviewer-container-selected: #222;    
 }
 
 
 .theme-normal {
     --schedule-column-header-background-color: #274965;
     --schedule-column-header-background-color-today: #3c6d95;
-    --schedule-lesson-background-color-selected: #23476b;
+    --schedule-lesson-background-color-selected: #222;
 }
 
 .theme-view-only {
     --schedule-column-header-background-color: #452712;
     --schedule-column-header-background-color-today: #75421f;
-    --schedule-lesson-background-color-selected: #753e18;
+    --schedule-lesson-background-color-selected: #222;
 }
 
 
@@ -286,6 +290,10 @@ main {
 }
 .plannerColumnMenuOptions {
     display: none;
+}
+
+.reviewerSelectedContainer {
+    background-color: var(--reviewer-container-selected);
 }
 
 

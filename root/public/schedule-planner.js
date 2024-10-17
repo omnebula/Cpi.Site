@@ -35,11 +35,6 @@ class SchedulePlanner extends ScheduleController {
                 });
             }
         });
-
-        // Initialize click handler to unselect a lessson when user clicks empty space.
-        $(".appFrame").on("mousedown", () => {
-            this.#selectLesson(undefined);
-        });
     }
 
     refresh() {
@@ -48,13 +43,6 @@ class SchedulePlanner extends ScheduleController {
             this.populateSchedule(data);
 
             $(".plannerColumnMenuOptions").css("display", "block");
-
-            if (this.schedulePage.selectedLessonId) {
-                this.#selectLesson($(`#${this.schedulePage.selectedLessonId}`));
-                
-                // Only acknowledge selection the first time it's established.
-                this.schedulePage.selectedLessonId = undefined;
-            }
         });
     }
     
@@ -124,7 +112,7 @@ class SchedulePlanner extends ScheduleController {
 
             bubble.on("mousedown", (event) => {
                 event.stopPropagation();
-                this.#selectLesson(bubble);
+                this.selectLesson(bubble);
             })
             .on("mouseup", (event) => {
                 if (event.which === 1) {  // Left click only
@@ -396,7 +384,11 @@ class SchedulePlanner extends ScheduleController {
     * Lesson Bubble Command Handlers
     */
 
-    #selectLesson(bubble) {
+    selectLesson(bubble) {
+        if (typeof(bubble) === "string") {
+            bubble = $(`#${bubble}`);
+        }
+
         const scheduleContainer = $("#scheduleContainer");
         scheduleContainer.find(".scheduleLesson_selected").removeClass("scheduleLesson_selected");
         if (bubble) {
@@ -405,6 +397,7 @@ class SchedulePlanner extends ScheduleController {
     }
 
     #reviewLesson(lesson) {
+        this.schedulePage.selectedLessonId = lesson.lessonId;
         this.schedulePage.setCourseSelection(lesson.courseId, lesson.classId);
     }
 
@@ -414,7 +407,7 @@ class SchedulePlanner extends ScheduleController {
             return;
         }
 
-        this.#selectLesson(target);
+        this.selectLesson(target);
 
         const targetId = target.attr("id");
         const targetSequence = target.attr("lessonSequence");

@@ -423,6 +423,10 @@ input[type=submit], textarea {
     color: orange;
 }
 
+.popupBox .listRow:hover {
+    background-color: steelblue;
+}
+
 /*
 * Login
 */
