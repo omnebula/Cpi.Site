@@ -1,7 +1,7 @@
 
 
 class BenchmarkPicker {
-    #benchmarkPicker = $("#benchmarkPicker");
+    #benchmarkPicker;
     #pickerResults;
     #rowContainer;
     #rowTemplate;
@@ -10,8 +10,14 @@ class BenchmarkPicker {
     #gradeSelector;
 
     constructor(initialSubject, initialGrade) {
+        this.#benchmarkPicker = $("#benchmarkPicker");
+        if (!this.#benchmarkPicker.length) {
+            this.#benchmarkPicker = $(BenchmarkPicker.#BenchmarkPickerHtml);
+            $(".popupFrame").append(this.#benchmarkPicker);
+        }
+
         // Extract pick list elements.
-        this.#pickerResults = $("#benchmarkPickerResults");
+        this.#pickerResults = this.#benchmarkPicker.find("#benchmarkPickerResults");
         this.#rowContainer = this.#pickerResults.find("#benchmarkPickerRowContainer");
         this.#rowTemplate = this.#rowContainer.find("#benchmarkPickerRow").detach();
         this.#subjectSelector = $("#benchmarkPickerSearchSubject");
@@ -175,5 +181,43 @@ class BenchmarkPicker {
             success(results);
         }
     }
+
+    static #BenchmarkPickerHtml = String.raw`
+        <div id="benchmarkPicker" class="popupBox benchmarkPicker">
+            <div class="popupCaption">
+                <div id="popupCaptionTitle" class="popupCaptionTitle">
+                    <div id="popupCaptionTitle" class="popupCaptionTitle">Assign Benchmarks</div>
+                </div>
+                <div>
+                    <input id="popupAccept" class="inputAcceptButton popupCaptionButton" type="button" value="Accept"/>
+                    <input id="popupCancel" class="inputCancelButton popupCaptionButton" type="button" value="Cancel"/>
+                </div>
+            </div>
+            <div class="popupRow pickerRow benchmarkPickerSearch">
+                <div class="benchmarkPickerSearchBar">
+                    <select id="benchmarkPickerSearchSubject" class="pickerSelect benchmarkPickerSearchSubject"></select>
+                    <select id="benchmarkPickerSearchGrade" class="pickerSelect benchmarkPickerSearchGrade"></select>
+                    <input id="benchmarkPickerSearchKeyword" class="pickerInput benchmarkPickerSearchKeyword" type="text" placeholder="Keywords" autocomplete="off"/>
+                    <select id="benchmarkPickerShowMode" class="pickerSelect benchmarkPickerShowMode">
+                        <option value="unassigned">Hide Assigned</option>
+                        <option value="all">Show Assigned</option>
+                    </select>
+                </div>
+            </div>
+            <div id="benchmarkPickerResults" class="popupRow pickerRow benchmarkPickerResults">
+                <table id="benchmarkPickerTable" class="listTable benchmarkPickerTable" cellpadding="0" cellspacing="0">
+                    <tbody id="benchmarkPickerRowContainer" class="benchmarkPickerRowContainer">
+                        <tr id="benchmarkPickerRow" class="listRow benchmarkPickerRow">
+                            <td class="benchmarkPickerColumn benchmarkPickerCheckboxColumn"><input id="benchmarkPickerCheckbox" class="benchmarkPickerCheckbox" type="checkbox"/></td>
+                            <td class="benchmarkPickerColumn  benchmarkPickerCodeColumn">
+                                <a id="benchmarkPickerCode" class="benchmarkPickerCode" target="_blank"></a>
+                            </td>
+                            <td id="benchmarkPickerSynopsis" class="benchmarkPickerColumn benchmarkPickerSynopsisColumn"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+`;
 }
 
